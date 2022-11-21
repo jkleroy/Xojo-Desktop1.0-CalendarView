@@ -658,12 +658,6 @@ Inherits Canvas
 		  
 		  
 		  
-		  DelayedAutoUpdate = New Timer
-		  DelayedAutoUpdate.Mode = timer.ModeSingle
-		  DelayedAutoUpdate.Period = 10000*(1.0+Rnd)
-		  
-		  AddHandler DelayedAutoUpdate.Action, WeakAddressOf AutoUpdate
-		  
 		  
 		  '#if not DebugBuild
 		  RefreshTimer = New Timer
@@ -824,150 +818,6 @@ Inherits Canvas
 		    Scroll(deltaX, deltaY)
 		    lastAutoScroll = ticks
 		  End If
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub AutoUpdate(sender As Timer)
-		  #Pragma Unused sender
-		  
-		  #if DebugBuild
-		    
-		    Dim Product As String = me.kProductKey
-		    #if TargetWeb
-		      If kProductKey.left(3) <> "Web" then
-		        Product = "Web" + kProductKey
-		      End If
-		    #Endif
-		    
-		    If not System.Network.IsConnected then
-		      Return
-		    End If
-		    Dim f As FolderItem
-		    try
-		      f = SpecialFolder.ApplicationData.Child("JeremieLeroy.com")
-		      If f Is Nil or not f.exists then f.CreateAsFolder
-		      f = f.Child(Product)
-		      If f Is Nil or not f.exists then f.CreateAsFolder
-		      f = f.Child("config.ini")
-		    Catch
-		      
-		    End Try
-		    
-		    Dim txt As String
-		    Dim lastcheck As new date
-		    Dim d As new date
-		    lastcheck.Month = d.Month-2
-		    If f <> Nil and f.Exists then
-		      Dim ti As TextInputStream
-		      ti = ti.Open(f)
-		      
-		      While txt.left(4) <> "last" and not ti.EOF
-		        txt = ti.ReadLine
-		      Wend
-		      
-		      If txt.Left(4) = "last" then
-		        lastcheck.SQLDateTime = txt.NthField("=", 2)
-		        
-		        If lastcheck.TotalSeconds + 172800.0 > d.TotalSeconds then
-		          'If lastcheck.TotalSeconds + 20 > d.TotalSeconds then
-		          Return
-		        End If
-		      End If
-		    End If
-		    
-		    
-		    
-		    Dim update As New HTTPSocket
-		    Dim result As String = update.Get("http://live.jeremieleroy.com/autoupdate.php?item=" + product + "&version=" +_
-		    str(me.kVersion) + "&xojo=" + XojoVersionString + "&reg=" + str(Registered) + "&limit=" + str(mLimitDate) , 5)
-		    
-		    Dim updateAvailable As Boolean = True
-		    
-		    
-		    If left(Result, len(Product)) <> Product then
-		      updateAvailable = False
-		    End If
-		    
-		    If NthField(result, ":", 2) = "" or NthField(result, ":", 2) = "no update" then
-		      updateAvailable = False
-		    End If
-		    
-		    Dim ts As TextOutputStream
-		    If f <> Nil Then
-		      ts = TextOutputStream.Create(f)
-		      ts.Write "[Settings]" + EndOfLine
-		      ts.Write "lastcheck=" + d.SQLDateTime
-		      ts.Close
-		    End If
-		    
-		    If updateAvailable Then
-		      
-		      Dim message As String = ReplaceLineEndings(NthField(result, ":", 2), EndOfLine)
-		      
-		      #If TargetWeb
-		        Msgbox("New version available" + EndOfLine + EndOfLine + _
-		        "New version of the " + kProductKey + " is available." + EndOfLine + _
-		        message + EndOfLine + _
-		        EndOfLine + _
-		        "Would you like to download the update now ?" + EndOfLine + EndOfLine + _
-		        "(This message will only appear in DebugBuild)")
-		        
-		        ShowURL("http://www.jeremieleroy.com/products.php#" + kProductKey, True)
-		      #elseif TargetDesktop
-		        
-		        Dim n As new MessageDialog
-		        Dim b As MessageDialogButton
-		        n.ActionButton.Caption = "Update"
-		        n.CancelButton.Visible = True
-		        n.CancelButton.Caption = "Later"
-		        
-		        n.Title = "New version available"
-		        n.Message = "New version of the " + kProductKey + " is available." + EndOfLine + _
-		        message + EndOfLine + _
-		        EndOfLine + _
-		        "Would you like to download the update now ?" + EndOfLine + EndOfLine + _
-		        "(This message will only appear in DebugBuild)"
-		        
-		        b=n.ShowModal //display the dialog
-		        Select Case b //determine which button was pressed.
-		        Case n.ActionButton
-		          ShowURL("http://www.jeremieleroy.com/products.php#" + kProductKey)
-		        Case n.CancelButton
-		          //user pressed Cancel
-		        End select
-		      #endif
-		    End If
-		    
-		    
-		  #else
-		    If not Registered then
-		      #If TargetWeb
-		        
-		      #Else
-		        Dim d As new MessageDialog
-		        Dim b As MessageDialogButton
-		        
-		        d.Title = "Demo Software in use"
-		        d.Icon = MessageDialog.GraphicNote
-		        d.ActionButton.Caption="Yes"
-		        d.CancelButton.Visible = True
-		        d.CancelButton.Caption = "No"
-		        
-		        d.Message = "This application was built with a Demo version of " + kProductKey + " by Jérémie Leroy." + EndOfLine + _
-		        "If you wish to disable this message, then please encourage the developer of this application to purchase the " + kProductKey + "." + EndOfLine + _
-		        EndOfLine + _
-		        "Would you like to visit Jérémie Leroy's website ?"
-		        b=d.ShowModal
-		        If b=d.ActionButton then
-		          ShowURL("http://www.jeremieleroy.com/products/")
-		        End If
-		        
-		      #Endif
-		      
-		    End If
-		    
-		  #endif
 		End Sub
 	#tag EndMethod
 
@@ -1324,20 +1174,6 @@ Inherits Canvas
 		  Redim Events(-1)
 		  
 		  Redisplay()
-		End Sub
-	#tag EndMethod
-
-	#tag Method, Flags = &h21
-		Private Sub Destructor()
-		  If DelayedAutoUpdate <> Nil then
-		    DelayedAutoUpdate.Mode = timer.ModeOff
-		    
-		    RemoveHandler DelayedAutoUpdate.Action, AddressOf AutoUpdate
-		    
-		    DelayedAutoUpdate = Nil
-		  End If
-		  
-		  
 		End Sub
 	#tag EndMethod
 
@@ -5210,7 +5046,7 @@ Inherits Canvas
 		        gg.DrawString(text, x, y+(DayHeight-gg.TextHeight)\2 + gg.TextAscent, DayWidth, True)
 		      elseif Pos = 1 then
 		        gg.DrawString(text, x + (DayWidth - gg.StringWidth(text))\2, y+(DayHeight-gg.TextHeight)\2 + _
-		         gg.TextAscent, DayWidth, True)
+		        gg.TextAscent, DayWidth, True)
 		      else
 		        gg.DrawString(text, x - gg.StringWidth(text), y+(DayHeight-gg.TextHeight)\2 + gg.TextAscent, _
 		        DayWidth, True)
@@ -7140,7 +6976,7 @@ Inherits Canvas
 		              
 		              If HasColor then
 		                me.AddEvent New CalendarEvent(Summary, DateStart, DateEnd, MyColor, Location, _
-		                 Description, UID, Editable, Tag, Recurrence)
+		                Description, UID, Editable, Tag, Recurrence)
 		              else
 		                me.AddEvent New CalendarEvent(Summary, DateStart, DateEnd, DefaultColor, Location, _ 
 		                Description, UID, Editable, Tag, Recurrence)
@@ -9603,10 +9439,6 @@ Inherits Canvas
 		DayStartHour As Single
 	#tag EndProperty
 
-	#tag Property, Flags = &h21
-		Private DelayedAutoUpdate As Timer
-	#tag EndProperty
-
 	#tag Property, Flags = &h1
 		Protected DeletedIDs() As String
 	#tag EndProperty
@@ -9732,7 +9564,7 @@ Inherits Canvas
 		#tag Note
 			#newinversion 1.4.0
 			
-			If True, before refreshing the display, the CalendarView fires the CalendarEventFilter Event 
+			If True, before refreshing the display, the CalendarView fires the CalendarEventFilter Event
 		#tag EndNote
 		FilterEvents As Boolean
 	#tag EndProperty
