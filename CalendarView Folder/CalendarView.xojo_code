@@ -1615,7 +1615,11 @@ Inherits Canvas
 		      'gg.DrawLine(x, y, x+12, y)
 		      
 		      gg.ForeColor = MyColors.WeekNumber
-		      text = str(DrawDate.WeekOfYear)
+		      if UseISOWeekNumber then
+		        text = str(ISOWeekNumber(DrawDate))
+		      Else
+		        text = str(DrawDate.WeekOfYear)
+		      end if
 		      gg.DrawString(text, x + (13 - gg.StringWidth(text))/2, y + 8)
 		      
 		      DrawDate.Day = DrawDate.Day + 7
@@ -1745,7 +1749,12 @@ Inherits Canvas
 		  If DisplayWeeknumber then
 		    gg.ForeColor = MyColors.WeekNumberBackground
 		    gg.FillRoundRect((TimeWidth-20)/2, HeaderHeight + 3, 20, MyStyle.WEventHeight-4, 4, 4)
-		    text = str(DrawDate.WeekOfYear)
+		    
+		    if UseISOWeekNumber then
+		      text = str(ISOWeekNumber(DrawDate))
+		    Else
+		      text = str(DrawDate.WeekOfYear)
+		    End If
 		    gg.ForeColor = MyColors.WeekNumber
 		    gg.DrawString(text, (TimeWidth-gg.StringWidth(text))\2, HeaderHeight + (MyStyle.WEventHeight-gg.TextHeight) + gg.TextAscent)
 		  End If
@@ -5210,7 +5219,7 @@ Inherits Canvas
 		        gg.DrawString(text, x, y+(DayHeight-gg.TextHeight)\2 + gg.TextAscent, DayWidth, True)
 		      elseif Pos = 1 then
 		        gg.DrawString(text, x + (DayWidth - gg.StringWidth(text))\2, y+(DayHeight-gg.TextHeight)\2 + _
-		         gg.TextAscent, DayWidth, True)
+		        gg.TextAscent, DayWidth, True)
 		      else
 		        gg.DrawString(text, x - gg.StringWidth(text), y+(DayHeight-gg.TextHeight)\2 + gg.TextAscent, _
 		        DayWidth, True)
@@ -7140,7 +7149,7 @@ Inherits Canvas
 		              
 		              If HasColor then
 		                me.AddEvent New CalendarEvent(Summary, DateStart, DateEnd, MyColor, Location, _
-		                 Description, UID, Editable, Tag, Recurrence)
+		                Description, UID, Editable, Tag, Recurrence)
 		              else
 		                me.AddEvent New CalendarEvent(Summary, DateStart, DateEnd, DefaultColor, Location, _ 
 		                Description, UID, Editable, Tag, Recurrence)
@@ -7180,6 +7189,32 @@ Inherits Canvas
 		Private Function InvertColor(c As Color) As Color
 		  
 		  Return RGB(255-c.Red, 255-c.Green, 255-c.Blue)
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
+		Protected Function ISOWeekNumber(dt As Date) As Integer
+		  // ISO 8601 week number
+		  // https://en.wikipedia.org/wiki/ISO_week_date
+		  
+		  var dow,woy as UInt8
+		  
+		  dow=dt.DayOfWeek-1
+		  if dow=0 then dow=7
+		  woy=Floor((10+dt.DayOfYear-dow)/7)
+		  
+		  if woy=0 then
+		    var dp as new date (dt.Year-1,12,31)
+		    dow=dp.DayOfWeek-1
+		    if dow=0 then dow=7
+		    woy=Floor((10+dp.DayOfYear-dow)/7)
+		  elseif woy=53 then
+		    var dp as new date (dt.Year+1,1,1)
+		    dow=dp.DayOfWeek
+		    if dow<6 and dow>1 then woy=1
+		  end if
+		  
+		  Return woy
 		End Function
 	#tag EndMethod
 
@@ -9732,7 +9767,7 @@ Inherits Canvas
 		#tag Note
 			#newinversion 1.4.0
 			
-			If True, before refreshing the display, the CalendarView fires the CalendarEventFilter Event 
+			If True, before refreshing the display, the CalendarView fires the CalendarEventFilter Event
 		#tag EndNote
 		FilterEvents As Boolean
 	#tag EndProperty
@@ -10167,6 +10202,10 @@ Inherits Canvas
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
+		Private mUseISOWeekNumber As Boolean
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
 		Private mViewType As Integer
 	#tag EndProperty
 
@@ -10326,6 +10365,26 @@ Inherits Canvas
 		#tag EndNote
 		TransparentBackground As Boolean
 	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0, Description = 496620547275652C2075736573207468652049534F207765656B206E756D626572206E6F726D
+		#tag Getter
+			Get
+			  https://en.wikipedia.org/wiki/ISO_week_date
+			  
+			  Return mUseISOWeekNumber
+			  
+			  
+			End Get
+		#tag EndGetter
+		#tag Setter
+			Set
+			  mUseISOWeekNumber = value
+			  
+			  Redisplay
+			End Set
+		#tag EndSetter
+		UseISOWeekNumber As Boolean
+	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
 		#tag Note
@@ -11163,6 +11222,14 @@ Inherits Canvas
 			Group="Behavior"
 			InitialValue=""
 			Type="Byte"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="UseISOWeekNumber"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Boolean"
 			EditorType=""
 		#tag EndViewProperty
 	#tag EndViewBehavior
