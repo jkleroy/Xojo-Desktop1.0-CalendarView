@@ -2613,22 +2613,22 @@ End
 #tag Events Chk_Repeat
 	#tag Event
 		Sub Action()
-		  'If me.Value then
-		  'self.Width = 787
-		  '
-		  'else
-		  'self.Width = 375
-		  'End If
+		  If me.Value then
+		  self.Width = 787
+		  
+		  else
+		  self.Width = 375
+		  End If
 		  Dim delta As Integer = 787-375
 		  
 		  
-		  if not me.value then
-		    self.animate new realbasic.rect(self.left+delta/2,self.top,self.width-delta,self.height),0.25, AKEasing.kLinearTween
-		  elseif ResizeWindow then
-		    self.animate new realbasic.rect(self.left-delta/2,self.top,self.width+delta,self.height),0.25,AKEasing.kLinearTween
-		  else
-		    self.Width = 787
-		  end
+		  'if not me.value then
+		   ' self.animate new realbasic.rect(self.left+delta/2,self.top,self.width-delta,self.height),0.25, AKEasing.kLinearTween
+		  'elseif ResizeWindow then
+		   ' self.animate new realbasic.rect(self.left-delta/2,self.top,self.width+delta,self.height),0.25,AKEasing.kLinearTween
+		  'else
+		   ' self.Width = 787
+		  ' end
 		  
 		  ResizeWindow = True
 		  
