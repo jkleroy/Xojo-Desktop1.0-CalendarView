@@ -16,7 +16,7 @@ Protected Module AKCore
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Animate(Extends Item As RectControl, ToRect As REALbasic.Rect, Duration As Double, EasingMethod As Integer = 0)
+		Sub Animate(Extends Item As DesktopWindow, ToRect As Xojo.Rect, Duration As Double, EasingMethod As Integer = 0)
 		  dim task as akmovetask
 		  task = item.newmovetask
 		  task.duration = duration
@@ -28,7 +28,7 @@ Protected Module AKCore
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Animate(Extends Item As Window, ToRect As REALbasic.Rect, Duration As Double, EasingMethod As Integer = 0)
+		Sub Animate(Extends Item As RectControl, ToRect As Xojo.Rect, Duration As Double, EasingMethod As Integer = 0)
 		  dim task as akmovetask
 		  task = item.newmovetask
 		  task.duration = duration
@@ -64,8 +64,8 @@ Protected Module AKCore
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ContentRect(Extends Item As RectControl) As REALbasic.Rect
-		  dim r as new REALbasic.Rect
+		Function ContentRect(Extends Item As RectControl) As Xojo.Rect
+		  dim r as new Xojo.Rect
 		  r.left = item.left
 		  r.top = item.top
 		  r.width = item.width
@@ -75,7 +75,7 @@ Protected Module AKCore
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ContentRect(Extends Item As RectControl, Assigns NewRect As REALbasic.Rect)
+		Sub ContentRect(Extends Item As RectControl, Assigns NewRect As Xojo.Rect)
 		  item.left = newrect.left
 		  item.top = newrect.top
 		  item.width = newrect.width
@@ -84,8 +84,8 @@ Protected Module AKCore
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ContentRect(Extends Item As Window) As REALbasic.Rect
-		  dim r as new REALbasic.Rect
+		Function ContentRect(Extends Item As Window) As Xojo.Rect
+		  dim r as new Xojo.Rect
 		  r.left = item.left
 		  r.top = item.top
 		  r.width = item.width
@@ -95,7 +95,7 @@ Protected Module AKCore
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ContentRect(Extends Item As Window, Assigns NewRect As REALbasic.Rect)
+		Sub ContentRect(Extends Item As Window, Assigns NewRect As Xojo.Rect)
 		  #if TargetCocoa
 		    If Item IsA ContainerControl Then
 		      if item.left <> newrect.left then

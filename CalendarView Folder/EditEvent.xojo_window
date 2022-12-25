@@ -1,36 +1,32 @@
-#tag Window
-Begin Window EditEvent
-   BackColor       =   &cFFFFFF00
+#tag DesktopWindow
+Begin DesktopWindow EditEvent
    Backdrop        =   0
-   BalloonHelp     =   ""
-   CloseButton     =   True
+   BackgroundColor =   &cFFFFFF00
    Composite       =   False
-   Frame           =   8
+   DefaultLocation =   0
    FullScreen      =   False
-   FullScreenButton=   False
-   HasBackColor    =   False
+   HasBackgroundColor=   False
+   HasCloseButton  =   True
+   HasFullScreenButton=   False
+   HasMaximizeButton=   False
+   HasMinimizeButton=   False
    Height          =   357
    ImplicitInstance=   True
-   LiveResize      =   True
    MacProcID       =   0
-   MaxHeight       =   32000
-   MaximizeButton  =   False
-   MaxWidth        =   32000
+   MaximumHeight   =   32000
+   MaximumWidth    =   32000
    MenuBar         =   0
    MenuBarVisible  =   True
-   MinHeight       =   64
-   MinimizeButton  =   False
-   MinWidth        =   64
-   Placement       =   0
+   MinimumHeight   =   64
+   MinimumWidth    =   64
    Resizeable      =   False
    Title           =   "New Event"
+   Type            =   8
    Visible         =   True
    Width           =   375
-   Begin Label Label3
+   Begin DesktopLabel lblDate
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -51,21 +47,19 @@ Begin Window EditEvent
       TabIndex        =   0
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "#klocalDate"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   14
       Transparent     =   False
       Underline       =   False
-      Value           =   "Date :"
       Visible         =   True
       Width           =   63
    End
-   Begin Label Label2
+   Begin DesktopLabel lblTitle
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -86,25 +80,23 @@ Begin Window EditEvent
       TabIndex        =   1
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "#klocalTitle"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   141
       Transparent     =   False
       Underline       =   False
-      Value           =   "#klocalTitle"
       Visible         =   True
       Width           =   63
    End
-   Begin TextField TextField1
+   Begin DesktopTextField tfiTitle
       AllowAutoDeactivate=   True
       AllowFocusRing  =   True
       AllowSpellChecking=   False
       AllowTabs       =   False
       BackgroundColor =   &cFFFFFF00
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -128,6 +120,7 @@ Begin Window EditEvent
       TabIndex        =   0
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   ""
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
@@ -135,15 +128,14 @@ Begin Window EditEvent
       Transparent     =   False
       Underline       =   False
       ValidationMask  =   ""
-      Value           =   ""
       Visible         =   True
       Width           =   243
    End
-   Begin PushButton PushButton1
+   Begin DesktopButton btnOK
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
-      Caption         =   "OK"
+      Caption         =   "#kLocalOK"
       Default         =   False
       Enabled         =   True
       FontName        =   "System"
@@ -171,11 +163,9 @@ Begin Window EditEvent
       Visible         =   True
       Width           =   80
    End
-   Begin Label Label1
+   Begin DesktopLabel lblDateSelection
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -196,25 +186,23 @@ Begin Window EditEvent
       TabIndex        =   4
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "..."
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   14
       Transparent     =   False
       Underline       =   False
-      Value           =   "..."
       Visible         =   True
       Width           =   243
    End
-   Begin Canvas Canvas1
+   Begin DesktopCanvas cnvColor
       AllowAutoDeactivate=   True
       AllowFocus      =   False
       AllowFocusRing  =   True
       AllowTabs       =   False
       Backdrop        =   0
-      DoubleBuffer    =   False
       Enabled         =   True
-      EraseBackground =   True
       Height          =   20
       Index           =   -2147483648
       InitialParent   =   ""
@@ -234,15 +222,13 @@ Begin Window EditEvent
       Visible         =   True
       Width           =   335
    End
-   Begin TextField TextField2
+   Begin DesktopTextField tfiLocation
       AllowAutoDeactivate=   True
       AllowFocusRing  =   True
       AllowSpellChecking=   False
       AllowTabs       =   False
       BackgroundColor =   &cFFFFFF00
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -266,6 +252,7 @@ Begin Window EditEvent
       TabIndex        =   1
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   ""
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
@@ -273,15 +260,12 @@ Begin Window EditEvent
       Transparent     =   False
       Underline       =   False
       ValidationMask  =   ""
-      Value           =   ""
       Visible         =   True
       Width           =   243
    End
-   Begin Label Label4
+   Begin DesktopLabel lblLocation
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -302,21 +286,19 @@ Begin Window EditEvent
       TabIndex        =   7
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "#klocalLocation"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   175
       Transparent     =   False
       Underline       =   False
-      Value           =   "#klocalLocation"
       Visible         =   True
       Width           =   63
    End
-   Begin Label Label5
+   Begin DesktopLabel lblDescription
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -337,17 +319,17 @@ Begin Window EditEvent
       TabIndex        =   8
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "#klocalDescription"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   207
       Transparent     =   False
       Underline       =   False
-      Value           =   "#klocalDescription"
       Visible         =   True
       Width           =   86
    End
-   Begin TextArea TextArea1
+   Begin DesktopTextArea tarDescription
       AllowAutoDeactivate=   True
       AllowFocusRing  =   True
       AllowSpellChecking=   True
@@ -355,8 +337,6 @@ Begin Window EditEvent
       AllowTabs       =   False
       BackgroundColor =   &cFFFFFF00
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -384,6 +364,7 @@ Begin Window EditEvent
       TabIndex        =   2
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   ""
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
@@ -392,11 +373,10 @@ Begin Window EditEvent
       Underline       =   False
       UnicodeMode     =   0
       ValidationMask  =   ""
-      Value           =   ""
       Visible         =   True
       Width           =   243
    End
-   Begin PushButton DeleteButton
+   Begin DesktopButton DeleteButton
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
@@ -428,15 +408,13 @@ Begin Window EditEvent
       Visible         =   False
       Width           =   80
    End
-   Begin Canvas Canvas2
+   Begin DesktopCanvas Canvas2
       AllowAutoDeactivate=   True
       AllowFocus      =   False
       AllowFocusRing  =   True
       AllowTabs       =   False
       Backdrop        =   0
-      DoubleBuffer    =   False
       Enabled         =   True
-      EraseBackground =   True
       Height          =   90
       Index           =   -2147483648
       InitialParent   =   ""
@@ -455,13 +433,11 @@ Begin Window EditEvent
       Transparent     =   True
       Visible         =   True
       Width           =   335
-      Begin ComboBox Combo_Start
+      Begin DesktopComboBox Combo_Start
          AllowAutoComplete=   False
          AllowAutoDeactivate=   True
          AllowFocusRing  =   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -490,11 +466,9 @@ Begin Window EditEvent
          Visible         =   True
          Width           =   95
       End
-      Begin Label Lbl_To
+      Begin DesktopLabel Lbl_To
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -515,23 +489,21 @@ Begin Window EditEvent
          TabIndex        =   2
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "#klocalTo"
          TextAlignment   =   2
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   72
          Transparent     =   True
          Underline       =   False
-         Value           =   "#klocalTo"
          Visible         =   True
          Width           =   36
       End
-      Begin ComboBox Combo_End
+      Begin DesktopComboBox Combo_End
          AllowAutoComplete=   False
          AllowAutoDeactivate=   True
          AllowFocusRing  =   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -560,12 +532,10 @@ Begin Window EditEvent
          Visible         =   True
          Width           =   95
       End
-      Begin CheckBox Chk_AllDay
+      Begin DesktopCheckBox Chk_AllDay
          AllowAutoDeactivate=   True
          Bold            =   False
          Caption         =   "#klocalAllday"
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -594,15 +564,13 @@ Begin Window EditEvent
          Width           =   240
       End
    End
-   Begin Canvas Canvas3
+   Begin DesktopCanvas Canvas3
       AllowAutoDeactivate=   True
       AllowFocus      =   False
       AllowFocusRing  =   False
       AllowTabs       =   False
       Backdrop        =   0
-      DoubleBuffer    =   False
       Enabled         =   True
-      EraseBackground =   True
       Height          =   297
       Index           =   -2147483648
       InitialParent   =   ""
@@ -621,11 +589,9 @@ Begin Window EditEvent
       Transparent     =   True
       Visible         =   True
       Width           =   391
-      Begin Label Label7
+      Begin DesktopLabel lblRepeats
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -646,21 +612,19 @@ Begin Window EditEvent
          TabIndex        =   0
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "#klocalRepeats"
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   14
          Transparent     =   True
          Underline       =   False
-         Value           =   "#klocalRepeats"
          Visible         =   True
          Width           =   100
       End
-      Begin PopupMenu Popup_Repeat
+      Begin DesktopPopupMenu Popup_Repeat
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -688,11 +652,9 @@ Begin Window EditEvent
          Visible         =   True
          Width           =   135
       End
-      Begin Label lblRepeatInterval
+      Begin DesktopLabel lblRepeatInterval
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -713,21 +675,19 @@ Begin Window EditEvent
          TabIndex        =   2
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "#klocalRepeatEvery"
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   50
          Transparent     =   True
          Underline       =   False
-         Value           =   "#klocalRepeatEvery"
          Visible         =   True
          Width           =   100
       End
-      Begin PopupMenu Popup_Interval
+      Begin DesktopPopupMenu Popup_Interval
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -755,11 +715,9 @@ Begin Window EditEvent
          Visible         =   True
          Width           =   50
       End
-      Begin Label lblRepeatOn
+      Begin DesktopLabel lblRepeatOn
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -780,21 +738,19 @@ Begin Window EditEvent
          TabIndex        =   4
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "#kLocalRepeatOn"
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   86
          Transparent     =   True
          Underline       =   False
-         Value           =   "Repeat on:"
          Visible         =   True
          Width           =   100
       End
-      Begin Label Label11
+      Begin DesktopLabel lblStartsOn
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -815,21 +771,19 @@ Begin Window EditEvent
          TabIndex        =   13
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "#kLocalStartsOn"
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   119
          Transparent     =   True
          Underline       =   False
-         Value           =   "Starts on:"
          Visible         =   False
          Width           =   100
       End
-      Begin Label Label12
+      Begin DesktopLabel lblEnds
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -850,21 +804,19 @@ Begin Window EditEvent
          TabIndex        =   14
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "#klocalEnds"
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   152
          Transparent     =   True
          Underline       =   False
-         Value           =   "#klocalEnds"
          Visible         =   True
          Width           =   100
       End
-      Begin Label Label13
+      Begin DesktopLabel lblStartsOnSelection
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -885,17 +837,17 @@ Begin Window EditEvent
          TabIndex        =   15
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "..."
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   119
          Transparent     =   True
          Underline       =   False
-         Value           =   "..."
          Visible         =   False
          Width           =   259
       End
-      Begin RadioButton radioEnd
+      Begin DesktopRadioButton radioEnd
          AllowAutoDeactivate=   True
          Bold            =   False
          Caption         =   "#klocalNever"
@@ -925,7 +877,7 @@ Begin Window EditEvent
          Visible         =   True
          Width           =   100
       End
-      Begin RadioButton radioEnd
+      Begin DesktopRadioButton radioEnd
          AllowAutoDeactivate=   True
          Bold            =   False
          Caption         =   "#klocalAfter"
@@ -955,15 +907,13 @@ Begin Window EditEvent
          Visible         =   True
          Width           =   58
       End
-      Begin TextField txtNb
+      Begin DesktopTextField txtNb
          AllowAutoDeactivate=   True
          AllowFocusRing  =   True
          AllowSpellChecking=   False
          AllowTabs       =   False
          BackgroundColor =   &cFFFFFF00
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   False
          FontName        =   "System"
          FontSize        =   0.0
@@ -988,6 +938,7 @@ Begin Window EditEvent
          TabIndex        =   18
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "10"
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
@@ -995,15 +946,12 @@ Begin Window EditEvent
          Transparent     =   False
          Underline       =   False
          ValidationMask  =   "###"
-         Value           =   "10"
          Visible         =   True
          Width           =   44
       End
-      Begin Label Label14
+      Begin DesktopLabel lblOccurences
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -1024,17 +972,17 @@ Begin Window EditEvent
          TabIndex        =   19
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "#kLocalOccurences"
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   177
          Transparent     =   True
          Underline       =   False
-         Value           =   "occurences"
          Visible         =   True
          Width           =   100
       End
-      Begin RadioButton radioEnd
+      Begin DesktopRadioButton radioEnd
          AllowAutoDeactivate=   True
          Bold            =   False
          Caption         =   "#klocalOn"
@@ -1064,11 +1012,9 @@ Begin Window EditEvent
          Visible         =   True
          Width           =   58
       End
-      Begin Label Label15
+      Begin DesktopLabel lblSummary
          AllowAutoDeactivate=   True
          Bold            =   True
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -1089,21 +1035,19 @@ Begin Window EditEvent
          TabIndex        =   22
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "#klocalSummary"
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   232
          Transparent     =   True
          Underline       =   False
-         Value           =   "#klocalSummary"
          Visible         =   True
          Width           =   100
       End
-      Begin Label lblRepeatUnit
+      Begin DesktopLabel lblRepeatUnit
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -1124,21 +1068,19 @@ Begin Window EditEvent
          TabIndex        =   16
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "#klocalDays"
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   50
          Transparent     =   True
          Underline       =   False
-         Value           =   "#klocalDays"
          Visible         =   True
          Width           =   73
       End
-      Begin Label lbl_Summary
+      Begin DesktopLabel lbl_Summary
          AllowAutoDeactivate=   True
          Bold            =   True
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -1159,13 +1101,13 @@ Begin Window EditEvent
          TabIndex        =   23
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "Summary:"
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   232
          Transparent     =   True
          Underline       =   False
-         Value           =   "Summary:"
          Visible         =   True
          Width           =   250
       End
@@ -1193,11 +1135,9 @@ Begin Window EditEvent
          Width           =   250
       End
    End
-   Begin Label lblEndDate
+   Begin DesktopLabel lblEndDate
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   False
       FontName        =   "System"
       FontSize        =   0.0
@@ -1218,22 +1158,20 @@ Begin Window EditEvent
       TabIndex        =   17
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "Select Date"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   203
       Transparent     =   True
       Underline       =   False
-      Value           =   "Select Date"
       Visible         =   True
       Width           =   187
    End
-   Begin CheckBox Chk_Repeat
+   Begin DesktopCheckBox Chk_Repeat
       AllowAutoDeactivate=   True
       Bold            =   False
       Caption         =   "#klocalRepeat"
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -1262,11 +1200,11 @@ Begin Window EditEvent
       Width           =   232
    End
 End
-#tag EndWindow
+#tag EndDesktopWindow
 
 #tag WindowCode
 	#tag Event
-		Sub Close()
+		Sub Closing()
 		  If not OkToClose then
 		    
 		    Hide()
@@ -1279,7 +1217,7 @@ End
 	#tag EndEvent
 
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  
 		  Colors.Append &c444444
 		  Colors.Append &c5484ED
@@ -1294,7 +1232,7 @@ End
 		  Colors.Append &cE1E1E1
 		  'Colors.Append &c99C8E9
 		  
-		  Canvas1.Refresh
+		  cnvColor.Refresh
 		End Sub
 	#tag EndEvent
 
@@ -1305,23 +1243,23 @@ End
 		  
 		  Dim R As New CalendarRecurrence
 		  
-		  Dim Row As Integer = Popup_Repeat.ListIndex
+		  Dim Row As Integer = Popup_Repeat.SelectedRowIndex
 		  
 		  //Repeat
-		  If Popup_Repeat.RowTag(Row) = "Daily" then
+		  If Popup_Repeat.RowTagAt(Row) = "Daily" then
 		    R.RepeatType = R.TypeDaily
-		    'R.RepeatInterval = max(1, val(Popup_Interval.Text))
-		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.Text))
+		    'R.RepeatInterval = max(1, val(Popup_Interval.SelectedRowValue))
+		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.SelectedRowValue))
 		    
 		    
-		  elseif Popup_Repeat.RowTag(Row) = "Weekday" then
+		  elseif Popup_Repeat.RowTagAt(Row) = "Weekday" then
 		    R.RepeatType = R.TypeWeekDay
 		    R.RepeatInterval = R.Interval8Monday + R.Interval8Tuesday + _
 		    R.Interval8Wednesday + R.Interval8Thursday + R.Interval8Friday
 		    
-		  elseif Popup_Repeat.RowTag(Row) = "Weekly" then
+		  elseif Popup_Repeat.RowTagAt(Row) = "Weekly" then
 		    R.RepeatType = R.TypeWeekly
-		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.Text))
+		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.SelectedRowValue))
 		    
 		    If SegDays.Items(0).selected then
 		      R.RepeatInterval = R.RepeatInterval + R.Interval8Monday
@@ -1345,19 +1283,19 @@ End
 		      R.RepeatInterval = R.RepeatInterval + R.Interval8Sunday
 		    End If
 		    
-		  elseif Popup_Repeat.RowTag(Row) = "Monthly" then
+		  elseif Popup_Repeat.RowTagAt(Row) = "Monthly" then
 		    R.RepeatType = R.TypeMonthly
-		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.Text))
+		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.SelectedRowValue))
 		    
-		  elseif Popup_Repeat.RowTag(Row) = "Monthly Relative" then
+		  elseif Popup_Repeat.RowTagAt(Row) = "Monthly Relative" then
 		    R.RepeatType = R.TypeMonthlyRelative
-		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.Text))
+		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.SelectedRowValue))
 		    R.Repeat_Relative_Interval = GetRelativeDay(StartDate)
 		    R.RepeatInterval = StartDate.DayOfWeek
 		    
-		  elseif Popup_Repeat.RowTag(Row) = "Yearly" then
+		  elseif Popup_Repeat.RowTagAt(Row) = "Yearly" then
 		    R.RepeatType = R.TypeYearly
-		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.Text))
+		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.SelectedRowValue))
 		    
 		  End If
 		  
@@ -1400,14 +1338,14 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub PopupItemByTag(Tag As String, Popup As PopupMenu)
+		Protected Sub PopupItemByTag(Tag As String, Popup As DesktopPopupMenu)
 		  
-		  If Popup.ListCount = 0 then Return
+		  If Popup.RowCount = 0 then Return
 		  Dim i As Integer
 		  
-		  For i = 0 to Popup.ListCount-1
-		    If Popup.RowTag(i) = Tag then
-		      Popup.ListIndex = i
+		  For i = 0 to Popup.RowCount-1
+		    If Popup.RowTagAt(i) = Tag then
+		      Popup.SelectedRowIndex = i
 		      Return
 		    End If
 		  Next
@@ -1415,14 +1353,14 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub PopupItemByText(Text As String, Popup As PopupMenu)
+		Protected Sub PopupItemByText(pText As String, Popup As DesktopPopupMenu)
 		  
-		  If Popup.ListCount = 0 then Return
+		  If Popup.RowCount = 0 then Return
 		  Dim i As Integer
 		  
-		  For i = 0 to Popup.ListCount-1
-		    If Popup.List(i) = Text then
-		      Popup.ListIndex = i
+		  For i = 0 to Popup.RowCount-1
+		    If Popup.RowValueAt(i) = pText then
+		      Popup.SelectedRowIndex = i
 		      Return
 		    End If
 		  Next
@@ -1519,12 +1457,12 @@ End
 		  
 		  
 		  If cEvent.StartDate.SQLDate = cEvent.EndDate.SQLDate then
-		    Label1.Text = cEvent.StartDate.LongDate
+		    lblDateSelection.Text = cEvent.StartDate.LongDate
 		  else
-		    Label1.Text = cEvent.StartDate.AbbreviatedDate + " - " + cEvent.EndDate.AbbreviatedDate
+		    lblDateSelection.Text = cEvent.StartDate.AbbreviatedDate + " - " + cEvent.EndDate.AbbreviatedDate
 		    Canvas2.Enabled = False
 		  End If
-		  Label13.Text = cEvent.StartDate.LongDate
+		  lblStartsOnSelection.Text = cEvent.StartDate.LongDate
 		  
 		  Chk_AllDay.Value = cEvent.DayEvent
 		  
@@ -1534,9 +1472,9 @@ End
 		  End If
 		  
 		  
-		  TextField1.Text = cEvent.Title
-		  TextField2.Text = cEvent.Location
-		  TextArea1.Text = cEvent.Description
+		  tfiTitle.Text = cEvent.Title
+		  tfiLocation.Text = cEvent.Location
+		  tarDescription.Text = cEvent.Description
 		  
 		  Title = "Edit Event"
 		  
@@ -1565,7 +1503,7 @@ End
 		  mOpen = True
 		  super.ShowModal
 		  OkToClose = True
-		  If Handle = 0 then
+		  If Handle = Nil then
 		    Close
 		    Return Nil
 		  else
@@ -1583,9 +1521,9 @@ End
 		        cEvent.EndDate.Minute = val(Combo_End.Text.NthField(":", 2))
 		      End If
 		      
-		      Dim text As String = TextField1.Text
-		      Dim location As String = TextField2.Text
-		      Dim Description As String = TextArea1.Text
+		      Dim text As String = tfiTitle.Text
+		      Dim location As String = tfiLocation.Text
+		      Dim Description As String = tarDescription.Text
 		      
 		      cEvent.Location = location
 		      cEvent.Description = Description
@@ -1615,8 +1553,8 @@ End
 		  ResizeWindow = True
 		  
 		  If StartDate.SQLDate = EndDate.SQLDate then
-		    Label1.Text = StartDate.LongDate
-		    Label13.Text = StartDate.LongDate
+		    lblDateSelection.Text = StartDate.LongDate
+		    lblStartsOnSelection.Text = StartDate.LongDate
 		    
 		    If StartDate.Hour <> 0 or EndDate.Hour <> 0 then
 		      Combo_Start.Text = Format(StartDate.Hour, "0#") + ":" + Format(StartDate.Minute, "0#")
@@ -1627,7 +1565,7 @@ End
 		      Combo_End.Text = "00:00"
 		    End If
 		  else
-		    Label1.Text = StartDate.AbbreviatedDate + " - " + EndDate.AbbreviatedDate
+		    lblDateSelection.Text = StartDate.AbbreviatedDate + " - " + EndDate.AbbreviatedDate
 		    Chk_AllDay.Value = true
 		    Chk_AllDay.Enabled = False
 		  End If
@@ -1646,12 +1584,12 @@ End
 		  mOpen = True
 		  super.ShowModal
 		  OkToClose = True
-		  If Handle = 0 or DeleteEvent then
+		  If Handle = Nil or DeleteEvent then
 		    Close
 		    Return Nil
 		  else
 		    
-		    Dim text As String = TextField1.Text
+		    Dim text As String = tfiTitle.Text
 		    If StartDate = EndDate then
 		      
 		      If IsNumeric(Text.left(2)) and IsNumeric(Text.Mid(4, 2)) then
@@ -1676,8 +1614,8 @@ End
 		    End If
 		    
 		    
-		    Dim location As String = TextField2.Text
-		    Dim Description As String = TextArea1.Text
+		    Dim location As String = tfiLocation.Text
+		    Dim Description As String = tarDescription.Text
 		    
 		    
 		    
@@ -1697,17 +1635,17 @@ End
 		Protected Sub UpdateSummary()
 		  Dim text As String
 		  
-		  Select case Popup_Repeat.RowTag(Popup_Repeat.ListIndex)
+		  Select case Popup_Repeat.RowTagAt(Popup_Repeat.SelectedRowIndex)
 		    
 		  Case "Daily"
 		    
-		    If Popup_Interval.Text = "1" then
+		    If Popup_Interval.SelectedRowValue = "1" then
 		      
 		      Text = "Daily"
 		      
 		    Else
 		      
-		      Text = "Every " + Popup_Interval.Text + " days"
+		      Text = "Every " + Popup_Interval.SelectedRowValue + " days"
 		    End If
 		    
 		  Case "Weekday"
@@ -1718,11 +1656,11 @@ End
 		    
 		    Dim FoundDay As Boolean
 		    
-		    If Popup_Interval.Text = "1" then
+		    If Popup_Interval.SelectedRowValue = "1" then
 		      text = "Weekly on "
 		      
 		    Else
-		      text = "Every " + Popup_Interval.Text + " weeks on "
+		      text = "Every " + Popup_Interval.SelectedRowValue + " weeks on "
 		    End If
 		    
 		    If SegDays.Items(0).Selected and SegDays.Items(1).Selected and SegDays.Items(2).Selected and _
@@ -1786,22 +1724,22 @@ End
 		    
 		  Case "Monthly"
 		    
-		    If Popup_Interval.Text = "1" then
+		    If Popup_Interval.SelectedRowValue = "1" then
 		      text = "Monthly on "
 		      
 		    Else
-		      text = "Every " + Popup_Interval.Text + " months on "
+		      text = "Every " + Popup_Interval.SelectedRowValue + " months on "
 		    End If
 		    
 		    text = text + "day " + str(StartDate.Day)
 		    
 		  Case "Monthly Relative"
 		    
-		    If Popup_Interval.Text = "1" then
+		    If Popup_Interval.SelectedRowValue = "1" then
 		      text = "Monthly on "
 		      
 		    Else
-		      text = "Every " + Popup_Interval.Text + " months on "
+		      text = "Every " + Popup_Interval.SelectedRowValue + " months on "
 		    End If
 		    
 		    Select Case GetRelativeDay(StartDate)
@@ -1820,11 +1758,11 @@ End
 		    
 		  Case "Yearly"
 		    
-		    If Popup_Interval.Text = "1" then
+		    If Popup_Interval.SelectedRowValue = "1" then
 		      text = "Annually on "
 		      
 		    Else
-		      text = "Every " + Popup_Interval.Text + " years on "
+		      text = "Every " + Popup_Interval.SelectedRowValue + " years on "
 		    End If
 		    
 		    text = text + Trim(StartDate.LongDate.Replace(str(StartDate.Year), ""))
@@ -1901,139 +1839,204 @@ End
 	#tag EndProperty
 
 
-	#tag Constant, Name = klocalAfter, Type = String, Dynamic = True, Default = \"After", Scope = Public
+	#tag Constant, Name = klocalAfter, Type = String, Dynamic = True, Default = \"After", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Apr\xC3\xA8s"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"After"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Nach"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalAllDay, Type = String, Dynamic = True, Default = \"All day", Scope = Public
+	#tag Constant, Name = klocalAllDay, Type = String, Dynamic = True, Default = \"All day", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Toute la journ\xC3\xA9e"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"All day"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Ganzt\xC3\xA4gig"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalCancel, Type = String, Dynamic = True, Default = \"Cancel", Scope = Public
+	#tag Constant, Name = klocalCancel, Type = String, Dynamic = True, Default = \"Cancel", Scope = Private
 		#Tag Instance, Platform = Any, Language = en, Definition  = \"Cancel"
 		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"Cancel"
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Annuler"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Abbrechen"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Cancel"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalDaily, Type = String, Dynamic = True, Default = \"Daily", Scope = Public
+	#tag Constant, Name = klocalDaily, Type = String, Dynamic = True, Default = \"Daily", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Quotidien"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Daily"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"T\xC3\xA4glich"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalDate, Type = String, Dynamic = True, Default = \"Date:", Scope = Public
+	#tag Constant, Name = klocalDate, Type = String, Dynamic = True, Default = \"Date:", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Date :"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Date :"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Datum"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalDays, Type = String, Dynamic = True, Default = \"days", Scope = Protected
+	#tag Constant, Name = klocalDays, Type = String, Dynamic = True, Default = \"days", Scope = Private
 		#Tag Instance, Platform = Any, Language = en, Definition  = \"days"
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"jours"
 		#Tag Instance, Platform = Any, Language = de, Definition  = \"Tage"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"days"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalDelete, Type = String, Dynamic = True, Default = \"Delete", Scope = Public
+	#tag Constant, Name = klocalDelete, Type = String, Dynamic = True, Default = \"Delete", Scope = Private
 		#Tag Instance, Platform = Any, Language = en, Definition  = \"Delete"
 		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"Delete"
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Supprimer"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"L\xC3\xB6schen"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalDescription, Type = String, Dynamic = True, Default = \"Description:", Scope = Protected
+	#tag Constant, Name = klocalDescription, Type = String, Dynamic = True, Default = \"Description:", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Description :"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Description"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Beschreibung"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalEnds, Type = String, Dynamic = True, Default = \"Ends:", Scope = Public
+	#tag Constant, Name = klocalEnds, Type = String, Dynamic = True, Default = \"Ends:", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Fin :"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Ends:"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Endet am:"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalLocation, Type = String, Dynamic = True, Default = \"Location:", Scope = Protected
+	#tag Constant, Name = klocalLocation, Type = String, Dynamic = True, Default = \"Location:", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Lieu :"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Location :"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Ort"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalMonthly, Type = String, Dynamic = True, Default = \"Monthly", Scope = Public
+	#tag Constant, Name = klocalMonthly, Type = String, Dynamic = True, Default = \"Monthly", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Mensuel"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Monthly"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Monatlich"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalMonthlyRelative, Type = String, Dynamic = True, Default = \"Monthly relative", Scope = Public
+	#tag Constant, Name = klocalMonthlyRelative, Type = String, Dynamic = True, Default = \"Monthly relative", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Mensuel (jour de la semaine)"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Monthly relative"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Monatlich (relativ)"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalMonths, Type = String, Dynamic = True, Default = \"months", Scope = Public
+	#tag Constant, Name = klocalMonths, Type = String, Dynamic = True, Default = \"months", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"months"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Months"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Monate"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalNever, Type = String, Dynamic = True, Default = \"Never", Scope = Public
+	#tag Constant, Name = klocalNever, Type = String, Dynamic = True, Default = \"Never", Scope = Private
 		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Never"
 		#Tag Instance, Platform = Any, Language = en, Definition  = \"Never"
-		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Never"
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Jamais"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Niemals"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalOn, Type = String, Dynamic = True, Default = \"On", Scope = Public
+	#tag Constant, Name = kLocalOccurences, Type = String, Dynamic = True, Default = \"Occurences", Scope = Private
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Occurences"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Wiederholungen"
+	#tag EndConstant
+
+	#tag Constant, Name = kLocalOK, Type = String, Dynamic = True, Default = \"OK", Scope = Private
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"OK"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"OK"
+	#tag EndConstant
+
+	#tag Constant, Name = klocalOn, Type = String, Dynamic = True, Default = \"On", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Le"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"On"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Am"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalRepeat, Type = String, Dynamic = True, Default = \"Repeat", Scope = Public
+	#tag Constant, Name = klocalRepeat, Type = String, Dynamic = True, Default = \"Repeat", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"R\xC3\xA9currence"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Repeat"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Wiederholen"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalRepeatEvery, Type = String, Dynamic = True, Default = \"Repeat every:", Scope = Public
+	#tag Constant, Name = klocalRepeatEvery, Type = String, Dynamic = True, Default = \"Repeat every:", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Fr\xC3\xA9quence :"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Repeat every :"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Wiederholen alle :"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalRepeaton, Type = String, Dynamic = True, Default = \"Repeat on:", Scope = Public
+	#tag Constant, Name = klocalRepeaton, Type = String, Dynamic = True, Default = \"Repeat on:", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"R\xC3\xA9p\xC3\xA9ter le :"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Repeat on :"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Wiederholen am"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalRepeats, Type = String, Dynamic = True, Default = \"Repeats:", Scope = Public
+	#tag Constant, Name = klocalRepeats, Type = String, Dynamic = True, Default = \"Repeats:", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"R\xC3\xA9currence :"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Repeats :"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Wiederholung"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalSummary, Type = String, Dynamic = True, Default = \"Summary:", Scope = Public
+	#tag Constant, Name = kLocalStartsOn, Type = String, Dynamic = True, Default = \"Starts on:", Scope = Private
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Starts on:"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Beginnt am:"
+	#tag EndConstant
+
+	#tag Constant, Name = klocalSummary, Type = String, Dynamic = True, Default = \"Summary:", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"R\xC3\xA9sum\xC3\xA9 :"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Summary"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Zusammenfassung"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalTitle, Type = String, Dynamic = True, Default = \"Title:", Scope = Protected
+	#tag Constant, Name = klocalTitle, Type = String, Dynamic = True, Default = \"Title:", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Titre :"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Title :"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Titel"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalTo, Type = String, Dynamic = True, Default = \"to", Scope = Public
+	#tag Constant, Name = klocalTo, Type = String, Dynamic = True, Default = \"to", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"\xC3\xA0"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"to"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"bis"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalWeekdays, Type = String, Dynamic = True, Default = \"Every weekday (Monday to Friday)", Scope = Public
+	#tag Constant, Name = klocalWeekdays, Type = String, Dynamic = True, Default = \"Every weekday (Monday to Friday)", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Jours de la semaine (lundi au vendredi)"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Every weekday (Monday to Friday)"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Werktags (Montag bis Freitag)"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalWeekly, Type = String, Dynamic = True, Default = \"Weekly", Scope = Public
+	#tag Constant, Name = klocalWeekly, Type = String, Dynamic = True, Default = \"Weekly", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Hebdomadaire"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Weekly"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"W\xC3\xB6chentlich"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalWeeks, Type = String, Dynamic = True, Default = \"weeks", Scope = Public
+	#tag Constant, Name = klocalWeeks, Type = String, Dynamic = True, Default = \"weeks", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"semaines"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"weeks"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Wochen"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalYearly, Type = String, Dynamic = True, Default = \"Yearly", Scope = Public
+	#tag Constant, Name = klocalYearly, Type = String, Dynamic = True, Default = \"Yearly", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Annuel"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Yearly"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"J\xC3\xA4hrlich"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalYears, Type = String, Dynamic = True, Default = \"years", Scope = Public
+	#tag Constant, Name = klocalYears, Type = String, Dynamic = True, Default = \"years", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"ann\xC3\xA9es"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"years"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Jahre"
 	#tag EndConstant
 
 
 #tag EndWindowCode
 
-#tag Events TextField1
+#tag Events tfiTitle
 	#tag Event
-		Function KeyDown(Key As String) As Boolean
+		Function KeyDown(key As String) As Boolean
 		  If key = EndOfLine or key = Chr(13) then
-		    PushButton1.Push
+		    btnOK.Press
 		    Return True
 		  End If
 		End Function
 	#tag EndEvent
 #tag EndEvents
-#tag Events PushButton1
+#tag Events btnOK
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  
 		  If Val(Combo_End.Text) > Val(Combo_Start.Text) or Chk_AllDay.Value then
 		    Hide
@@ -2047,15 +2050,15 @@ End
 		  
 		  MsgBox("End Time cannot be smaller than start time")
 		  Combo_End.SetFocus
-		  Combo_End.SelStart = 0
-		  Combo_End.SelLength = Len(Combo_End.Text)
+		  Combo_End.SelectionStart = 0
+		  Combo_End.SelectionLength = Len(Combo_End.Text)
 		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events Label1
+#tag Events lblDateSelection
 	#tag Event
-		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		Function MouseDown(x As Integer, y As Integer) As Boolean
 		  #Pragma Unused Y
 		  
 		  Dim w As New DatePickerWindow
@@ -2068,7 +2071,7 @@ End
 		    If d <> Nil then
 		      StartDate.SQLDate = d.SQLDate
 		      EndDate.SQLDate = d.SQLDate
-		      Label1.Text = StartDate.LongDate
+		      lblDateSelection.Text = StartDate.LongDate
 		    End If
 		    
 		  else
@@ -2098,7 +2101,7 @@ End
 		      
 		    End If
 		    
-		    Label1.Text = StartDate.AbbreviatedDate + " - " + EndDate.AbbreviatedDate
+		    lblDateSelection.Text = StartDate.AbbreviatedDate + " - " + EndDate.AbbreviatedDate
 		    
 		  End If
 		  
@@ -2118,9 +2121,9 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events Canvas1
+#tag Events cnvColor
 	#tag Event
-		Sub Paint(g As Graphics, areas() As REALbasic.Rect)
+		Sub Paint(g As Graphics, areas() As Rect)
 		  #Pragma Unused areas
 		  
 		  Dim x, i As Integer
@@ -2143,7 +2146,7 @@ End
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		Function MouseDown(x As Integer, y As Integer) As Boolean
 		  #pragma Unused Y
 		  
 		  Dim xx As Integer
@@ -2166,11 +2169,11 @@ End
 		End Function
 	#tag EndEvent
 #tag EndEvents
-#tag Events TextField2
+#tag Events tfiLocation
 	#tag Event
-		Function KeyDown(Key As String) As Boolean
+		Function KeyDown(key As String) As Boolean
 		  If key = EndOfLine or key = Chr(13) then
-		    PushButton1.Push
+		    btnOK.Press
 		    Return True
 		  End If
 		End Function
@@ -2178,7 +2181,7 @@ End
 #tag EndEvents
 #tag Events DeleteButton
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  DeleteEvent = True
 		  Hide()
 		End Sub
@@ -2186,7 +2189,7 @@ End
 #tag EndEvents
 #tag Events Combo_Start
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  For i as Integer = 0 to 47
 		    
 		    If i mod 2 = 0 then
@@ -2199,7 +2202,7 @@ End
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub LostFocus()
+		Sub FocusLost()
 		  If IsNumeric(me.Text.Left(2)) and IsNumeric(me.Text.Mid(4)) and me.Text.Mid(3, 1) = ":" then
 		    //nothing
 		    
@@ -2221,7 +2224,7 @@ End
 		  
 		  Dim LastText As String = Combo_End.Text
 		  
-		  Combo_End.DeleteAllRows
+		  Combo_End.RemoveAllRows
 		  Dim start As Integer
 		  If val(me.Text.Mid(4))>0 then
 		    start = val(me.Text)*2+2
@@ -2240,13 +2243,13 @@ End
 		  Combo_End.Text = LastText
 		  
 		  If Val(Combo_End.Text)<=Val(Combo_Start.Text) then
-		    Combo_End.ListIndex = 0
+		    Combo_End.SelectedRowIndex = 0
 		  End If
 		  
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Function KeyDown(Key As String) As Boolean
+		Function KeyDown(key As String) As Boolean
 		  
 		  If asc(key)<=58 and asc(key)>=(48) then
 		    //nothing
@@ -2261,7 +2264,7 @@ End
 		Sub TextChanged()
 		  Dim LastText As String = Combo_End.Text
 		  
-		  Combo_End.DeleteAllRows
+		  Combo_End.RemoveAllRows
 		  Dim start As Integer
 		  If val(me.Text.Mid(4))>0 then
 		    start = val(me.Text)*2+2
@@ -2280,15 +2283,15 @@ End
 		  Combo_End.Text = LastText
 		  
 		  If Val(Combo_End.Text)<=Val(Combo_Start.Text) then
-		    Combo_End.ListIndex = 0
+		    Combo_End.SelectedRowIndex = 0
 		  End If
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub Change()
+		Sub SelectionChanged(item As DesktopMenuItem)
 		  Dim LastText As String = Combo_End.Text
 		  
-		  Combo_End.DeleteAllRows
+		  Combo_End.RemoveAllRows
 		  Dim start As Integer
 		  If val(me.Text.Mid(4))>0 then
 		    start = val(me.Text)*2+2
@@ -2307,7 +2310,7 @@ End
 		  Combo_End.Text = LastText
 		  
 		  If Val(Combo_End.Text)<=Val(Combo_Start.Text) then
-		    Combo_End.ListIndex = 0
+		    Combo_End.SelectedRowIndex = 0
 		  End If
 		  
 		  
@@ -2325,7 +2328,7 @@ End
 #tag EndEvents
 #tag Events Combo_End
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  For i as Integer = 0 to 47
 		    
 		    If i mod 2 = 0 then
@@ -2337,7 +2340,7 @@ End
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Function KeyDown(Key As String) As Boolean
+		Function KeyDown(key As String) As Boolean
 		  
 		  
 		  If asc(key)<=58 and asc(key)>=(48) then
@@ -2350,7 +2353,7 @@ End
 		End Function
 	#tag EndEvent
 	#tag Event
-		Sub LostFocus()
+		Sub FocusLost()
 		  If IsNumeric(me.Text.Left(2)) and IsNumeric(me.Text.Mid(4)) and me.Text.Mid(3, 1) = ":" then
 		    //nothing
 		    
@@ -2372,7 +2375,7 @@ End
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub Change()
+		Sub SelectionChanged(item As DesktopMenuItem)
 		  
 		  if mOpen then
 		    StartDate.Hour = val(Combo_Start.Text.NthField(":", 1))
@@ -2388,7 +2391,7 @@ End
 #tag EndEvents
 #tag Events Chk_AllDay
 	#tag Event
-		Sub Action()
+		Sub ValueChanged()
 		  
 		  
 		  Combo_Start.Enabled = not me.Value
@@ -2399,7 +2402,7 @@ End
 #tag EndEvents
 #tag Events Popup_Repeat
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  
 		  
 		  //You are free to change this text
@@ -2414,26 +2417,26 @@ End
 		  me.AddRow klocalWeekdays
 		  me.AddRow klocalWeekly
 		  me.AddRow klocalMonthly
-		  me.AddRow "Monthly Relative"
+		  me.AddRow klocalMonthlyRelative
 		  me.AddRow klocalYearly
 		  
 		  
 		  //Do not change the text of the rowtags or you will need to change the code in CreateRecurrence and the Change event.
-		  me.RowTag(0) = "Daily"
-		  me.RowTag(1) = "Weekday"
-		  me.RowTag(2) = "Weekly"
-		  me.RowTag(3) = "Monthly"
-		  me.RowTag(4) = "Monthly Relative"
-		  me.RowTag(5) = "Yearly"
+		  me.RowTagAt(0) = "Daily"
+		  me.RowTagAt(1) = "Weekday"
+		  me.RowTagAt(2) = "Weekly"
+		  me.RowTagAt(3) = "Monthly"
+		  me.RowTagAt(4) = "Monthly Relative"
+		  me.RowTagAt(5) = "Yearly"
 		  
-		  me.ListIndex = 0
+		  me.SelectedRowIndex = 0
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub Change()
+		Sub SelectionChanged(item As DesktopMenuItem)
 		  Dim a As String
-		  a = me.RowTag(me.ListIndex)
-		  Select case me.RowTag(me.ListIndex)
+		  a = me.RowTagAt(me.SelectedRowIndex)
+		  Select case me.RowTagAt(me.SelectedRowIndex)
 		    
 		  Case "Daily"
 		    
@@ -2510,23 +2513,23 @@ End
 #tag EndEvents
 #tag Events Popup_Interval
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  For i as Integer = 1 to 30
 		    me.AddRow str(i)
 		  Next
 		  
-		  me.ListIndex = 0
+		  me.SelectedRowIndex = 0
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub Change()
+		Sub SelectionChanged(item As DesktopMenuItem)
 		  UpdateSummary()
 		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events radioEnd
 	#tag Event
-		Sub Action(index as Integer)
+		Sub ValueChanged(index as Integer)
 		  #Pragma Unused index
 		  
 		  UpdateSummary()
@@ -2546,7 +2549,7 @@ End
 #tag EndEvents
 #tag Events txtNb
 	#tag Event
-		Sub TextChange()
+		Sub TextChanged()
 		  UpdateSummary()
 		End Sub
 	#tag EndEvent
@@ -2575,7 +2578,7 @@ End
 #tag EndEvents
 #tag Events lblEndDate
 	#tag Event
-		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		Function MouseDown(x As Integer, y As Integer) As Boolean
 		  #Pragma Unused X
 		  #Pragma Unused Y
 		  
@@ -2612,7 +2615,7 @@ End
 #tag EndEvents
 #tag Events Chk_Repeat
 	#tag Event
-		Sub Action()
+		Sub ValueChanged()
 		  'If me.Value then
 		  'self.Width = 787
 		  '
@@ -2623,9 +2626,9 @@ End
 		  
 		  
 		  if not me.value then
-		    self.animate new realbasic.rect(self.left+delta/2,self.top,self.width-delta,self.height),0.25, AKEasing.kLinearTween
+		    self.animate new Xojo.Rect(self.left+delta/2,self.top,self.width-delta,self.height),0.25, AKEasing.kLinearTween
 		  elseif ResizeWindow then
-		    self.animate new realbasic.rect(self.left-delta/2,self.top,self.width+delta,self.height),0.25,AKEasing.kLinearTween
+		    self.animate new Xojo.Rect(self.left-delta/2,self.top,self.width+delta,self.height),0.25,AKEasing.kLinearTween
 		  else
 		    self.Width = 787
 		  end
@@ -2634,7 +2637,7 @@ End
 		  
 		  'self.Left = Self.owner.TrueWindow.Left + (self.owner.TrueWindow.Width - self.Width)\2
 		  
-		  PushButton1.Left = self.Width-PushButton1.Width-20
+		  btnOK.Left = self.Width-btnOK.Width-20
 		End Sub
 	#tag EndEvent
 #tag EndEvents

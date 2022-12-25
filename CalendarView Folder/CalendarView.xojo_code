@@ -1,8 +1,8 @@
 #tag Class
 Protected Class CalendarView
-Inherits Canvas
+Inherits DesktopCanvas
 	#tag Event
-		Sub Close()
+		Sub Closing()
 		  //Thanks to Dr Michael Oeser for this update
 		  
 		  If RefreshTimer <> Nil then
@@ -21,19 +21,19 @@ Inherits Canvas
 	#tag EndEvent
 
 	#tag Event
-		Function ConstructContextualMenu(base as MenuItem, x as Integer, y as Integer) As Boolean
+		Function ConstructContextualMenu(base As DesktopMenuItem, x As Integer, y As Integer) As Boolean
 		  Return ConstructContextualMenu(base, X, Y, EventForXY(X, Y))
 		End Function
 	#tag EndEvent
 
 	#tag Event
-		Sub Deactivate()
+		Sub Deactivated()
 		  //
 		End Sub
 	#tag EndEvent
 
 	#tag Event
-		Sub DoubleClick(X As Integer, Y As Integer)
+		Sub DoublePressed(x As Integer, y As Integer)
 		  
 		  
 		  'If not CreateWithDrag then Return
@@ -117,7 +117,7 @@ Inherits Canvas
 	#tag EndEvent
 
 	#tag Event
-		Function DragEnter(obj As DragItem, action As Integer) As Boolean
+		Function DragEnter(obj As DragItem, action As DragItem.Types) As Boolean
 		  //
 		  #pragma Unused obj
 		  #pragma Unused action
@@ -125,14 +125,14 @@ Inherits Canvas
 	#tag EndEvent
 
 	#tag Event
-		Sub DragExit(obj As DragItem, action As Integer)
+		Sub DragExit(obj As DragItem, action As DragItem.Types)
 		  #pragma Unused obj
 		  #pragma Unused action
 		End Sub
 	#tag EndEvent
 
 	#tag Event
-		Function DragOver(x As Integer, y As Integer, obj As DragItem, action As Integer) As Boolean
+		Function DragOver(x As Integer, y As Integer, obj As DragItem, action As DragItem.Types) As Boolean
 		  #pragma Unused x
 		  #pragma Unused y
 		  #pragma Unused obj
@@ -141,7 +141,7 @@ Inherits Canvas
 	#tag EndEvent
 
 	#tag Event
-		Sub DropObject(obj As DragItem, action As Integer)
+		Sub DropObject(obj As DragItem, action As DragItem.Types)
 		  #pragma Unused action
 		  
 		  DropObject = True
@@ -159,13 +159,7 @@ Inherits Canvas
 	#tag EndEvent
 
 	#tag Event
-		Sub EnableMenuItems()
-		  //
-		End Sub
-	#tag EndEvent
-
-	#tag Event
-		Function KeyDown(Key As String) As Boolean
+		Function KeyDown(key As String) As Boolean
 		  
 		  #if TargetWeb
 		    
@@ -207,19 +201,25 @@ Inherits Canvas
 	#tag EndEvent
 
 	#tag Event
-		Sub KeyUp(Key As String)
+		Sub KeyUp(key As String)
 		  #pragma Unused key
 		End Sub
 	#tag EndEvent
 
 	#tag Event
-		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		Sub MenuBarSelected()
+		  //
+		End Sub
+	#tag EndEvent
+
+	#tag Event
+		Function MouseDown(x As Integer, y As Integer) As Boolean
 		  Return handleMouseDown(X, Y)
 		End Function
 	#tag EndEvent
 
 	#tag Event
-		Sub MouseDrag(X As Integer, Y As Integer)
+		Sub MouseDrag(x As Integer, y As Integer)
 		  If MovingScrollBar or DragViewHeight then
 		    
 		  elseif not CreateWithDrag and DragEvent = 0 then
@@ -441,7 +441,7 @@ Inherits Canvas
 	#tag EndEvent
 
 	#tag Event
-		Sub MouseMove(X As Integer, Y As Integer)
+		Sub MouseMove(x As Integer, y As Integer)
 		  'Dim mp As new MethodProfiler(CurrentMethodName)
 		  #if TargetDesktop
 		    If AnimationInProgress <> 0 then
@@ -580,13 +580,13 @@ Inherits Canvas
 	#tag EndEvent
 
 	#tag Event
-		Sub MouseUp(X As Integer, Y As Integer)
+		Sub MouseUp(x As Integer, y As Integer)
 		  handleMouseUp(X, Y)
 		End Sub
 	#tag EndEvent
 
 	#tag Event
-		Function MouseWheel(X As Integer, Y As Integer, deltaX as Integer, deltaY as Integer) As Boolean
+		Function MouseWheel(x As Integer, y As Integer, deltaX As Integer, deltaY As Integer) As Boolean
 		  If MouseWheel(X, Y, deltaX, deltaY) then
 		    Return True
 		  End If
@@ -628,7 +628,7 @@ Inherits Canvas
 	#tag EndEvent
 
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  Freeze = True
 		  
 		  
@@ -697,7 +697,7 @@ Inherits Canvas
 		  ScrollPosition = (Today.Hour)
 		  Freeze = False
 		  
-		  Open()
+		  RaiseEvent Opening()
 		  
 		  #if TargetDesktop
 		    Refresh(False)
@@ -736,7 +736,7 @@ Inherits Canvas
 	#tag EndEvent
 
 	#tag Event
-		Sub Paint(g As Graphics, areas() As REALbasic.Rect)
+		Sub Paint(g As Graphics, areas() As Rect)
 		  handlePaint(g, areas())
 		End Sub
 	#tag EndEvent
@@ -5359,7 +5359,7 @@ Inherits Canvas
 
 	#tag Method, Flags = &h0
 		Function ExportAsPicture() As Picture
-		  Dim r() As REALbasic.Rect
+		  Dim r() As Xojo.Rect
 		  Dim p As Picture = New Picture(Width, Height, 32)
 		  
 		  handlePaint(p.Graphics, r())
@@ -6053,7 +6053,7 @@ Inherits Canvas
 		      'If not CreateWithDrag then Return False
 		      
 		      If MonthsPopup.Visible then
-		        Dim r As New REALbasic.Rect(MonthsPopup.Left, MonthsPopup.Top, MonthsPopup.Width, MonthsPopup.Height)
+		        Dim r As New Xojo.Rect(MonthsPopup.Left, MonthsPopup.Top, MonthsPopup.Width, MonthsPopup.Height)
 		        If r.Contains(New REALbasic.Point(X, Y)) Then
 		          
 		          If picCloseMonthPopup <> Nil then
@@ -6428,7 +6428,7 @@ Inherits Canvas
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub handlePaint(g As Graphics, areas() As REALbasic.Rect)
+		Protected Sub handlePaint(g As Graphics, areas() As Xojo.Rect)
 		  #Pragma Unused areas
 		  'Dim mp As new MethodProfiler(CurrentMethodName)
 		  
@@ -9028,7 +9028,7 @@ Inherits Canvas
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event Open()
+		Event Opening()
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -10782,22 +10782,6 @@ Inherits Canvas
 			Group="Appearance"
 			InitialValue=""
 			Type="Picture"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="DoubleBuffer"
-			Visible=true
-			Group="Behavior"
-			InitialValue="False"
-			Type="Boolean"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="InitialParent"
-			Visible=false
-			Group=""
-			InitialValue=""
-			Type="String"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
