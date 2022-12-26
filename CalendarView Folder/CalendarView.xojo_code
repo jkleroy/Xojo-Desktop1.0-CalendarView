@@ -6,7 +6,7 @@ Inherits DesktopCanvas
 		  //Thanks to Dr Michael Oeser for this update
 		  
 		  If RefreshTimer <> Nil then
-		    RefreshTimer.Mode = timer.ModeOff
+		    RefreshTimer.RunMode = timer.RunModes.Off
 		    #pragma BreakOnExceptions Off   // For debugging purposes
 		    Try
 		      RemoveHandler RefreshTimer.Action, addressof TimerAction
@@ -69,8 +69,8 @@ Inherits DesktopCanvas
 		      End If
 		      
 		      If Idx > -1 Then
-		        Events.Remove(Idx)
-		        Events.Insert(Idx, tmpEvent)
+		        Events.RemoveAt(Idx)
+		        Events.AddAt(Idx, tmpEvent)
 		        
 		        #if TargetDesktop
 		          FullRefresh = True
@@ -85,7 +85,7 @@ Inherits DesktopCanvas
 		    If DoubleClick(X , Y) then Return
 		    
 		    if ViewType = TypeMonth then
-		      Dim d As Date = DateForXY(X, Y)
+		      Dim d As DateTime = DateForXY(X, Y)
 		      
 		      If d <> Nil then
 		        DisplayDate = d
@@ -93,7 +93,7 @@ Inherits DesktopCanvas
 		      End If
 		      
 		    elseIf ViewType = TypeYear then
-		      Dim d As Date = DateForXY(X, Y)
+		      Dim d As DateTime = DateForXY(X, Y)
 		      
 		      If d <> Nil then
 		        DisplayDate = d
@@ -104,7 +104,7 @@ Inherits DesktopCanvas
 		    Elseif ViewType = TypePicker then
 		      
 		      If X > 10 and X < Width-10 and Y < 36 then
-		        Dim d As New Date
+		        Dim d As DateTime = DateTime.Now
 		        
 		        Displaydate = d
 		        Redisplay()
@@ -265,12 +265,13 @@ Inherits DesktopCanvas
 		    //Drag
 		  elseif ViewType = TypeMonth and DragEvent = DragMove then
 		    
-		    Dim tmpDate As Date = DateForXY(X, Y)
+		    Dim tmpDate As DateTime = DateForXY(X, Y)
 		    If tmpDate <> Nil then
 		      Dim length As Integer = LastMouseOver.Length
 		      Dim lastStart As Double = LastMouseOver.StartSeconds
 		      
-		      LastMouseOver.StartDate.SQLDate = tmpDate.SQLDate
+		      'LastMouseOver.StartDate.SQLDate = tmpDate.SQLDate
+		      LastMouseOver.StartDate = DateTime.FromString(tmpDate.SQLDate)
 		      LastMouseOver.SetLength(length)
 		      
 		      If lastStart <> LastMouseOver.StartSeconds then
@@ -283,13 +284,13 @@ Inherits DesktopCanvas
 		  elseif ViewType = TypeMonth then
 		    
 		    If SelEnd is Nil then
-		      SelEnd = New Date(SelStart)
+		      SelEnd = New DateTime(SelStart)
 		      FullRefresh = True
 		      Redisplay
 		      Return
 		    End If
 		    
-		    Dim tmpDate As Date = DateForXY(X, Y)
+		    Dim tmpDate As DateTime = DateForXY(X, Y)
 		    If tmpDate <> Nil then
 		      
 		      If tmpDate.SQLDate < SelStart.SQLDate then
@@ -297,15 +298,19 @@ Inherits DesktopCanvas
 		          SelStart = tmpDate
 		        else
 		          DragBack = True
-		          SelEnd.SQLDate = SelStart.SQLDate
-		          SelStart.SQLDate = tmpDate.SQLDate
+		          'SelEnd.SQLDate = SelStart.SQLDate
+		          SelEnd = DateTime.FromString(SelStart.SQLDate)
+		          'SelStart.SQLDate = tmpDate.SQLDate
+		          SelStart = DateTime.FromString(tmpDate.SQLDate)
 		        End If
 		        
 		      elseif DragBack and tmpDate.SQLDate > SelStart.SQLDate then
 		        If tmpDate.SQLDate > SelEnd.SQLDate then
 		          DragBack = False
-		          SelStart.SQLDate = SelEnd.SQLDate
-		          SelEnd.SQLDate = tmpDate.SQLDate
+		          'SelStart.SQLDate = SelEnd.SQLDate
+		          SelStart = DateTime.FromString(SelEnd.SQLDate)
+		          'SelEnd.SQLDate = tmpDate.SQLDate
+		          SelEnd = DateTime.FromString(tmpDate.SQLDate)
 		        else
 		          SelStart = tmpDate
 		        End If
@@ -320,7 +325,8 @@ Inherits DesktopCanvas
 		      elseif tmpDate.SQLDate > SelEnd.SQLDate then
 		        DragBack = False
 		        oktobreak = True
-		        SelEnd.SQLDate = tmpDate.SQLDate
+		        'SelEnd.SQLDate = tmpDate.SQLDate
+		        SelEnd = DateTime.FromString(tmpDate.SQLDate)
 		        
 		      elseif tmpDate.SQLDate = SelEnd.SQLDate then
 		        Return
@@ -357,19 +363,20 @@ Inherits DesktopCanvas
 		  Elseif ViewType > TypeMonth then
 		    
 		    If SelEnd is Nil then
-		      SelEnd = New Date(SelStart)
+		      SelEnd = New DateTime(SelStart)
 		      FullRefresh = True
 		      Redisplay
 		      Return
 		    End If
 		    
 		    
-		    Dim tmpDate As Date = DateForXY(X, Y)
+		    Dim tmpDate As DateTime = DateForXY(X, Y)
 		    If tmpDate <> Nil then
 		      
 		      If not DayEventClicked then
 		        If Abs(Y-Height) > HourHeight \2 then
-		          tmpDate.SQLDate = SelStart.SQLDate
+		          'tmpDate.SQLDate = SelStart.SQLDate
+		          tmpDate = DateTime.FromString(SelStart.SQLDate)
 		        End If
 		      End If
 		      
@@ -496,18 +503,18 @@ Inherits DesktopCanvas
 		            
 		            E.MouseOver = (Y > ViewHeight) And DragEvents
 		            
-		            //Setting new Helptag
+		            //Setting new ToolTip
 		            If ViewType >= TypeMonth then
 		              If E.Length mod 86400 <> 0 then
-		                txt = HelpTagFormat.ReplaceAll("%Start", E.StartDate.ShortTime).ReplaceAll("%End", E.EndDate.ShortTime)
+		                txt = HelpTagFormat.ReplaceAll("%Start", E.StartDate.ToString(DateTime.FormatStyles.None, DateTime.FormatStyles.Short)).ReplaceAll("%End", E.EndDate.ToString(DateTime.FormatStyles.None, DateTime.FormatStyles.Short))
 		                
 		              Else
-		                txt = HelpTagFormat.ReplaceAll("%Start", E.StartDate.ShortDate).ReplaceAll("%End", E.EndDate.ShortDate)
+		                txt = HelpTagFormat.ReplaceAll("%Start", E.StartDate.ToString(DateTime.FormatStyles.Short, DateTime.FormatStyles.None)).ReplaceAll("%End", E.EndDate.ToString(DateTime.FormatStyles.Short, DateTime.FormatStyles.None))
 		                
 		              End If
 		              
 		              txt = txt.ReplaceAll("%Title", E.Title)
-		              If txt.InStr("%Length")>0 then
+		              If txt.IndexOf("%Length")>0 then
 		                txt = txt.Replace("%Length", str(Floor(E.Length/3600)) + ":" + Format(E.Length/60 - Floor(E.Length/3600) * 60, "00"))
 		              End If
 		              
@@ -526,10 +533,10 @@ Inherits DesktopCanvas
 		            
 		          End If
 		          If ShowHelptag(txt, E) then
-		            //HelpTag is handled directly in the event
+		            //ToolTip is handled directly in the event
 		          else
-		            If me.HelpTag <> txt then
-		              me.HelpTag = txt
+		            If me.ToolTip <> txt then
+		              me.ToolTip = txt
 		            End If
 		          End If
 		          
@@ -632,7 +639,7 @@ Inherits DesktopCanvas
 		  Freeze = True
 		  
 		  
-		  DisplayDate = New Date
+		  DisplayDate = DateTime.Now
 		  
 		  #if TargetMacOS
 		    DisableScroll = True
@@ -641,8 +648,8 @@ Inherits DesktopCanvas
 		  'HideNightTime = True
 		  
 		  #if TargetDesktop
-		    me.UseFocusRing = False
-		    me.EraseBackground = False
+		    me.AllowFocusRing = False
+		    'me.EraseBackground = False
 		  #elseif TargetMacOS
 		    DoubleBuffer = False
 		  #endif
@@ -662,7 +669,7 @@ Inherits DesktopCanvas
 		  '#if not DebugBuild
 		  RefreshTimer = New Timer
 		  RefreshTimer.Period = 5000
-		  RefreshTimer.Mode = timer.ModeMultiple
+		  RefreshTimer.RunMode = timer.RunModes.Multiple
 		  
 		  
 		  Addhandler RefreshTimer.Action, Weakaddressof TimerAction
@@ -689,7 +696,7 @@ Inherits DesktopCanvas
 		  
 		  
 		  //Getting day names
-		  Today = New Date
+		  Today = DateTime.Now
 		  
 		  //Month Names
 		  SetupLocaleInfo()
@@ -749,7 +756,7 @@ Inherits DesktopCanvas
 		  EventsSorted = False
 		  
 		  If cEvent.ID = "" then
-		    cEvent.ID = "auto" + format(Microseconds, "0000000000")
+		    cEvent.ID = "auto" + format(System.Microseconds, "0000000000")
 		  End If
 		  
 		  SelStart = Nil
@@ -758,7 +765,7 @@ Inherits DesktopCanvas
 		  mFirstDate = Nil
 		  mLastDate = Nil
 		  
-		  Events.Append cEvent
+		  Events.Add cEvent
 		  Redim DisplayEvents(-1)
 		  
 		  Redisplay()
@@ -777,12 +784,12 @@ Inherits DesktopCanvas
 		  
 		  #if TargetDesktop
 		    If TargetWin32 then ' and App.UseGDIPlus = False) then
-		      Return RGB(C.Red, C.Green, C.Blue, 0)
+		      Return Color.RGB(C.Red, C.Green, C.Blue, 0)
 		    else
-		      Return RGB(C.Red, C.Green, C.Blue, Alpha.Red)
+		      Return Color.RGB(C.Red, C.Green, C.Blue, Alpha.Red)
 		    End If
 		  #elseif TargetWeb
-		    Return RGB(C.Red, C.Green, C.Blue, Alpha.Red)
+		    Return Color.RGB(C.Red, C.Green, C.Blue, Alpha.Red)
 		  #elseif TargetIOS
 		    Break
 		  #endif
@@ -797,13 +804,13 @@ Inherits DesktopCanvas
 		  
 		  #if TargetDesktop
 		    If TargetWin32 then 'and App.UseGDIPlus = False) then
-		      Return RGB(C.Red, C.Green, C.Blue, 0)
+		      Return Color.RGB(C.Red, C.Green, C.Blue, 0)
 		    else
-		      Return RGB(C.Red, C.Green, C.Blue, Alpha*255.0/100.0)
+		      Return Color.RGB(C.Red, C.Green, C.Blue, Alpha*255.0/100.0)
 		    End If
 		    
 		  #Elseif TargetWeb
-		    Return RGB(C.Red, C.Green, C.Blue, Alpha*255.0/100.0)
+		    Return Color.RGB(C.Red, C.Green, C.Blue, Alpha*255.0/100.0)
 		  #elseif TargetIOS
 		    Break
 		  #endif
@@ -814,21 +821,21 @@ Inherits DesktopCanvas
 		Private Sub AutoScroll(deltaX As Integer, deltaY As Integer)
 		  //Auto scroll every half second
 		  
-		  If ticks - lastAutoScroll > 10 then
+		  If System.Ticks - lastAutoScroll > 10 then
 		    Scroll(deltaX, deltaY)
-		    lastAutoScroll = ticks
+		    lastAutoScroll = System.Ticks
 		  End If
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function CheckRecurringEvents(cEvent As CalendarEvent, FirstDate As Date, EndDate As Date) As CalendarEvent()
+		Protected Function CheckRecurringEvents(cEvent As CalendarEvent, FirstDate As DateTime, EndDate As DateTime) As CalendarEvent()
 		  
 		  
 		  Dim Events() As CalendarEvent
 		  Dim E As CalendarEvent
 		  Dim Recurrence As CalendarRecurrence
-		  Dim DisplayDate As Date
+		  Dim DisplayDate As DateTime
 		  Dim limit As Boolean
 		  Dim ExitLoop As Boolean
 		  
@@ -842,10 +849,10 @@ Inherits DesktopCanvas
 		  End If
 		  
 		  If FirstDate.TotalSeconds > cEvent.StartDate.TotalSeconds then
-		    DisplayDate = New Date(FirstDate)
+		    DisplayDate = New DateTime(FirstDate)
 		  Else
-		    DisplayDate = New Date(cEvent.StartDate)
-		    DisplayDate.Day = DisplayDate.Day + 1
+		    DisplayDate = New DateTime(cEvent.StartDate) + DIDay
+		    //DisplayDate.Day = DisplayDate.Day + 1
 		  End If
 		  
 		  
@@ -856,14 +863,15 @@ Inherits DesktopCanvas
 		      E = cEvent.Clone
 		      E.setDate(DisplayDate)
 		      E.SetLength(cEvent.Length)
-		      Events.Append E
+		      Events.Add E
 		    End If
 		    
 		    If ExitLoop then
 		      Exit While
 		    End If
 		    
-		    DisplayDate.Day = DisplayDate.Day + 1
+		    //DisplayDate.Day = DisplayDate.Day + 1
+		    DisplayDate = DisplayDate + DIDay
 		  Wend
 		  
 		  
@@ -882,7 +890,7 @@ Inherits DesktopCanvas
 		  Dim i, u, gap As Integer
 		  Dim swap As CalendarEvent
 		  
-		  u = UBound(Input())
+		  u = Input.LastIndex
 		  gap = u
 		  
 		  
@@ -910,18 +918,20 @@ Inherits DesktopCanvas
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function DateForXY(x As Integer, y As Integer) As Date
+		Function DateForXY(x As Integer, y As Integer) As DateTime
 		  //newinversion 1.2.1
 		  //Finds the Date for the passed x and y.<br/>
 		  //If no Date is found, it returns Nil.
 		  
 		  Dim DrawX, DrawY As Single
-		  Dim DrawDate As New Date
+		  Dim DrawDate As DateTime
 		  Dim i As Integer
 		  
-		  DrawDate.Hour = 0
-		  DrawDate.Minute = 0
-		  DrawDate.Second = 0
+		  DrawDate = DateTime.Now
+		  DrawDate = DrawDate - New DateInterval(0,0,0,DrawDate.Hour,DrawDate.Minute,DrawDate.Second,DrawDate.Nanosecond)
+		  'DrawDate.Hour = 0
+		  'DrawDate.Minute = 0
+		  'DrawDate.Second = 0
 		  
 		  If X>=Width then Return Nil
 		  
@@ -929,7 +939,8 @@ Inherits DesktopCanvas
 		    
 		    If X>=Width then Return Nil
 		    
-		    DrawDate.SQLDate = FirstDate.SQLDate
+		    'DrawDate.SQLDate = FirstDate.SQLDate
+		    DrawDate = Datetime.FromString(FirstDate.SQLDate)
 		    
 		    Dim HeaderHeight As Integer = 39
 		    Dim DayWidth As Single
@@ -953,8 +964,9 @@ Inherits DesktopCanvas
 		      DayWidth = Width / 4
 		      DayHeight = (Height - HeaderHeight) / 3
 		      
-		      DrawDate.Month = 1
-		      DrawDate.Day = 1
+		      DrawDate = DrawDate - New DateInterval(0,DrawDate.Month,DrawDate.Day)
+		      'DrawDate.Month = 1
+		      'DrawDate.Day = 1
 		      
 		      ItemsPerLine = 4
 		      TotalItems = 12
@@ -969,11 +981,14 @@ Inherits DesktopCanvas
 		      End If
 		      
 		      If PickerView = PickerDay then
-		        DrawDate.Day = DrawDate.Day + 1
+		        'DrawDate.Day = DrawDate.Day + 1
+		        DrawDate = DrawDate + DIDay
 		      elseif PickerView = PickerMonth then
-		        DrawDate.Month = DrawDate.Month + 1
+		        'DrawDate.Month = DrawDate.Month + 1
+		        DrawDate = DrawDate + New DateInterval(0,1,0)
 		      elseif PickerView = PickerYear then
-		        DrawDate.Year = DrawDate.Year + 1
+		        'DrawDate.Year = DrawDate.Year + 1
+		        DrawDate = DrawDate + New DateInterval(1,0,0)
 		      End If
 		      
 		      If i mod ItemsPerLine = 0 then
@@ -1032,13 +1047,15 @@ Inherits DesktopCanvas
 		      
 		      If x >DrawX and x < DrawX + dayWidth * 7 and y > DrawY and y < DrawY + HeaderHeight + dayHeight * 6 then
 		        //We found the correct month
-		        DrawDate = New Date(DisplayDate.Year, i, 1, 0, 0, 0)
+		        DrawDate = New DateTime(DisplayDate.Year, i, 1, 0, 0, 0)
 		        
 		        //Getting the first day of the mini calendar
 		        If DrawDate.DayOfWeek - FirstDayOfWeek <= 0 then
-		          DrawDate.Day = DrawDate.Day - (DrawDate.DayOfWeek - FirstDayOfWeek) - 7
+		          'DrawDate.Day = DrawDate.Day - (DrawDate.DayOfWeek - FirstDayOfWeek) - 7
+		          DrawDate = DrawDate - New DateInterval(0,0,(DrawDate.DayOfWeek - FirstDayOfWeek) + 7)
 		        else
-		          DrawDate.Day = DrawDate.Day - (DrawDate.DayOfWeek - FirstDayOfWeek)
+		          'DrawDate.Day = DrawDate.Day - (DrawDate.DayOfWeek - FirstDayOfWeek)
+		          DrawDate = DrawDate - New DateInterval(0,0,DrawDate.DayOfWeek - FirstDayOfWeek)
 		        End If
 		        
 		        kDrawX = DrawX
@@ -1049,8 +1066,8 @@ Inherits DesktopCanvas
 		            Return DrawDate
 		          End If
 		          
-		          
-		          DrawDate.Day = DrawDate.Day + 1
+		          'DrawDate.Day = DrawDate.Day + 1
+		          DrawDate = DrawDate + DIDay
 		          
 		          If j mod ItemsPerLine = 0 then
 		            Drawy = Drawy + DayHeight
@@ -1078,7 +1095,8 @@ Inherits DesktopCanvas
 		    
 		  ElseIf ViewType = TypeMonth then
 		    
-		    DrawDate.SQLDate = FirstDate.SQLDate
+		    'DrawDate.SQLDate = FirstDate.SQLDate
+		    DrawDate = DateTime.FromString(FirstDate.SQLDate)
 		    
 		    'Dim HeaderHeight As Integer = 48
 		    Dim DayWidth As Single = Width / 7
@@ -1092,7 +1110,8 @@ Inherits DesktopCanvas
 		        Return DrawDate
 		      End If
 		      
-		      DrawDate.Day = DrawDate.Day + 1
+		      //DrawDate.Day = DrawDate.Day + 1
+		      DrawDate = DrawDate + DIDay
 		      If i mod 7 = 0 then
 		        Drawy = Drawy + DayHeight
 		        Drawx = 0
@@ -1116,16 +1135,18 @@ Inherits DesktopCanvas
 		    DrawX = TimeWidth
 		    For i = 0 to ViewDays-1
 		      If X >= DrawX and X <= DrawX + DayWidth then
-		        DrawDate = New Date(FirstDate)
-		        DrawDate.Day = DrawDate.Day + i
+		        DrawDate = New DateTime(FirstDate)
+		        //DrawDate.Day = DrawDate.Day + i
+		        DrawDate = DrawDate + DIDay
 		        Exit for i
 		      End If
 		      DrawX = DrawX + DayWidth
 		    Next
 		    
-		    DrawDate.Hour = 0
-		    DrawDate.Minute = 0
-		    DrawDate.Second = 0
+		    DrawDate = DrawDate - New DateInterval(0,0,0,DrawDate.Hour, DrawDate.Minute, DrawDate.Second)
+		    'DrawDate.Hour = 0
+		    'DrawDate.Minute = 0
+		    'DrawDate.Second = 0
 		    If DayEventClicked then
 		      Return DrawDate
 		    End If
@@ -1143,17 +1164,20 @@ Inherits DesktopCanvas
 		    For i = 0 to VisibleHours
 		      If DrawY > miny then
 		        If Abs(DrawY-y) <= HourHeight / 4 + 1 then
-		          DrawDate.Hour = i
+		          DrawDate = DrawDate - New DateInterval(0,0,0,DrawDate.Hour) + New DateInterval(0,0,0,i)
+		          //DrawDate.Hour = i
 		          exit for i
 		        elseif Abs(DrawY+HourHeight\2-y) <= HourHeight\4 then
-		          DrawDate.Hour = i
-		          DrawDate.Minute = 30
+		          DrawDate = DrawDate - New DateInterval(0,0,0,DrawDate.Hour,DrawDate.Minute) + New DateInterval(0,0,0,i,30)
+		          'DrawDate.Hour = i
+		          'DrawDate.Minute = 30
 		          exit for i
 		        Elseif i = 23 and Abs(Height-Y) < HourHeight \ 2 then
 		          'DrawDate.Hour = 23
 		          'DrawDate.Minute = 59
 		          'DrawDate.Second = 59
-		          DrawDate.Day = DrawDate.Day + 1
+		          'DrawDate.Day = DrawDate.Day + 1
+		          DrawDate = DrawDate + DIDay
 		          exit for i
 		        End If
 		      End If
@@ -1180,17 +1204,17 @@ Inherits DesktopCanvas
 	#tag Method, Flags = &h1
 		Protected Sub DrawBackground(g As Graphics)
 		  'If HasBackcolor then
-		  'g.ForeColor = Backcolor
-		  'g.FillRect(0, 0, g.Width, g.Height)
+		  'g.DrawingColor = Backcolor
+		  'g.FillRectangle(0, 0, g.Width, g.Height)
 		  '
 		  'else
 		  
-		  g.ForeColor = GetWindowColor
-		  g.FillRect(0, 0, g.Width, g.Height)
+		  g.DrawingColor = GetWindowColor
+		  g.FillRectangle(0, 0, g.Width, g.Height)
 		  
 		  #if TargetDesktop
-		    If me.TrueWindow.Backdrop <> Nil then
-		      Dim p As Picture = me.TrueWindow.Backdrop
+		    If me.Window.Backdrop <> Nil then
+		      Dim p As Picture = me.Window.Backdrop
 		      If me.Left < p.Width and me.Top < p.Height then
 		        g.DrawPicture p, 0, 0, Width, Height, left, top, Width, Height
 		      End If
@@ -1204,15 +1228,15 @@ Inherits DesktopCanvas
 		Protected Sub DrawBackgroundMonth(gg As Graphics, WeeksPerMonth As Integer, DayWidth As Single, DayHeight As Single, PrintToday As Boolean = True)
 		  //In DebugBuild we check performance of drawing
 		  #if DebugBuild
-		    Dim ms As Double = Microseconds
+		    Dim ms As Double = System.Microseconds
 		  #endif
 		  
 		  Dim i, u As Integer
-		  Dim text As String
+		  Dim lText As String
 		  Dim x, xx, y As Single
-		  Dim DrawDate As Date = New Date(FirstDate)
+		  Dim DrawDate As DateTime = New DateTime(FirstDate)
 		  
-		  gg.TextFont = TextFont
+		  gg.FontName = TextFont
 		  
 		  //Header Background
 		  If TransparentBackground then
@@ -1222,13 +1246,13 @@ Inherits DesktopCanvas
 		      #EndIf
 		    #endif
 		  else
-		    gg.ForeColor = MyColors.Header
-		    gg.FillRect(0, 0, gg.Width, HeaderHeight)
+		    gg.DrawingColor = MyColors.Header
+		    gg.FillRectangle(0, 0, gg.Width, HeaderHeight)
 		  End If
 		  
 		  //Drawing Day names
 		  
-		  gg.TextSize = MyStyle.MNumbersTextSize
+		  gg.FontSize = MyStyle.MNumbersTextSize
 		  If MyStyle.MDayNameAlign = AlignLeft then
 		    xx = MyStyle.MTextOffset
 		  elseif MyStyle.MDayNameAlign = AlignCenter then
@@ -1239,72 +1263,72 @@ Inherits DesktopCanvas
 		  
 		  Dim gradientDay As Picture
 		  If MyStyle.FillGradient then
-		    gradientDay = New Picture(Ceil(DayWidth), Ceil(DayHeight), 32)
+		    gradientDay = New Picture(Ceiling(DayWidth), Ceiling(DayHeight), 32)
 		    gradient(gradientDay.Graphics, 0, gradientDay.Height, MyColors.WeekDay, MyColors.WeekDay2)
 		  End If
 		  
 		  For i = 0 to 6
 		    If (FirstDayOfWeek + i) = 7 then
-		      text = TitleCase(DayNames(7))
+		      lText = DayNames(7).TitleCase
 		    else
-		      text = TitleCase(DayNames((FirstDayOfWeek + i) mod 7))
+		      lText = DayNames((FirstDayOfWeek + i) mod 7).Titlecase
 		    End If
 		    
-		    gg.ForeColor = MyColors.DayName
+		    gg.DrawingColor = MyColors.DayName
 		    gg.Bold = False
 		    
 		    If PrintToday and StyleType = StyleOutlook2013 and ((i = Today.DayOfWeek-FirstDayOfWeek) or (i = Today.DayOfWeek-FirstDayOfWeek+7)) then
-		      gg.ForeColor = MyColors.MainColor
-		      gg.FillRect(DayWidth*i, 29, DayWidth, 19)
-		      gg.ForeColor = MyColors.DayName
+		      gg.DrawingColor = MyColors.MainColor
+		      gg.FillRectangle(DayWidth*i, 29, DayWidth, 19)
+		      gg.DrawingColor = MyColors.DayName
 		      gg.Bold = True
 		    End If
 		    
 		    
 		    If MyStyle.MDayNameAlign = AlignLeft then
-		      gg.DrawString(text, DayWidth * i + xx, 43, DayWidth-xx*2, True)
+		      gg.DrawText(lText, DayWidth * i + xx, 43, DayWidth-xx*2, True)
 		    elseif MyStyle.MDayNameAlign = AlignCenter then
-		      gg.DrawString(text, DayWidth * i + max(1, (DayWidth - gg.StringWidth(text)) \ 2), 43, DayWidth-2, True)
+		      gg.DrawText(lText, DayWidth * i + max(1, (DayWidth - gg.TextWidth(lText)) \ 2), 43, DayWidth-2, True)
 		    elseif MyStyle.MDayNameAlign = 3 then
 		      //Do not draw here
 		    else
-		      x =DayWidth * i + xx - min(DayWidth-xx, gg.StringWidth(text))
-		      gg.DrawString(text, DayWidth * i + xx - min(xx-3, gg.StringWidth(text)), 43, DayWidth, True)
+		      x =DayWidth * i + xx - min(DayWidth-xx, gg.TextWidth(lText))
+		      gg.DrawText(lText, DayWidth * i + xx - min(xx-3, gg.TextWidth(lText)), 43, DayWidth, True)
 		    End If
 		    
 		    //Drawing Day Background
 		    If MyStyle.FillGradient = False then
 		      If ColorWeekend and (FirstDayOfWeek + i = 7 or (FirstDayOfWeek + i) mod 7 = 1) then
-		        gg.ForeColor = MyColors.Weekend
+		        gg.DrawingColor = MyColors.Weekend
 		      else
-		        gg.ForeColor = MyColors.WeekDay
+		        gg.DrawingColor = MyColors.WeekDay
 		      End If
-		      gg.FillRect(DayWidth*i, HeaderHeight, Ceil(DayWidth), gg.Height-HeaderHeight)
+		      gg.FillRectangle(DayWidth*i, HeaderHeight, Ceiling(DayWidth), gg.Height-HeaderHeight)
 		    else
 		      For j as integer = 0 to WeeksPerMonth
 		        gg.DrawPicture(gradientDay, DayWidth*i, HeaderHeight + j*DayHeight)
-		        'gg.gradient(DayWidth*i, HeaderHeight+j*DayHeight, Ceil(DayWidth), Ceil(DayHeight), &c363D45, &c2b2c2e)
+		        'gg.gradient(DayWidth*i, HeaderHeight+j*DayHeight, Ceiling(DayWidth), Ceiling(DayHeight), &c363D45, &c2b2c2e)
 		      Next
 		    End If
 		    
 		  Next
 		  
 		  //Drawing title
-		  gg.ForeColor = MyColors.Title
+		  gg.DrawingColor = MyColors.Title
 		  gg.Bold = True
-		  gg.TextSize = MyStyle.MTitleTextSize
-		  If UBound(MonthNames)>= DisplayDate.Month then
-		    text = MonthNames(DisplayDate.Month) + " " + str(DisplayDate.Year)
+		  gg.FontSize = MyStyle.MTitleTextSize
+		  If MonthNames.LastIndex>= DisplayDate.Month then
+		    lText = MonthNames(DisplayDate.Month) + " " + str(DisplayDate.Year)
 		  else
-		    text = Str(DisplayDate.Month) + " " + str(DisplayDate.Year)
+		    lText = Str(DisplayDate.Month) + " " + str(DisplayDate.Year)
 		  End If
-		  gg.DrawString(text, (gg.Width - gg.StringWidth(text)) \ 2, 25, gg.Width, True)
+		  gg.DrawText(lText, (gg.Width - gg.TextWidth(lText)) \ 2, 25, gg.Width, True)
 		  
 		  
 		  
 		  
 		  //Drawing day numbers
-		  gg.TextSize = MyStyle.MNumbersTextSize
+		  gg.FontSize = MyStyle.MNumbersTextSize
 		  gg.Bold = False
 		  y = HeaderHeight + 14
 		  If MyStyle.MDayNumberAlign = AlignLeft then
@@ -1324,46 +1348,46 @@ Inherits DesktopCanvas
 		    
 		    //Today Background
 		    If DrawDate.SQLDate = Today.SQLDate and PrintToday then
-		      gg.ForeColor = MyColors.Today
+		      gg.DrawingColor = MyColors.Today
 		      If StyleType = StyleOutlook2013 then
-		        gg.FillRect(1+(Ceil(x / DayWidth)-1) * DayWidth, y-13, DayWidth, 5)
+		        gg.FillRectangle(1+(Ceiling(x / DayWidth)-1) * DayWidth, y-13, DayWidth, 5)
 		      else
-		        gg.FillRect(1+(Ceil(x / DayWidth)-1) * DayWidth, y-13, DayWidth, DayHeight)
+		        gg.FillRectangle(1+(Ceiling(x / DayWidth)-1) * DayWidth, y-13, DayWidth, DayHeight)
 		      End If
 		    End If
 		    
 		    //Other Month Background
 		    If MyStyle.MColorOtherMonth and DrawDate.Month <> DisplayDate.Month then
-		      gg.ForeColor = MyColors.OtherMonth
-		      gg.FillRect(1+(Ceil(x / DayWidth)-1) * DayWidth, y-13, DayWidth, DayHeight)
+		      gg.DrawingColor = MyColors.OtherMonth
+		      gg.FillRectangle(1+(Ceiling(x / DayWidth)-1) * DayWidth, y-13, DayWidth, DayHeight)
 		    End If
 		    
 		    //Clicked Background
 		    If SelStart <> Nil and SelEnd <> nil and DrawDate.SQLDate >= SelStart.SQLDate and DrawDate.SQLDate <= SelEnd.SQLDate then
 		      Selected = True
-		      gg.ForeColor = MyColors.Selected
-		      gg.FillRect(1+(Ceil(x / DayWidth)-1) * DayWidth, y-13, DayWidth, DayHeight)
+		      gg.DrawingColor = MyColors.Selected
+		      gg.FillRectangle(1+(Ceiling(x / DayWidth)-1) * DayWidth, y-13, DayWidth, DayHeight)
 		    End If
 		    
 		    //Day Header background
 		    If MyStyle.MDayNumberBackground then
-		      gg.ForeColor = MyColors.DayNumberBackground
-		      gg.FillRect(1+(Ceil(x / DayWidth)-1) * DayWidth, y-13, DayWidth, 16)
+		      gg.DrawingColor = MyColors.DayNumberBackground
+		      gg.FillRectangle(1+(Ceiling(x / DayWidth)-1) * DayWidth, y-13, DayWidth, 16)
 		    End If
 		    
 		    
 		    
 		    If i<8 and MyStyle.MDayNameAlign = 3 then
 		      If (FirstDayOfWeek + i-1) = 7 then
-		        text = DayNames(7).Left(3) + "." + " " + str(DrawDate.Day)
+		        lText = DayNames(7).Left(3) + "." + " " + str(DrawDate.Day)
 		      else
-		        text = DayNames((FirstDayOfWeek + i-1) mod 7).Left(3) + "." + " " + str(DrawDate.Day)
+		        lText = DayNames((FirstDayOfWeek + i-1) mod 7).Left(3) + "." + " " + str(DrawDate.Day)
 		      End If
 		    else
 		      If DrawDate.Day = 1 and MyStyle.MFirstDayOfMonthName then
-		        text = str(DrawDate.Day) + " " + MonthNames(DrawDate.Month)
+		        lText = str(DrawDate.Day) + " " + MonthNames(DrawDate.Month)
 		      else
-		        text = str(DrawDate.Day)
+		        lText = str(DrawDate.Day)
 		        
 		      End If
 		      If DrawDate.Day = 1 and MyStyle.MFirstDayOfMonthBold then
@@ -1372,33 +1396,34 @@ Inherits DesktopCanvas
 		      
 		    End If
 		    If PrintToday and StyleType = StyleOutlook2013 and DrawDate.SQLDate = Today.SQLDate then
-		      //This style has bold text and special color
-		      gg.ForeColor = MyColors.Today
+		      //This style has bold lText and special color
+		      gg.DrawingColor = MyColors.Today
 		      gg.Bold = True
 		    elseIf DrawDate.Month <> DisplayDate.Month then
-		      If gg.ForeColor <> MyColors.DayNumber then
-		        gg.ForeColor = MyColors.DayNumber
+		      If gg.DrawingColor <> MyColors.DayNumber then
+		        gg.DrawingColor = MyColors.DayNumber
 		      End If
 		    else
-		      If gg.ForeColor <> MyColors.DayNumberActive then
-		        gg.ForeColor = MyColors.DayNumberActive
+		      If gg.DrawingColor <> MyColors.DayNumberActive then
+		        gg.DrawingColor = MyColors.DayNumberActive
 		      End If
 		    End If
 		    If Selected and MyStyle.MHasSelectedTextColor then
-		      gg.ForeColor = MyColors.MSelectedText
+		      gg.DrawingColor = MyColors.MSelectedText
 		    End If
 		    
 		    If MyStyle.MDayNumberAlign = AlignLeft then
-		      gg.DrawString(text, x, y+MyStyle.MNumberYOffset)
+		      gg.DrawText(lText, x, y+MyStyle.MNumberYOffset)
 		    elseif MyStyle.MDayNumberAlign = AlignCenter then
-		      gg.DrawString(text, x + (DayWidth - gg.StringWidth(text))\2, y+MyStyle.MNumberYOffset)
+		      gg.DrawText(lText, x + (DayWidth - gg.TextWidth(lText))\2, y+MyStyle.MNumberYOffset)
 		    else
-		      gg.DrawString(text, x - gg.StringWidth(text), y+MyStyle.MNumberYOffset)
+		      gg.DrawText(lText, x - gg.TextWidth(lText), y+MyStyle.MNumberYOffset)
 		    End If
 		    
 		    
 		    
-		    DrawDate.Day = DrawDate.Day + 1
+		    'DrawDate.Day = DrawDate.Day + 1
+		    DrawDate = DrawDate + DIDay
 		    If i mod 7 = 0 then
 		      y = y + DayHeight
 		      x = xx
@@ -1409,11 +1434,11 @@ Inherits DesktopCanvas
 		  
 		  
 		  //Drawing day frames
-		  gg.ForeColor = MyColors.Line
+		  gg.DrawingColor = MyColors.Line
 		  If mHiDPI then
 		    For i = 1 to 6
 		      x = DayWidth * i
-		      gg.Fillrect(x, HeaderHeight, 2, gg.Height-1)
+		      gg.FillRectangle(x, HeaderHeight, 2, gg.Height-1)
 		    Next
 		  else
 		    For i = 1 to 6
@@ -1425,7 +1450,7 @@ Inherits DesktopCanvas
 		  If mHiDPI then
 		    For i = 0 to WeeksPerMonth-1
 		      y = HeaderHeight + DayHeight * i-1
-		      gg.FillRect(0, y, gg.Width, 2)
+		      gg.FillRectangle(0, y, gg.Width, 2)
 		    Next
 		  else
 		    For i = 0 to WeeksPerMonth-1
@@ -1443,38 +1468,39 @@ Inherits DesktopCanvas
 		    End If
 		    DrawDate = FirstDate
 		    y = HeaderHeight + 5
-		    gg.TextSize = 9
+		    gg.FontSize = 9
 		    For i = 0 to WeeksPerMonth-1
-		      gg.ForeColor = MyColors.WeekNumberBackground
-		      gg.FillRoundRect(x, y, 13, 10, 4, 4)
-		      'gg.FillRect(x, y, 13, 5)
+		      gg.DrawingColor = MyColors.WeekNumberBackground
+		      gg.FillRoundRectangle(x, y, 13, 10, 4, 4)
+		      'gg.FillRectangle(x, y, 13, 5)
 		      'gg.DrawLine(x, y, x+12, y)
 		      
-		      gg.ForeColor = MyColors.WeekNumber
+		      gg.DrawingColor = MyColors.WeekNumber
 		      if UseISOWeekNumber then
-		        text = str(ISOWeekNumber(DrawDate))
+		        lText = str(ISOWeekNumber(DrawDate))
 		      Else
-		        text = str(DrawDate.WeekOfYear)
+		        lText = str(DrawDate.WeekOfYear)
 		      end if
-		      gg.DrawString(text, x + (13 - gg.StringWidth(text))/2, y + 8)
+		      gg.DrawText(lText, x + (13 - gg.TextWidth(lText))/2, y + 8)
 		      
-		      DrawDate.Day = DrawDate.Day + 7
+		      'DrawDate.Day = DrawDate.Day + 7
+		      DrawDate = DrawDate + DIWeek
 		      y = y + DayHeight
 		    Next
 		  End If
 		  
 		  //Drawing border
 		  If Border then
-		    gg.ForeColor = MyColors.Border
-		    gg.DrawRect(0, HeaderHeight, gg.Width, gg.Height-HeaderHeight)
+		    gg.DrawingColor = MyColors.Border
+		    gg.DrawRectangle(0, HeaderHeight, gg.Width, gg.Height-HeaderHeight)
 		    If mHiDPI then
-		      gg.DrawRect(1, HeaderHeight-1, gg.Width-2, gg.Height-HeaderHeight)
+		      gg.DrawRectangle(1, HeaderHeight-1, gg.Width-2, gg.Height-HeaderHeight)
 		    End If
 		  End If
 		  
 		  //In DebugBuild we check performance of drawing
 		  #if DebugBuild
-		    ms = (Microseconds-ms)/1000
+		    ms = (System.Microseconds-ms)/1000
 		    'DrawInfo = str(ms)
 		  #endif
 		End Sub
@@ -1482,14 +1508,14 @@ Inherits DesktopCanvas
 
 	#tag Method, Flags = &h1
 		Protected Sub DrawBackgroundWeek(gg As Graphics, DayWidth As Single, PrintToday As Boolean = True)
-		  Dim text As String
+		  Dim lText As String
 		  Dim i, u As Integer
-		  Dim DrawDate As Date = New Date(FirstDate)
+		  Dim DrawDate As DateTime = New DateTime(FirstDate)
 		  Dim y As Integer
 		  Dim x As Single
 		  Dim gc As Graphics
 		  
-		  gg.TextFont = TextFont
+		  gg.FontName = TextFont
 		  
 		  
 		  //Finding amount of day events for each day
@@ -1499,12 +1525,12 @@ Inherits DesktopCanvas
 		    E.FrontMost = True
 		    
 		    ReDim DisplayEvents(-1)
-		    DisplayEvents.Append E
+		    DisplayEvents.Add E
 		    SortEvents(FirstDate, LastDate, True)
 		  else
 		    SortEvents(FirstDate, LastDate)
 		  End If
-		  u = UBound(DisplayEvents)
+		  u = DisplayEvents.LastIndex
 		  
 		  DayEventsHeight = max(-1, min(DayEventsHeight, gg.Height\2))
 		  
@@ -1556,7 +1582,7 @@ Inherits DesktopCanvas
 		    End If
 		  End If
 		  
-		  y = (HeaderHeight - gg.TextHeight)\2 + gg.TextAscent
+		  y = (HeaderHeight - gg.TextHeight)\2 + gg.FontAscent
 		  
 		  
 		  //Drawing Header background
@@ -1567,32 +1593,32 @@ Inherits DesktopCanvas
 		      End If
 		    #endif
 		  else
-		    gg.ForeColor = MyColors.Header
-		    gg.FillRect(0, 0, gg.Width, HeaderHeight)
+		    gg.DrawingColor = MyColors.Header
+		    gg.FillRectangle(0, 0, gg.Width, HeaderHeight)
 		  End If
 		  
 		  //Drawing Time Background
-		  gg.ForeColor = MyColors.TimeBackground
-		  gg.FillRect(0, HeaderHeight, TimeWidth, gg.Height-HeaderHeight)
+		  gg.DrawingColor = MyColors.TimeBackground
+		  gg.FillRectangle(0, HeaderHeight, TimeWidth, gg.Height-HeaderHeight)
 		  
 		  //Drawing Year
-		  gg.ForeColor = MyColors.DayName
-		  gg.TextSize = MyStyle.WTextSize
-		  text = str(FirstDate.Year)
-		  gg.DrawString(text, (TimeWidth - gg.StringWidth(text)) \ 2, y)
+		  gg.DrawingColor = MyColors.DayName
+		  gg.FontSize = MyStyle.WTextSize
+		  lText = str(FirstDate.Year)
+		  gg.DrawText(lText, (TimeWidth - gg.TextWidth(lText)) \ 2, y)
 		  
 		  //Drawing Week number
 		  If DisplayWeeknumber then
-		    gg.ForeColor = MyColors.WeekNumberBackground
-		    gg.FillRoundRect((TimeWidth-20)/2, HeaderHeight + 3, 20, MyStyle.WEventHeight-4, 4, 4)
+		    gg.DrawingColor = MyColors.WeekNumberBackground
+		    gg.FillRoundRectangle((TimeWidth-20)/2, HeaderHeight + 3, 20, MyStyle.WEventHeight-4, 4, 4)
 		    
 		    if UseISOWeekNumber then
-		      text = str(ISOWeekNumber(DrawDate))
+		      lText = str(ISOWeekNumber(DrawDate))
 		    Else
-		      text = str(DrawDate.WeekOfYear)
+		      lText = str(DrawDate.WeekOfYear)
 		    End If
-		    gg.ForeColor = MyColors.WeekNumber
-		    gg.DrawString(text, (TimeWidth-gg.StringWidth(text))\2, HeaderHeight + (MyStyle.WEventHeight-gg.TextHeight) + gg.TextAscent)
+		    gg.DrawingColor = MyColors.WeekNumber
+		    gg.DrawText(lText, (TimeWidth-gg.TextWidth(lText))\2, HeaderHeight + (MyStyle.WEventHeight-gg.TextHeight) + gg.FontAscent)
 		  End If
 		  
 		  //Drawing day names
@@ -1603,9 +1629,9 @@ Inherits DesktopCanvas
 		  Dim DefaultDateFormat As String = "AbbreviatedDate"
 		  If DayStartHour > 0.0 then
 		    If HideNightTime then
-		      DayStartY = Ceil(- (VisibleHours-(gg.Height-ViewHeight)/HourHeight)*HourHeight*ScrollPosition/VisibleHours + HourHeight * 1)
+		      DayStartY = Ceiling(- (VisibleHours-(gg.Height-ViewHeight)/HourHeight)*HourHeight*ScrollPosition/VisibleHours + HourHeight * 1)
 		    else
-		      DayStartY = Ceil(- (24-(gg.Height-ViewHeight)/HourHeight)*HourHeight*ScrollPosition/24 + HourHeight * DayStartHour)
+		      DayStartY = Ceiling(- (24-(gg.Height-ViewHeight)/HourHeight)*HourHeight*ScrollPosition/24 + HourHeight * DayStartHour)
 		    End If
 		  End If
 		  If DayEndHour > 0.0 then
@@ -1622,18 +1648,20 @@ Inherits DesktopCanvas
 		      gg.Bold = true
 		    End If
 		    For i = 0 to 7
-		      text = DrawDate.LongDate
-		      text = text.Left(text.Len-5)
-		      If text.Right(1) = "," then
-		        text = text.Left(len(text) - 1)
-		      elseif text.Right(2) = "de" then
-		        text = text.Left(len(text) -3)
+		      'lText = DrawDate.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None)
+		      lText = DrawDate.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None)
+		      lText = lText.Left(lText.Length-5)
+		      If lText.Right(1) = "," then
+		        lText = lText.Left(lText.Length - 1)
+		      elseif lText.Right(2) = "de" then
+		        lText = lText.Left(lText.Length -3)
 		      End If
 		      
-		      maxWidth = max(maxWidth, gg.StringWidth(text))
-		      DrawDate.Day = DrawDate.Day + 1
+		      maxWidth = max(maxWidth, gg.TextWidth(lText))
+		      'DrawDate.Day = DrawDate.Day + 1
+		      DrawDate = DrawDate + DIDay
 		    Next
-		    DrawDate = New Date(FirstDate)
+		    DrawDate = New DateTime(FirstDate)
 		    If maxWidth < DayWidth-6 then
 		      DefaultDateFormat = "LongDate"
 		    End If
@@ -1643,46 +1671,46 @@ Inherits DesktopCanvas
 		  For i = 0 to ViewDays-1
 		    If WeekHeaderTextFormat = "" then
 		      If DefaultDateFormat = "LongDate" then
-		        text = DrawDate.LongDate
+		        lText = DrawDate.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None)
 		      else
-		        text = DrawDate.AbbreviatedDate
+		        lText = DrawDate.ToString(DateTime.FormatStyles.Medium, DateTime.FormatStyles.None) 'AbbreviatedDate)
 		      End If
-		      text = text.Left(text.Len-5)
-		      If text.Right(1) = "," then
-		        text = text.Left(len(text) - 1)
-		      elseif text.Right(2) = "de" then
-		        text = text.Left(len(text) -3)
+		      lText = lText.Left(lText.Length-5)
+		      If lText.Right(1) = "," then
+		        lText = lText.Left(lText.Length - 1)
+		      elseif lText.Right(2) = "de" then
+		        lText = lText.Left(lText.Length -3)
 		      End If
 		    else
-		      text = ParseDate(DrawDate, WeekHeaderTextFormat, "Abbreviated Date")
+		      lText = ParseDate(DrawDate, WeekHeaderTextFormat, "Abbreviated Date")
 		    End If
 		    
 		    gg.Bold = False
 		    
 		    If PrintToday and MyStyle.WTodayHeader and DrawDate.SQLDate = Today.SQLDate then
-		      gg.ForeColor = MyColors.Today
-		      gg.FillRect(x, 0, DayWidth, HeaderHeight)
+		      gg.DrawingColor = MyColors.Today
+		      gg.FillRectangle(x, 0, DayWidth, HeaderHeight)
 		      If StyleType = StyleOutlook2013 then
-		        gg.ForeColor = MyColors.MSelectedText
+		        gg.DrawingColor = MyColors.MSelectedText
 		        gg.Bold = True
 		      else
-		        gg.ForeColor = MyColors.DayName
+		        gg.DrawingColor = MyColors.DayName
 		      End If
 		    else
-		      gg.ForeColor = MyColors.DayName
+		      gg.DrawingColor = MyColors.DayName
 		    End If
 		    
-		    gg.DrawString(text, 3+x + max(0, ( DayWidth-6 - gg.StringWidth(text)) \ 2), y, DayWidth-6, True)
+		    gg.DrawText(lText, 3+x + max(0, ( DayWidth-6 - gg.TextWidth(lText)) \ 2), y, DayWidth-6, True)
 		    
 		    //Drawing day color
 		    If PrintToday and DrawDate.SQLDate = Today.SQLDate and MyStyle.WTodayHeader = False then
-		      gg.ForeColor = MyColors.Today
+		      gg.DrawingColor = MyColors.Today
 		    ElseIf ColorWeekend and (DrawDate.DayOfWeek = 7 or DrawDate.DayOfWeek = 1) then
-		      gg.ForeColor = MyColors.Weekend
+		      gg.DrawingColor = MyColors.Weekend
 		    else
-		      gg.ForeColor = MyColors.WeekDay
+		      gg.DrawingColor = MyColors.WeekDay
 		    End If
-		    gg.FillRect(DayWidth * i + TimeWidth, HeaderHeight, Ceil(DayWidth), gg.Height-HeaderHeight)
+		    gg.FillRectangle(DayWidth * i + TimeWidth, HeaderHeight, Ceiling(DayWidth), gg.Height-HeaderHeight)
 		    
 		    
 		    
@@ -1690,29 +1718,30 @@ Inherits DesktopCanvas
 		      
 		    else
 		      If DayStartY > 0 then
-		        gc.ForeColor = ShiftColor(gg.ForeColor, -5)
-		        gc.FillRect(DayWidth*i, 0, Ceil(DayWidth), min(DayStartY, gc.Height))
+		        gc.DrawingColor = ShiftColor(gg.DrawingColor, -5)
+		        gc.FillRectangle(DayWidth*i, 0, Ceiling(DayWidth), min(DayStartY, gc.Height))
 		        
 		      End If
 		      If DayEndY < gg.Height-ViewHeight then
-		        gc.ForeColor = ShiftColor(gg.ForeColor, -5)
-		        gc.FillRect(DayWidth*i, max(0, DayEndY), Ceil(DayWidth), gc.Height-DayEndY)
+		        gc.DrawingColor = ShiftColor(gg.DrawingColor, -5)
+		        gc.FillRectangle(DayWidth*i, max(0, DayEndY), Ceiling(DayWidth), gc.Height-DayEndY)
 		      End If
 		    End If
 		    
 		    x = x + DayWidth
-		    DrawDate.Day = DrawDate.Day + 1
+		    'DrawDate.Day = DrawDate.Day + 1
+		    DrawDate = DrawDate + DIDay
 		  Next
 		  
 		  
 		  //Drawing Frame
-		  gg.ForeColor = &cD6D6D6
+		  gg.DrawingColor = &cD6D6D6
 		  gg.DrawLine(0, HeaderHeight, gg.Width-1, HeaderHeight)
 		  gg.DrawLine(0, ViewHeight-3, gg.Width-1, ViewHeight-3)
 		  gg.DrawLine(0, ViewHeight, gg.Width-1, ViewHeight)
-		  gg.ForeColor = &cEDEDED
+		  gg.DrawingColor = &cEDEDED
 		  gg.DrawLine(0, ViewHeight-2, gg.Width-1, ViewHeight-2)
-		  gg.ForeColor = &cE1E1E1
+		  gg.DrawingColor = &cE1E1E1
 		  gg.DrawLine(0, ViewHeight-1, gg.Width-1, ViewHeight-1)
 		  
 		  
@@ -1729,11 +1758,11 @@ Inherits DesktopCanvas
 		  
 		  For i = 0 to VisibleHours
 		    If y > miny then
-		      gg.ForeColor = MyColors.Line
+		      gg.DrawingColor = MyColors.Line
 		      gg.DrawLine(MyStyle.WHourLineStartX, y, gg.Width-1, y)
 		    End If
 		    If y + HourHeight\2 > miny then
-		      gg.ForeColor = ShiftColor(MyColors.Line, MyStyle.WHalfHourColorOffset)
+		      gg.DrawingColor = ShiftColor(MyColors.Line, MyStyle.WHalfHourColorOffset)
 		      If MyStyle.WHalfHourLineStyle = 0 then
 		        gg.DrawLine(TimeWidth+1, y+HourHeight\2, gg.Width-1, y+HourHeight\2)
 		      else
@@ -1748,7 +1777,7 @@ Inherits DesktopCanvas
 		  Next
 		  
 		  
-		  gg.ForeColor = MyColors.Line
+		  gg.DrawingColor = MyColors.Line
 		  //Drawing vertical lines
 		  x = TimeWidth
 		  
@@ -1761,18 +1790,18 @@ Inherits DesktopCanvas
 		  gc = gg.Clip(0, ViewHeight, gg.Width, gg.Height-ViewHeight)
 		  
 		  //Drawing time
-		  DrawDate = New Date(FirstDate)
-		  DrawDate.Hour = 1
-		  DrawDate.Minute = 0
-		  DrawDate.Second = 0
+		  DrawDate = New DateTime(FirstDate.Year, FirstDate.Month, FirstDate.Day, 1, 0, 0)
+		  'DrawDate.Hour = 1
+		  'DrawDate.Minute = 0
+		  'DrawDate.Second = 0
 		  
 		  y = ViewHeight
-		  y = y - (VisibleHours-(gg.Height-ViewHeight)/HourHeight)*HourHeight*ScrollPosition/VisibleHours + gg.TextAscent \ 2 - 1 - ViewHeight + HourHeight + MyStyle.WTimeVOffset
+		  y = y - (VisibleHours-(gg.Height-ViewHeight)/HourHeight)*HourHeight*ScrollPosition/VisibleHours + gg.FontAscent \ 2 - 1 - ViewHeight + HourHeight + MyStyle.WTimeVOffset
 		  
 		  
 		  
-		  gc.ForeColor = MyColors.Time
-		  gc.TextSize = MyStyle.WTextSize
+		  gc.DrawingColor = MyColors.Time
+		  gc.FontSize = MyStyle.WTextSize
 		  Dim FirstVisible As Boolean
 		  Dim startHour, xx, yy As Integer
 		  'Dim HiddenHour As Boolean
@@ -1780,9 +1809,11 @@ Inherits DesktopCanvas
 		  If HideNightTime then
 		    y = y-HourHeight
 		    startHour = 0
-		    DrawDate.Hour = 0
+		    'DrawDate.Hour = 0
+		    DrawDate = New DateTime(DrawDate.Year, DrawDate.Month, DrawDate.day, 0, DrawDate.Minute, DrawDate.Second)
 		  ElseIf MyStyle.WTimeVOffset>0 then
-		    DrawDate.Hour = 0
+		    'DrawDate.Hour = 0
+		    DrawDate = New DateTime(DrawDate.Year, DrawDate.Month, DrawDate.day, 0, DrawDate.Minute, DrawDate.Second)
 		    startHour = 0
 		    y = y-HourHeight
 		    
@@ -1792,56 +1823,58 @@ Inherits DesktopCanvas
 		  
 		  For i = startHour to VisibleHours
 		    
-		    If MyStyle.WTimeFormat.instr("(a)")>0 then
-		      text = MyStyle.WTimeFormat
-		      If y>gc.TextAscent-gc.TextHeight/2 and not FirstVisible then
+		    If MyStyle.WTimeFormat.IndexOf("(a)")>0 then
+		      lText = MyStyle.WTimeFormat
+		      If y>gc.FontAscent-gc.TextHeight/2 and not FirstVisible then
 		        FirstVisible = True
-		        text = text.ReplaceB("(A)", "A").ReplaceB("(a)", "a")
+		        lText = lText.ReplaceBytes("(A)", "A").ReplaceBytes("(a)", "a")
 		      elseif DrawDate.Hour=12 then
-		        text = text.ReplaceB("(A)", "A").ReplaceB("(a)", "a")
+		        lText = lText.ReplaceBytes("(A)", "A").ReplaceBytes("(a)", "a")
 		      else
-		        text = text.Replace("(a)", "")
+		        lText = lText.Replace("(a)", "")
 		      End If
 		      
 		    End If
 		    //Using other function as it is a long process
-		    text = getTimeTextForWeek(text, i, startHour, New Date(DrawDate))
+		    lText = getTimeTextForWeek(lText, i, startHour, New DateTime(DrawDate))
 		    
 		    If StyleType = StyleOutlook2013 and MyStyle.WTimeAlign = AlignLeft then
 		      
-		      If text.InStr(" AM")>0 then
-		        text = text.Replace("AM", "").Trim
-		        xx = gc.StringWidth(text)
-		        yy = gc.TextAscent\2
-		        gc.TextSize = 10
-		        gc.DrawString(" AM", 3+xx + 2, y-yy)
-		        gc.TextSize = MyStyle.WTextSize
-		      elseif text.InStr("PM")>0 then
-		        text = text.Replace("PM", "").Trim
-		        xx = gc.StringWidth(text)
-		        yy = gc.TextAscent\2
-		        gc.TextSize = 10
-		        gc.DrawString(" PM", 3+xx + 2, y-yy)
-		        gc.TextSize = MyStyle.WTextSize
+		      If lText.IndexOf(" AM")>0 then
+		        lText = lText.Replace("AM", "").Trim
+		        xx = gc.TextWidth(lText)
+		        yy = gc.FontAscent\2
+		        gc.FontSize = 10
+		        gc.DrawText(" AM", 3+xx + 2, y-yy)
+		        gc.FontSize = MyStyle.WTextSize
+		      elseif lText.IndexOf("PM")>0 then
+		        lText = lText.Replace("PM", "").Trim
+		        xx = gc.TextWidth(lText)
+		        yy = gc.FontAscent\2
+		        gc.FontSize = 10
+		        gc.DrawText(" PM", 3+xx + 2, y-yy)
+		        gc.FontSize = MyStyle.WTextSize
 		      End If
 		    End If
 		    
-		    If text.InStr(" - ")>0 then
-		      gc.TextSize = 10
-		      gc.DrawString(text, 5, y, TimeWidth)
-		      gc.TextSize = MyStyle.WTextSize
-		    ElseIf MyStyle.WTimeAlign = AlignLeft or text.instr(" - ")>0 Then
-		      gc.DrawString(text, 5, y)
+		    If lText.IndexOf(" - ")>0 then
+		      gc.FontSize = 10
+		      gc.DrawText(lText, 5, y, TimeWidth)
+		      gc.FontSize = MyStyle.WTextSize
+		    ElseIf MyStyle.WTimeAlign = AlignLeft or lText.IndexOf(" - ")>0 Then
+		      gc.DrawText(lText, 5, y)
 		    elseif MyStyle.WTimeAlign = AlignCenter then
-		      gc.DrawString(text, (TimeWidth-gg.StringWidth(text))\2, y, TimeWidth)
+		      gc.DrawText(lText, (TimeWidth-gg.TextWidth(lText))\2, y, TimeWidth)
 		    elseif MyStyle.WTimeAlign = AlignRight then
-		      gc.DrawString(text, TimeWidth - gg.StringWidth(text)-2, y, TimeWidth)
+		      gc.DrawText(lText, TimeWidth - gg.TextWidth(lText)-2, y, TimeWidth)
 		    End If
 		    
 		    
-		    DrawDate.Hour = DrawDate.Hour + 1
+		    'DrawDate.Hour = DrawDate.Hour + 1
+		    DrawDate = DrawDate + DIHour
 		    If i = startHour and HideNightTime then
-		      DrawDate.Hour = DayStartHour
+		      'DrawDate.Hour = DayStartHour
+		      DrawDate = New DateTime(DrawDate.Year, DrawDate.Month, DrawDate.Day, DayStartHour, DrawDate.Minute, DrawDate.Second)
 		    End If
 		    y = y + HourHeight
 		    If y > gg.Height or DrawDate.Hour = 0 then
@@ -1851,8 +1884,8 @@ Inherits DesktopCanvas
 		  
 		  //Drawing border
 		  If Border then
-		    gg.ForeColor = MyColors.Border
-		    gg.DrawRect(0, HeaderHeight, gg.Width, gg.Height-HeaderHeight)
+		    gg.DrawingColor = MyColors.Border
+		    gg.DrawRectangle(0, HeaderHeight, gg.Width, gg.Height-HeaderHeight)
 		  End If
 		End Sub
 	#tag EndMethod
@@ -1876,14 +1909,14 @@ Inherits DesktopCanvas
 		  Dim dayWidth As Integer
 		  Dim dayHeight As Integer
 		  
-		  Dim text As String
-		  Dim DrawDate As New Date(FirstDate)
-		  Dim StartDate As Date
+		  Dim lText As String
+		  Dim DrawDate As New DateTime(FirstDate)
+		  Dim StartDate As DateTime
 		  
 		  Dim mpic As Picture
 		  Dim gm As Graphics
 		  
-		  gg.TextFont = TextFont
+		  gg.FontName = TextFont
 		  
 		  //Drawing background
 		  If Print = False then
@@ -1894,32 +1927,32 @@ Inherits DesktopCanvas
 		        End If
 		      #endif
 		    else
-		      gg.ForeColor = MyColors.YBackground
-		      gg.FillRect(0, 0, gg.Width, gg.Height)
+		      gg.DrawingColor = MyColors.YBackground
+		      gg.FillRectangle(0, 0, gg.Width, gg.Height)
 		    End If
 		  End If
 		  
 		  //Finding amount of months per line
 		  If gg.Width > gg.Height then
 		    If gg.Width / gg.Height > 2.45 then
-		      HAmount = max(1, Ceil(YearMonthsAmount/6))
+		      HAmount = max(1, Ceiling(YearMonthsAmount/6))
 		      VAmount = YearMonthsAmount/HAmount
 		      'VAmount = 6
 		      'HAmount = 2
 		    else
-		      HAmount = max(1, Ceil(YearMonthsAmount/4))
+		      HAmount = max(1, Ceiling(YearMonthsAmount/4))
 		      VAmount = YearMonthsAmount/HAmount
 		      'VAmount = 4
 		      'HAmount = 3
 		    End If
 		  else
 		    If gg.Width / gg.Height < 0.6 then
-		      HAmount = max(1, Ceil(YearMonthsAmount/6))
+		      HAmount = max(1, Ceiling(YearMonthsAmount/6))
 		      VAmount = YearMonthsAmount/HAmount
 		      'VAmount = 2
 		      'HAmount = 6
 		    else
-		      HAmount = max(1, Ceil(YearMonthsAmount/4))
+		      HAmount = max(1, Ceiling(YearMonthsAmount/4))
 		      VAmount = YearMonthsAmount/HAmount
 		      'VAmount = 3
 		      'HAmount = 4
@@ -1951,40 +1984,40 @@ Inherits DesktopCanvas
 		  
 		  
 		  
-		  gm.ForeColor = MyColors.Header
-		  gm.FillRect(0, 0, gm.Width, HeaderHeight)
+		  gm.DrawingColor = MyColors.Header
+		  gm.FillRectangle(0, 0, gm.Width, HeaderHeight)
 		  
 		  //Drawing Day Names
-		  gm.TextFont = TextFont
+		  gm.FontName = TextFont
 		  #if TargetWeb
-		    gm.TextSize = MyStyle.YNumbersTextSize*3/4
+		    gm.FontSize = MyStyle.YNumbersTextSize*3/4
 		  #else
-		    gm.TextSize = MyStyle.YNumbersTextSize'*2
+		    gm.FontSize = MyStyle.YNumbersTextSize'*2
 		  #endif
-		  Y = gm.TextAscent + gm.TextHeight
+		  Y = gm.FontAscent + gm.TextHeight
 		  For i = 0 to 6
-		    gm.ForeColor = MyColors.DayName
+		    gm.DrawingColor = MyColors.DayName
 		    If (FirstDayOfWeek + i) = 7 then
-		      text = TitleCase(DayNames(7)).Left(2)
+		      lText = DayNames(7).Titlecase.Left(2)
 		    else
-		      text = TitleCase(DayNames((FirstDayOfWeek + i) mod 7)).Left(2)
+		      lText = DayNames((FirstDayOfWeek + i) mod 7).Titlecase.Left(2)
 		    End If
-		    If gm.StringWidth(text) > dayWidth-2 then
-		      text = text.Left(1)
+		    If gm.TextWidth(lText) > dayWidth-2 then
+		      lText = lText.Left(1)
 		    End If
-		    gm.DrawString(text, DayWidth * i + max(1, (DayWidth - gm.StringWidth(text)) \ 2), Y)
+		    gm.DrawText(lText, DayWidth * i + max(1, (DayWidth - gm.TextWidth(lText)) \ 2), Y)
 		    
 		    //Drawing day background
 		    If ColorWeekend and ((FirstDayOfWeek + i) = 7 or (FirstDayOfWeek+i) mod 7 = 1) then
-		      gm.ForeColor = MyColors.Weekend
+		      gm.DrawingColor = MyColors.Weekend
 		    else
-		      gm.ForeColor = MyColors.WeekDay
+		      gm.DrawingColor = MyColors.WeekDay
 		    End If
-		    gm.FillRect(dayWidth*i, HeaderHeight, dayWidth+1, gm.Height-HeaderHeight)
+		    gm.FillRectangle(dayWidth*i, HeaderHeight, dayWidth+1, gm.Height-HeaderHeight)
 		  Next
 		  
 		  //Drawing day frames
-		  gm.ForeColor = MyColors.Line
+		  gm.DrawingColor = MyColors.Line
 		  
 		  yy = HeaderHeight+MHeight
 		  If MyStyle.YLineVertical > LineNone then
@@ -1996,14 +2029,14 @@ Inherits DesktopCanvas
 		        DrawDottedLine(gm, xx, HeaderHeight, xx, yy)
 		      elseif MyStyle.YLineVertical = LineThinDouble then
 		        gm.DrawLine(xx-1, HeaderHeight, xx-1, yy)
-		        gm.ForeColor = MyColors.Line2
+		        gm.DrawingColor = MyColors.Line2
 		        gm.DrawLine(xx, HeaderHeight, xx, yy)
-		        gm.ForeColor = MyColors.Line
+		        gm.DrawingColor = MyColors.Line
 		      End If
 		    Next
 		  End If
 		  If MyStyle.YLineHorizontal > LineNone then
-		    gm.DrawRect(0, HeaderHeight, MWidth+1, MHeight+1)
+		    gm.DrawRectangle(0, HeaderHeight, MWidth+1, MHeight+1)
 		    For i = 0 to 5
 		      yy = HeaderHeight + DayHeight * i
 		      If MyStyle.YLineHorizontal = LineThinSolid then
@@ -2012,38 +2045,40 @@ Inherits DesktopCanvas
 		        DrawDottedLine(gm, 0, yy, MWidth, yy)
 		      elseif MyStyle.YLineHorizontal = LineThinDouble then
 		        gm.DrawLine(0, yy-1, MWidth, yy-1)
-		        gm.ForeColor = MyColors.Line2
+		        gm.DrawingColor = MyColors.Line2
 		        gm.DrawLine(0, yy, MWidth, yy)
-		        gm.ForeColor = MyColors.Line
+		        gm.DrawingColor = MyColors.Line
 		      End If
 		    Next
 		  End If
 		  
 		  If Border then
-		    gm.ForeColor = MyColors.Border
-		    gm.DrawRect 0, 0, gm.Width, gm.Height
+		    gm.DrawingColor = MyColors.Border
+		    gm.DrawRectangle 0, 0, gm.Width, gm.Height
 		  End If
 		  
 		  X = 0
 		  Y = 0
 		  
 		  //Setting up DayColor for each day in the year
-		  If UBound(DisplayEvents) = -1 then
+		  If DisplayEvents.LastIndex = -1 then
 		    SetDayColor()
 		  End If
-		  u = UBound(DisplayEvents)
+		  u = DisplayEvents.LastIndex
 		  
 		  For j = 1 to mYearMonthsAmount
 		    
-		    StartDate = New Date(DrawDate)
-		    StartDate.Day = 1
-		    StartDate.Hour = 0
-		    StartDate.Minute = 0
-		    StartDate.Second = 0
+		    StartDate = New DateTime(DrawDate.Year, DrawDate.Month, 1, 0, 0, 0)
+		    'StartDate.Day = 1
+		    'StartDate.Hour = 0
+		    'StartDate.Minute = 0
+		    'StartDate.Second = 0
 		    If StartDate.DayOfWeek - FirstDayOfWeek <= 0 then
-		      StartDate.Day = StartDate.Day - (StartDate.DayOfWeek - FirstDayOfWeek) - 7
+		      'StartDate.Day = StartDate.Day - (StartDate.DayOfWeek - FirstDayOfWeek) - 7
+		      StartDate = StartDate - New DateInterval(0,0,(StartDate.DayOfWeek - FirstDayOfWeek) + 7)
 		    else
-		      StartDate.Day = StartDate.Day - (StartDate.DayOfWeek - FirstDayOfWeek)
+		      'StartDate.Day = StartDate.Day - (StartDate.DayOfWeek - FirstDayOfWeek)
+		      StartDate = StartDate - New DateInterval(0,0,StartDate.DayOfWeek - FirstDayOfWeek)
 		    End If
 		    
 		    //Drawing Month buffer
@@ -2051,15 +2086,15 @@ Inherits DesktopCanvas
 		    gg.DrawPicture(mpic, Floor(X), Floor(Y), MWidth+1, MHeight + HeaderHeight+1, 0, 0, mpic.Width, mpic.Height)
 		    
 		    //Drawing title
-		    gg.ForeColor = MyColors.Title
+		    gg.DrawingColor = MyColors.Title
 		    gg.Bold = True
-		    gg.TextSize = MyStyle.YTitleTextSize
-		    text = MonthNames(DrawDate.Month) + " " + str(DisplayDate.Year)
-		    gg.DrawString(text, x + (MWidth - gg.StringWidth(text)) \ 2, Y+gg.TextAscent, dayWidth*7, True)
+		    gg.FontSize = MyStyle.YTitleTextSize
+		    lText = MonthNames(DrawDate.Month) + " " + str(DisplayDate.Year)
+		    gg.DrawText(lText, x + (MWidth - gg.TextWidth(lText)) \ 2, Y+gg.FontAscent, dayWidth*7, True)
 		    
 		    
-		    gg.TextSize = MyStyle.YNumbersTextSize
-		    yy = y + HeaderHeight + (dayHeight-gg.TextHeight)\2 + gg.TextAscent
+		    gg.FontSize = MyStyle.YNumbersTextSize
+		    yy = y + HeaderHeight + (dayHeight-gg.TextHeight)\2 + gg.FontAscent
 		    xx = x
 		    
 		    //Drawing Day Numbers and background color for events
@@ -2067,11 +2102,11 @@ Inherits DesktopCanvas
 		      
 		      //Today Background
 		      If DrawDate.Month = Today.Month and StartDate.SQLDate = Today.SQLDate and PrintToday then
-		        gg.ForeColor = MyColors.Today
-		        gg.FillRect(xx+1, Y +1 + HeaderHeight + Floor((i-0.1)/7)*dayHeight, dayWidth-1, dayHeight-1)
-		        gg.ForeColor = mixColor(MyColors.Today, MyColors.Line, &h60)
-		        gg.DrawRect(xx, Y + HeaderHeight + Floor((i-0.1)/7)*dayHeight, dayWidth+1, dayHeight+1)
-		        '1+(Ceil(x / DayWidth)-1) * DayWidth, y-14, DayWidth, DayHeight)
+		        gg.DrawingColor = MyColors.Today
+		        gg.FillRectangle(xx+1, Y +1 + HeaderHeight + Floor((i-0.1)/7)*dayHeight, dayWidth-1, dayHeight-1)
+		        gg.DrawingColor = mixColor(MyColors.Today, MyColors.Line, &h60)
+		        gg.DrawRectangle(xx, Y + HeaderHeight + Floor((i-0.1)/7)*dayHeight, dayWidth+1, dayHeight+1)
+		        '1+(Ceiling(x / DayWidth)-1) * DayWidth, y-14, DayWidth, DayHeight)
 		      End If
 		      
 		      //Event Background
@@ -2080,23 +2115,23 @@ Inherits DesktopCanvas
 		        'If DayColor(StartDate.DayOfYear) <> &c0 then
 		        If DayColor(StartDate.DayOfYear) <> Nil then
 		          If DayColor(StartDate.DayOfYear).Count = 1 then
-		            gg.ForeColor = DayColor(StartDate.DayOfYear).FirstColor
-		            gg.FillRect(xx+1, Y +1 + HeaderHeight + Floor((i-0.1)/7)*dayHeight, dayWidth-1, dayHeight-1)
+		            gg.DrawingColor = DayColor(StartDate.DayOfYear).FirstColor
+		            gg.FillRectangle(xx+1, Y +1 + HeaderHeight + Floor((i-0.1)/7)*dayHeight, dayWidth-1, dayHeight-1)
 		          else
 		            h = (dayHeight-1)/DayColor(StartDate.DayOfYear).Count
 		            For k = 0 to DayColor(StartDate.DayOfYear).Count-1
-		              gg.ForeColor = DayColor(StartDate.DayOfYear).EventColor(k)
-		              gg.FillRect(xx+1, Y+1+h*k+HeaderHeight + Floor((i-0.1)/7)*dayHeight, dayWidth-1, Ceil(h))
+		              gg.DrawingColor = DayColor(StartDate.DayOfYear).EventColor(k)
+		              gg.FillRectangle(xx+1, Y+1+h*k+HeaderHeight + Floor((i-0.1)/7)*dayHeight, dayWidth-1, Ceiling(h))
 		            Next
 		          End If
 		          
 		        End If
 		      End If
 		      
-		      text = str(StartDate.Day)
+		      lText = str(StartDate.Day)
 		      If StartDate.Month <> DrawDate.Month then
-		        If gg.ForeColor <> MyColors.DayNumber then
-		          gg.ForeColor = MyColors.DayNumber
+		        If gg.DrawingColor <> MyColors.DayNumber then
+		          gg.DrawingColor = MyColors.DayNumber
 		          
 		        End If
 		      else
@@ -2104,22 +2139,23 @@ Inherits DesktopCanvas
 		        If DayColor(StartDate.DayOfYear) <> Nil then
 		          If DayColor(StartDate.DayOfYear).FirstColor.Hue = DayColor(StartDate.DayOfYear).FirstColor.Saturation then
 		            If DayColor(StartDate.DayOfYear).FirstColor.Value < 0.5 then
-		              gg.ForeColor = InvertColor(MyColors.DayNumberActive)
+		              gg.DrawingColor = InvertColor(MyColors.DayNumberActive)
 		            End if
 		            
 		          elseif DayColor(StartDate.DayOfYear).FirstColor.Value < 0.9 then
-		            gg.ForeColor = InvertColor(MyColors.DayNumberActive)
+		            gg.DrawingColor = InvertColor(MyColors.DayNumberActive)
 		          else
-		            gg.ForeColor = MyColors.DayNumberActive
+		            gg.DrawingColor = MyColors.DayNumberActive
 		          End If
-		        elseIf gg.ForeColor <> MyColors.DayNumberActive then
-		          gg.ForeColor = MyColors.DayNumberActive
+		        elseIf gg.DrawingColor <> MyColors.DayNumberActive then
+		          gg.DrawingColor = MyColors.DayNumberActive
 		        End If
 		      End If
 		      
-		      gg.DrawString(text, xx + (DayWidth - gg.StringWidth(text))\2, yy)
+		      gg.DrawText(lText, xx + (DayWidth - gg.TextWidth(lText))\2, yy)
 		      
-		      StartDate.Day = StartDate.Day + 1
+		      'StartDate.Day = StartDate.Day + 1
+		      StartDate = StartDate + DIDay
 		      If i mod 7 = 0 then
 		        yy = yy + DayHeight
 		        xx = x
@@ -2129,8 +2165,10 @@ Inherits DesktopCanvas
 		    Next
 		    
 		    
-		    DrawDate.Day = 1
-		    DrawDate.Month = j+1
+		    'DrawDate.Day = 1
+		    'DrawDate.Month = j+1
+		    DrawDate = New DateTime(DrawDate.Year, j+1, 1)
+		    
 		    If j mod VAmount = 0 then
 		      X = 0
 		      Y = Y + HeaderHeight + dayHeight * 6 + VGap
@@ -2141,8 +2179,8 @@ Inherits DesktopCanvas
 		  
 		  '//Drawing border
 		  'If Border then
-		  'gg.ForeColor = MyColors.Border
-		  'gg.DrawRect(0, 0, gg.Width, gg.Height)
+		  'gg.DrawingColor = MyColors.Border
+		  'gg.DrawRectangle(0, 0, gg.Width, gg.Height)
 		  'End If
 		End Sub
 	#tag EndMethod
@@ -2161,9 +2199,9 @@ Inherits DesktopCanvas
 		        If TargetWin32 then 'and not App.UseGDIPlus Then
 		          p = New Picture(w, 1, 32)
 		          Dim gp As Graphics = p.Graphics
-		          gp.ForeColor = g.ForeColor
+		          gp.DrawingColor = g.DrawingColor
 		          gp.DrawLine(0, 0, w, 0)
-		          gp = p.Mask.Graphics
+		          gp = p.CopyMask.Graphics
 		          gp.Pixel(1, 0) = &cFFFFFF
 		          gp.Pixel(3, 0) = &cFFFFFF
 		          
@@ -2175,7 +2213,7 @@ Inherits DesktopCanvas
 		          wend
 		          w = 4
 		          For i = 0 to u
-		            gp.DrawPicture(p.mask, w, 0, w, 1, 0, 0, w, 1)
+		            gp.DrawPicture(p.CopyMask, w, 0, w, 1, 0, 0, w, 1)
 		            w = w*2
 		          Next
 		          g.DrawPicture(p, X1, Y1)
@@ -2188,8 +2226,8 @@ Inherits DesktopCanvas
 		      #endif
 		      
 		      Dim gp As Graphics = p.Graphics
-		      gp.Pixel(0, 0) = g.ForeColor
-		      gp.Pixel(2, 0) = g.ForeColor
+		      gp.Pixel(0, 0) = g.DrawingColor
+		      gp.Pixel(2, 0) = g.DrawingColor
 		      
 		      i=1
 		      u=0
@@ -2207,11 +2245,11 @@ Inherits DesktopCanvas
 		    else
 		      'If mHiDPI then
 		      'For i = 0 to w step 4
-		      'g.FillRect(X1+i, Y1, 2, 2)
+		      'g.FillRectangle(X1+i, Y1, 2, 2)
 		      'Next
 		      'else
 		      For i = 0 to w step 2
-		        g.Pixel(X1+i, Y1) = g.ForeColor
+		        g.Pixel(X1+i, Y1) = g.DrawingColor
 		      Next
 		      'End If
 		    End If
@@ -2223,9 +2261,9 @@ Inherits DesktopCanvas
 		        If TargetWin32 then 'and not App.UseGDIPlus Then
 		          p = New Picture(1, h, 32)
 		          Dim gp As Graphics = p.Graphics
-		          gp.ForeColor = g.ForeColor
+		          gp.DrawingColor = g.DrawingColor
 		          gp.DrawLine(0, 0, 0, h)
-		          gp = p.Mask.Graphics
+		          gp = p.CopyMask.Graphics
 		          gp.Pixel(0, 1) = &cFFFFFF
 		          gp.Pixel(0, 3) = &cFFFFFF
 		          
@@ -2237,7 +2275,7 @@ Inherits DesktopCanvas
 		          wend
 		          h = 4
 		          For i = 0 to u
-		            gp.DrawPicture(p.mask, 0, h, 1, h, 0, 0, 1, h)
+		            gp.DrawPicture(p.CopyMask, 0, h, 1, h, 0, 0, 1, h)
 		            h = h*2
 		          Next
 		          
@@ -2250,8 +2288,8 @@ Inherits DesktopCanvas
 		        p = New Picture(w, 1)
 		      #endif
 		      Dim gp As Graphics = p.Graphics
-		      gp.Pixel(0,0) = g.ForeColor
-		      gp.Pixel(0,2) = g.ForeColor
+		      gp.Pixel(0,0) = g.DrawingColor
+		      gp.Pixel(0,2) = g.DrawingColor
 		      
 		      i=1
 		      u=0
@@ -2268,11 +2306,11 @@ Inherits DesktopCanvas
 		    else
 		      'If mHiDPI then
 		      'For i = 0 to h step 4
-		      'g.FillRect(X1, Y1+i, 2, 2)
+		      'g.FillRectangle(X1, Y1+i, 2, 2)
 		      'Next
 		      'else
 		      For i = 0 to h step 2
-		        g.Pixel(X1, Y1+i) = g.ForeColor
+		        g.Pixel(X1, Y1+i) = g.DrawingColor
 		      Next
 		      'End If
 		    End If
@@ -2291,15 +2329,16 @@ Inherits DesktopCanvas
 		  Dim Antialiasing As Boolean
 		  
 		  #if TargetWin32 and TargetDesktop
-		    If App.UseGDIPlus then
-		      gp = g.Clip(X, Y, Width, Height)
-		      Antialiasing = True
-		    Else
-		      p = New Picture(Width, Height, 32)
-		      If p is Nil then Return
-		      gp = p.Graphics
-		      Antialiasing = False
-		    End If
+		    '>>>>>>>>>>>>>>>>>>>>>>>> First try with antialiasing
+		    'If App.UseGDIPlus then
+		    gp = g.Clip(X, Y, Width, Height)
+		    Antialiasing = True
+		    'Else
+		    'p = New Picture(Width, Height, 32)
+		    'If p is Nil then Return
+		    'gp = p.Graphics
+		    'Antialiasing = False
+		    'End If
 		  #Else
 		    gp = g.Clip(X, Y, Width, Height)
 		    Antialiasing = True
@@ -2327,24 +2366,24 @@ Inherits DesktopCanvas
 		    
 		    If MyStyle.WBodyColorOffset1 = MyStyle.WBodyColorOffset2 then //No gradient
 		      
-		      gp.ForeColor = AlphaColor(E.EventColor, Transparency)
+		      gp.DrawingColor = AlphaColor(E.EventColor, Transparency)
 		      
 		      If Antialiasing then
-		        gp.FillRoundRect(0, 0, gp.Width, gp.Height, Arc, Arc)
+		        gp.FillRoundRectangle(0, 0, gp.Width, gp.Height, Arc, Arc)
 		      else
-		        gp.FillRect(0, 0, gp.Width, gp.Height)
+		        gp.FillRectangle(0, 0, gp.Width, gp.Height)
 		      End If
 		      
 		      If HeaderHeight > 0 and not DayEvent then
-		        gp.ForeColor = mixColor(E.EventColor, &cFFFFFF, MyStyle.WHeaderColorOffset)
-		        gp.FillRoundRect(1, 1, gp.Width-2, 1+HeaderHeight, Arc,Arc)
-		        gp.FillRect(1, 1+HeaderHeight-2, gp.Width-2, 3)
+		        gp.DrawingColor = mixColor(E.EventColor, &cFFFFFF, MyStyle.WHeaderColorOffset)
+		        gp.FillRoundRectangle(1, 1, gp.Width-2, 1+HeaderHeight, Arc,Arc)
+		        gp.FillRectangle(1, 1+HeaderHeight-2, gp.Width-2, 3)
 		      End If
 		      
 		      If HeaderHeight>0 then
-		        gp.ForeColor = AlphaColor(mixColor(E.EventColor, &cFFFFFF, MyStyle.WBodyColorOffset1), Transparency)
-		        gp.FillRoundRect(1, 1 + HeaderHeight, gp.Width-2, gp.Height - 2 - HeaderHeight, Arc, Arc)
-		        gp.FillRect(1, 1 + HeaderHeight, gp.Width-2, 3)
+		        gp.DrawingColor = AlphaColor(mixColor(E.EventColor, &cFFFFFF, MyStyle.WBodyColorOffset1), Transparency)
+		        gp.FillRoundRectangle(1, 1 + HeaderHeight, gp.Width-2, gp.Height - 2 - HeaderHeight, Arc, Arc)
+		        gp.FillRectangle(1, 1 + HeaderHeight, gp.Width-2, 3)
 		      End If
 		      
 		    else //Gradient
@@ -2359,34 +2398,34 @@ Inherits DesktopCanvas
 		        ShiftColor(E.EventColor, MyStyle.WBodyColorOffset2), False)
 		      End If
 		      
-		      gp.ForeColor = E.EventColor
+		      gp.DrawingColor = E.EventColor
 		      
-		      gp.DrawRoundRect(0, 0, gp.Width, gp.Height, Arc,Arc)
+		      gp.DrawRoundRectangle(0, 0, gp.Width, gp.Height, Arc,Arc)
 		      If not Antialiasing then
-		        gp.DrawRect(0, 0, gp.Width, gp.Height)
-		        gp.DrawRoundRect(0, 0, gp.Width, gp.Height, 8,8)
+		        gp.DrawRectangle(0, 0, gp.Width, gp.Height)
+		        gp.DrawRoundRectangle(0, 0, gp.Width, gp.Height, 8,8)
 		      End If
 		      
 		      If HeaderHeight > 0 and not DayEvent then
-		        gp.ForeColor = mixColor(E.EventColor, &cFFFFFF, MyStyle.WHeaderColorOffset)
-		        gp.FillRoundRect(1, 1, gp.Width-2, 1+HeaderHeight, Arc,Arc)
-		        gp.FillRect(1, 1+HeaderHeight-2, gp.Width-2, 3)
+		        gp.DrawingColor = mixColor(E.EventColor, &cFFFFFF, MyStyle.WHeaderColorOffset)
+		        gp.FillRoundRectangle(1, 1, gp.Width-2, 1+HeaderHeight, Arc,Arc)
+		        gp.FillRectangle(1, 1+HeaderHeight-2, gp.Width-2, 3)
 		      End If
 		    End If
 		    
 		    
 		    If not Antialiasing then
-		      gp = p.Mask.Graphics
+		      gp = p.CopyMask.Graphics
 		      
 		      //Drawing picture mask
-		      gp.ForeColor = &cFFFFFF
-		      gp.FillRect(0, 0, gp.Width, gp.Height)
-		      gp.ForeColor = &cDDDDDD
-		      gp.DrawRoundRect(0, 0, gp.Width, gp.Height, 4, 4)
-		      gp.ForeColor = &c888888
-		      gp.DrawRoundRect(0, 0, gp.Width, gp.Height, Arc, Arc)
-		      gp.ForeColor = &c0
-		      gp.DrawRoundRect(0, 0, gp.Width, gp.Height, 8, 8)
+		      gp.DrawingColor = &cFFFFFF
+		      gp.FillRectangle(0, 0, gp.Width, gp.Height)
+		      gp.DrawingColor = &cDDDDDD
+		      gp.DrawRoundRectangle(0, 0, gp.Width, gp.Height, 4, 4)
+		      gp.DrawingColor = &c888888
+		      gp.DrawRoundRectangle(0, 0, gp.Width, gp.Height, Arc, Arc)
+		      gp.DrawingColor = &c0
+		      gp.DrawRoundRectangle(0, 0, gp.Width, gp.Height, 8, 8)
 		      gp.Pixel(1, 1) = &c707070
 		      gp.Pixel(gp.Width-2, 1) = &c707070
 		      gp.Pixel(1, gp.Height-2) = &c707070
@@ -2396,28 +2435,28 @@ Inherits DesktopCanvas
 		      If Transparency <> &c0 or MyStyle.WHeaderTransparency <> &c0 then
 		        
 		        If DayEvent then
-		          gp.ForeColor = Transparency
-		          gp.FillRoundRect(1, 1, gp.Width-2, gp.Height-2, Arc, Arc)
+		          gp.DrawingColor = Transparency
+		          gp.FillRoundRectangle(1, 1, gp.Width-2, gp.Height-2, Arc, Arc)
 		          
 		        Else //not WholeDay
 		          
 		          If HeaderHeight > 0  then
-		            gp.ForeColor = MyStyle.WHeaderTransparency
-		            gp.FillRoundRect(1, 1, gp.Width-2, 1+HeaderHeight, Arc,Arc)
-		            gp.FillRect(1, 1+HeaderHeight-3, gp.Width-2, 3)
+		            gp.DrawingColor = MyStyle.WHeaderTransparency
+		            gp.FillRoundRectangle(1, 1, gp.Width-2, 1+HeaderHeight, Arc,Arc)
+		            gp.FillRectangle(1, 1+HeaderHeight-3, gp.Width-2, 3)
 		          End If
-		          gp.ForeColor = Transparency
-		          gp.FillRoundRect(1, 1+HeaderHeight, gp.Width-2, gp.Height-2-HeaderHeight, Arc, Arc)
+		          gp.DrawingColor = Transparency
+		          gp.FillRoundRectangle(1, 1+HeaderHeight, gp.Width-2, gp.Height-2-HeaderHeight, Arc, Arc)
 		          If HeaderHeight > 0 then
-		            gp.FillRect(1, 1+HeaderHeight, gp.Width-2, 3)
+		            gp.FillRectangle(1, 1+HeaderHeight, gp.Width-2, 3)
 		          End If
 		          
 		          
 		          
 		        End If
 		      else
-		        gp.ForeColor = &c0
-		        gp.FillRoundRect(1, 1, gp.Width-2, gp.Height-2, Arc, Arc)
+		        gp.DrawingColor = &c0
+		        gp.FillRoundRectangle(1, 1, gp.Width-2, gp.Height-2, Arc, Arc)
 		      End If
 		    End If
 		    
@@ -2425,9 +2464,9 @@ Inherits DesktopCanvas
 		    
 		    If MyStyle.WEventFill = FillSolid then //No gradient
 		      
-		      gp.ForeColor = AlphaColor(mixColor(E.EventColor, &cFFFFFF, MyStyle.WBodyColorOffset1), Transparency)
+		      gp.DrawingColor = AlphaColor(mixColor(E.EventColor, &cFFFFFF, MyStyle.WBodyColorOffset1), Transparency)
 		      
-		      gp.FillRect(1, 1 + HeaderHeight, gp.Width-2, gp.Height - 2 - HeaderHeight)
+		      gp.FillRectangle(1, 1 + HeaderHeight, gp.Width-2, gp.Height - 2 - HeaderHeight)
 		    elseif MyStyle.WEventFill = FillGradientVertical then
 		      
 		      gradient(gp, 1+ HeaderHeight, gp.Height - 1 - HeaderHeight, shiftColor(E.EventColor, MyStyle.WBodyColorOffset1), _
@@ -2438,36 +2477,36 @@ Inherits DesktopCanvas
 		      
 		      //Outlook 2013 Style
 		    elseif MyStyle.WEventFill = FillOutlook2013 then
-		      gp.ForeColor = AlphaColor(E.EventColor, Transparency)
-		      gp.FillRect(0, 0, 8, gp.Height)
-		      gp.ForeColor = Alphacolor(ShiftColor(E.EventColor, MyStyle.MColorOffset1), Transparency)
-		      gp.FillRect(8, 0, gp.Width, gp.Height)
+		      gp.DrawingColor = AlphaColor(E.EventColor, Transparency)
+		      gp.FillRectangle(0, 0, 8, gp.Height)
+		      gp.DrawingColor = Alphacolor(ShiftColor(E.EventColor, MyStyle.MColorOffset1), Transparency)
+		      gp.FillRectangle(8, 0, gp.Width, gp.Height)
 		      If E.DayEvent then
-		        gp.ForeColor = &cFFFFFF
-		        gp.FillRect(1, 1, 6, gp.Height-2)
+		        gp.DrawingColor = &cFFFFFF
+		        gp.FillRectangle(1, 1, 6, gp.Height-2)
 		      End If
 		    End If
 		    
 		    //Drawing border
 		    If MyStyle.WEventFill <> FillOutlook2013 then
-		      gp.ForeColor = E.EventColor
-		      gp.DrawRect(0, 0, gp.Width, gp.Height)
+		      gp.DrawingColor = E.EventColor
+		      gp.DrawRectangle(0, 0, gp.Width, gp.Height)
 		    End If
 		    If HeaderHeight > 0 then
-		      gp.ForeColor = mixColor(E.EventColor, &cFFFFFF, MyStyle.WHeaderColorOffset)
-		      gp.FillRect(1, 1, gp.Width-2, HeaderHeight)
+		      gp.DrawingColor = mixColor(E.EventColor, &cFFFFFF, MyStyle.WHeaderColorOffset)
+		      gp.FillRectangle(1, 1, gp.Width-2, HeaderHeight)
 		    End If
 		    
 		    If not Antialiasing then
-		      'gp = p.Mask.Graphics
+		      'gp = p.CopyMask.Graphics
 		      'If HeaderHeight > 0 and MyStyle.WHeaderTransparency <> &c0 then
 		      '//Drawing picture mask
-		      'gp.ForeColor = MyStyle.WHeaderTransparency
-		      'gp.FillRect(1, 1, gp.Width-2, HeaderHeight)
+		      'gp.DrawingColor = MyStyle.WHeaderTransparency
+		      'gp.FillRectangle(1, 1, gp.Width-2, HeaderHeight)
 		      'End If
 		      'If Transparency <> &c0 then
-		      'gp.ForeColor = Transparency
-		      'gp.FillRect(1, HeaderHeight+1, gp.Width-2, gp.Height-HeaderHeight-2)
+		      'gp.DrawingColor = Transparency
+		      'gp.FillRectangle(1, HeaderHeight+1, gp.Width-2, gp.Height-HeaderHeight-2)
 		      'End If
 		    End If
 		    
@@ -2496,27 +2535,27 @@ Inherits DesktopCanvas
 		  If DayHeight < 30 then Return
 		  If DayWidth < 30 then Return
 		  
-		  If UBound(Events) = -1 then Return
+		  If Events.LastIndex = -1 then Return
 		  
 		  Dim i, j, u, Idx, DrawIdx, RealLength, v, LeftOffset As Integer
-		  Dim text As String
+		  Dim lText As String
 		  Dim x, xx,y, yy As Single
 		  Dim E As CalendarEvent
-		  Dim DrawDate As Date = New Date
-		  DrawDate.Hour = 0
-		  DrawDate.Minute = 0
-		  DrawDate.Second = 0
-		  DrawDate.SQLDate = FirstDate.SQLDate
+		  Dim DrawDate As DateTime '= DateTime.Now
+		  'DrawDate.Hour = 0
+		  'DrawDate.Minute = 0
+		  'DrawDate.Second = 0
+		  DrawDate = DateTime.FromString(FirstDate.SQLDate)
 		  'DrawDate.Day = DrawDate.Day + 1
 		  Dim okToDraw As Boolean
 		  
 		  Dim MonthPopupX, MonthPopupY As Integer
 		  
-		  If UBound(DisplayEvents) = -1 or DragEvent = DragMove Then
+		  If DisplayEvents.LastIndex = -1 or DragEvent = DragMove Then
 		    SortEvents(FirstDate, LastDate)
 		  End If
 		  
-		  u = UBound(DisplayEvents)
+		  u = DisplayEvents.LastIndex
 		  If u = -1 then Return
 		  
 		  y = HeaderHeight+17+MyStyle.MNumberYOffset
@@ -2620,12 +2659,12 @@ Inherits DesktopCanvas
 		              else
 		                
 		                
-		                //Drawing Text
-		                gg.ForeColor = textColorEvent
-		                gg.TextSize = MyStyle.MEventTextSize
+		                //Drawing lText
+		                gg.DrawingColor = textColorEvent
+		                gg.FontSize = MyStyle.MEventTextSize
 		                gg.Bold = MyStyle.MDayTextBold
 		                If E.DayEvent then
-		                  gg.DrawString(E.Title, xx+MyStyle.MTextOffset, y + yy +DayHeight*DrawIdx+ (MyStyle.MEventHeight-gg.TextHeight)\2 + gg.TextAscent, remainDays * DayWidth-MyStyle.MTextOffset*2, True)
+		                  gg.DrawText(E.Title, xx+MyStyle.MTextOffset, y + yy +DayHeight*DrawIdx+ (MyStyle.MEventHeight-gg.TextHeight)\2 + gg.FontAscent, remainDays * DayWidth-MyStyle.MTextOffset*2, True)
 		                End If
 		                
 		                remainDays = remainDays - 7
@@ -2649,25 +2688,25 @@ Inherits DesktopCanvas
 		          E.DrawW = DayWidth*RealLength
 		          E.DrawH = MyStyle.MEventHeight
 		          
-		          //Drawing Text
-		          gg.ForeColor = MyStyle.WTextColor
+		          //Drawing lText
+		          gg.DrawingColor = MyStyle.WTextColor
 		          If StyleType = StyleOutlook2013 then
-		            gg.ForeColor = mixColor(E.EventColor, &c0, &hB0)
+		            gg.DrawingColor = mixColor(E.EventColor, &c0, &hB0)
 		          else
 		            If E.EventColor.Hue = E.EventColor.Saturation then
 		              If E.EventColor.Value < 0.5 then
-		                gg.ForeColor = InvertColor(gg.ForeColor)
+		                gg.DrawingColor = InvertColor(gg.DrawingColor)
 		              End if
 		            elseif E.EventColor.Value < 0.9 then
-		              gg.ForeColor = InvertColor(gg.ForeColor)
+		              gg.DrawingColor = InvertColor(gg.DrawingColor)
 		            End If
 		          End If
-		          gg.TextSize = MyStyle.MEventTextSize
+		          gg.FontSize = MyStyle.MEventTextSize
 		          gg.Bold = MyStyle.MDayTextBold
 		          If E.DayEvent then
-		            gg.DrawString(E.Title, x+MyStyle.MTextOffset, y + yy + (MyStyle.MEventHeight-gg.TextHeight)\2 + gg.TextAscent, max(1, E.Length/86400+1) * DayWidth-MyStyle.MTextOffset*2, True)
+		            gg.DrawText(E.Title, x+MyStyle.MTextOffset, y + yy + (MyStyle.MEventHeight-gg.TextHeight)\2 + gg.FontAscent, max(1, E.Length/86400+1) * DayWidth-MyStyle.MTextOffset*2, True)
 		          else
-		            gg.DrawString(E.StartDate.ShortTime + " " + E.Title, x+MyStyle.MTextOffset, y + yy + (MyStyle.MEventHeight-gg.TextHeight)\2 + gg.TextAscent, max(1, E.Length/86400+1) * DayWidth-MyStyle.MTextOffset*2, True)
+		            gg.DrawText(E.StartDate.ToString(DateTime.FormatStyles.Short, datetime.FormatStyles.None) + " " + E.Title, x+MyStyle.MTextOffset, y + yy + (MyStyle.MEventHeight-gg.TextHeight)\2 + gg.FontAscent, max(1, E.Length/86400+1) * DayWidth-MyStyle.MTextOffset*2, True)
 		          End If
 		          
 		        else //Not a whole day event
@@ -2677,8 +2716,8 @@ Inherits DesktopCanvas
 		          E.DrawW = DayWidth
 		          E.DrawH = MyStyle.MEventHeight
 		          
-		          //Drawing Text
-		          gg.ForeColor = E.EventColor
+		          //Drawing lText
+		          gg.DrawingColor = E.EventColor
 		          
 		          If MyStyle.MEventFill = FillOutlook2013 then
 		            //testing
@@ -2687,13 +2726,13 @@ Inherits DesktopCanvas
 		            
 		          End If
 		          
-		          gg.TextSize = MyStyle.MEventTextSize
+		          gg.FontSize = MyStyle.MEventTextSize
 		          gg.Bold = MyStyle.MHourBold
-		          text = E.StartDate.ShortTime + " "
-		          gg.DrawString(text, x+MyStyle.MTextOffset,y+ yy + (MyStyle.MEventHeight-gg.TextHeight)\2 + gg.TextAscent, DayWidth-MyStyle.MTextOffset*2, True)
-		          xx = gg.StringWidth(text)
+		          lText = E.StartDate.ToString(DateTime.FormatStyles.None, DateTime.FormatStyles.Short) + " "
+		          gg.DrawText(lText, x+MyStyle.MTextOffset,y+ yy + (MyStyle.MEventHeight-gg.TextHeight)\2 + gg.FontAscent, DayWidth-MyStyle.MTextOffset*2, True)
+		          xx = gg.TextWidth(lText)
 		          gg.Bold = MyStyle.MTextBold
-		          gg.DrawString(E.Title, x+MyStyle.MTextOffset + xx, y+yy + (MyStyle.MEventHeight-gg.TextHeight)\2 + gg.TextAscent, DayWidth - MyStyle.MTextOffset - xx, True)
+		          gg.DrawText(E.Title, x+MyStyle.MTextOffset + xx, y+yy + (MyStyle.MEventHeight-gg.TextHeight)\2 + gg.FontAscent, DayWidth - MyStyle.MTextOffset - xx, True)
 		          
 		        end if //End of Drawing event
 		        
@@ -2716,15 +2755,15 @@ Inherits DesktopCanvas
 		    
 		    //Drawing the +xx hidden events
 		    If DrawPos.Hidden(i) > 0 then
-		      gg.TextSize = MyStyle.MEventTextSize
-		      gg.ForeColor = &c0000FF
+		      gg.FontSize = MyStyle.MEventTextSize
+		      gg.DrawingColor = &c0000FF
 		      yy = DrawPos.LockLast((DrawDate.TotalSeconds - FirstDate.TotalSeconds) / 86400, 0) * (MyStyle.MEventHeight+1)
 		      'yy = DrawPos.Search(max(0, (E.StartSeconds - FirstDate.TotalSeconds) / 86400), E.Length/86400) * (MyStyle.MEventHeight+1)
 		      If MoreEventsDate <> Nil and MoreEventsDate.SQLDate = DrawDate.SQLDate then
 		        gg.Underline = True
 		      End If
 		      
-		      gg.DrawString("+" + str(DrawPos.Hidden(i)), x+MyStyle.MTextOffset, y + yy + (MyStyle.MEventHeight-gg.TextHeight)\2 + gg.TextAscent)
+		      gg.DrawText("+" + str(DrawPos.Hidden(i)), x+MyStyle.MTextOffset, y + yy + (MyStyle.MEventHeight-gg.TextHeight)\2 + gg.FontAscent)
 		      If gg.Underline then
 		        gg.Underline = False
 		      End If
@@ -2742,7 +2781,8 @@ Inherits DesktopCanvas
 		      x = x + DayWidth
 		    End If
 		    
-		    DrawDate.Day = DrawDate.Day + 1
+		    'DrawDate.Day = DrawDate.Day + 1
+		    DrawDate = DrawDate + DIDay
 		  Next
 		  
 		  If MonthsPopup.Visible then
@@ -2764,27 +2804,27 @@ Inherits DesktopCanvas
 		    If DayHeight < 30 then Return
 		    If DayWidth < 30 then Return
 		    
-		    If UBound(Events) = -1 then Return
+		    If Events.LastIndex = -1 then Return
 		    
 		    Dim i, j, k, u, Idx, DrawIdx, RealLength, v, DeltaX, LeftOffset As Integer
-		    Dim text As String
+		    Dim lText As String
 		    Dim x, xx,y, yy As Single
 		    Dim p As Picture
 		    Dim gp As Graphics
 		    Dim E As CalendarEvent
-		    Dim DrawDate As Date = New Date
-		    DrawDate.Hour = 0
-		    DrawDate.Minute = 0
-		    DrawDate.Second = 0
-		    DrawDate.SQLDate = FirstDate.SQLDate
+		    Dim DrawDate As DateTime '= New DateTime
+		    'DrawDate.Hour = 0
+		    'DrawDate.Minute = 0
+		    'DrawDate.Second = 0
+		    DrawDate = DateTime.FromString(FirstDate.SQLDate)
 		    'DrawDate.Day = DrawDate.Day + 1
 		    Dim okToDraw As Boolean
 		    
-		    If UBound(DisplayEvents) = -1 Then
+		    If DisplayEvents.LastIndex = -1 Then
 		      SortEvents(FirstDate, LastDate)
 		    End If
 		    
-		    u = UBound(DisplayEvents)
+		    u = DisplayEvents.LastIndex
 		    If u = -1 then Return
 		    
 		    y = HeaderHeight+17+MyStyle.MNumberYOffset
@@ -2858,71 +2898,71 @@ Inherits DesktopCanvas
 		              elseif MyStyle.MEventFill = FillGradientHorizontal then
 		                gradient(gp, 0, gp.Width, ShiftColor(E.EventColor, MyStyle.MColorOffset1), ShiftColor(E.EventColor, MyStyle.MColorOffset2), False)
 		              elseif MyStyle.MEventFill = FillSolid then
-		                gp.ForeColor = E.EventColor
-		                gp.FillRect(0, 0, gp.Width, gp.Height)
+		                gp.DrawingColor = E.EventColor
+		                gp.FillRectangle(0, 0, gp.Width, gp.Height)
 		              elseif MyStyle.MEventFill = FillOutlook2013 then
-		                gp.ForeColor = E.EventColor
-		                gp.FillRect(0, 0, 8, gp.Height)
-		                gp.ForeColor = ShiftColor(E.EventColor, MyStyle.MColorOffset1)
-		                gp.FillRect(8, 0, gp.Width, gp.Height)
+		                gp.DrawingColor = E.EventColor
+		                gp.FillRectangle(0, 0, 8, gp.Height)
+		                gp.DrawingColor = ShiftColor(E.EventColor, MyStyle.MColorOffset1)
+		                gp.FillRectangle(8, 0, gp.Width, gp.Height)
 		                If E.DayEvent then
-		                  gp.ForeColor = &cFFFFFF
-		                  gp.FillRect(1, 1, 6, gp.Height-2)
+		                  gp.DrawingColor = &cFFFFFF
+		                  gp.FillRectangle(1, 1, 6, gp.Height-2)
 		                End If
 		              End If
 		              If MyStyle.MBorderSolid then
-		                gp.ForeColor = E.EventColor
-		                gp.DrawRect(0, 0, gp.Width, gp.Height)
+		                gp.DrawingColor = E.EventColor
+		                gp.DrawRectangle(0, 0, gp.Width, gp.Height)
 		                If MyStyle.MDayRoundRect then
-		                  gp.DrawRoundRect(0, 0, gp.Width, gp.Height, 6, 6)
-		                  gp.DrawRoundRect(0, 0, gp.Width, gp.Height, 8, 8)
+		                  gp.DrawRoundRectangle(0, 0, gp.Width, gp.Height, 6, 6)
+		                  gp.DrawRoundRectangle(0, 0, gp.Width, gp.Height, 8, 8)
 		                End If
 		              End If
 		            else
-		              gp.ForeColor = ShiftColor(E.EventColor, MyStyle.MColorOffset1)
-		              gp.FillRect(0, 0, gp.Width, gp.Height)
+		              gp.DrawingColor = ShiftColor(E.EventColor, MyStyle.MColorOffset1)
+		              gp.FillRectangle(0, 0, gp.Width, gp.Height)
 		            End If
 		            
 		            If MyStyle.MDayRoundRect or MyStyle.MDayTransparent then
 		              
 		              //Drawing picture mask
-		              gp = p.Mask.Graphics
-		              gp.ForeColor = &cFFFFFF
-		              gp.FillRect(0, 0, gp.Width, gp.Height)
+		              gp = p.CopyMask.Graphics
+		              gp.DrawingColor = &cFFFFFF
+		              gp.FillRectangle(0, 0, gp.Width, gp.Height)
 		              If MyStyle.MDayRoundRect then
 		                
-		                gp.ForeColor = mixColor(MyStyle.MDayTransparency, &cFFFFFF, &hB8)
-		                gp.DrawRoundRect(0, 0, gp.Width, gp.Height, 4, 4)
-		                gp.ForeColor = mixColor(MyStyle.MDayTransparency, &cFFFFFF, &hF)
-		                gp.DrawRoundRect(0, 0, gp.Width, gp.Height, 6, 6)
+		                gp.DrawingColor = mixColor(MyStyle.MDayTransparency, &cFFFFFF, &hB8)
+		                gp.DrawRoundRectangle(0, 0, gp.Width, gp.Height, 4, 4)
+		                gp.DrawingColor = mixColor(MyStyle.MDayTransparency, &cFFFFFF, &hF)
+		                gp.DrawRoundRectangle(0, 0, gp.Width, gp.Height, 6, 6)
 		                If MyStyle.MBorderSolid then
-		                  gp.ForeColor = &c0
-		                  gp.DrawRoundRect(0, 0, gp.Width, gp.Height, 8, 8)
+		                  gp.DrawingColor = &c0
+		                  gp.DrawRoundRectangle(0, 0, gp.Width, gp.Height, 8, 8)
 		                  If MyStyle.MDayTransparent then
-		                    gp.ForeColor = MyStyle.MDayTransparency
+		                    gp.DrawingColor = MyStyle.MDayTransparency
 		                  else
-		                    gp.ForeColor = &c0
+		                    gp.DrawingColor = &c0
 		                  End If
-		                  gp.FillRoundRect(1, 1, gp.Width-2, gp.Height-2, 6, 6)
+		                  gp.FillRoundRectangle(1, 1, gp.Width-2, gp.Height-2, 6, 6)
 		                else
 		                  If MyStyle.MDayTransparent then
-		                    gp.ForeColor = MyStyle.MDayTransparency
+		                    gp.DrawingColor = MyStyle.MDayTransparency
 		                  else
-		                    gp.ForeColor = &c0
+		                    gp.DrawingColor = &c0
 		                  End If
-		                  gp.FillRoundRect(0, 0, gp.Width, gp.Height, 8, 8)
+		                  gp.FillRoundRectangle(0, 0, gp.Width, gp.Height, 8, 8)
 		                End If
 		                gp.Pixel(1, 1) = &c707070
 		                gp.Pixel(gp.Width-2, 1) = &c707070
 		                gp.Pixel(1, gp.Height-2) = &c707070
 		                gp.Pixel(gp.Width-2, gp.Height-2) = &c707070
 		              else
-		                gp.ForeColor = MyStyle.MDayTransparency
-		                gp.FillRect(0, 0, gp.Width, gp.Height)
+		                gp.DrawingColor = MyStyle.MDayTransparency
+		                gp.FillRectangle(0, 0, gp.Width, gp.Height)
 		              End If
 		              'elseif MyStyle.MDayTransparency <> &c0 then
-		              'gp.ForeColor = mixColor(E.EventColor, &cFFFFFF, MyStyle.MDayTransparency.Red)
-		              'gp.FillRect(1, 1, gp.Width-2, gp.Height-2)
+		              'gp.DrawingColor = mixColor(E.EventColor, &cFFFFFF, MyStyle.MDayTransparency.Red)
+		              'gp.FillRectangle(1, 1, gp.Width-2, gp.Height-2)
 		            End If
 		            
 		            //Should go on to the next week line
@@ -2949,8 +2989,8 @@ Inherits DesktopCanvas
 		              
 		              
 		              
-		              gp = p.Mask.Graphics
-		              gp.ForeColor = &cFFFFFF
+		              gp = p.CopyMask.Graphics
+		              gp.DrawingColor = &cFFFFFF
 		              v = Floor(MyStyle.MEventHeight/2)
 		              xx = gg.Width - x
 		              RealLength = p.Width
@@ -2992,25 +3032,25 @@ Inherits DesktopCanvas
 		            E.DrawW = p.Width
 		            E.DrawH = p.Height
 		            
-		            //Drawing Text
-		            gg.ForeColor = MyStyle.WTextColor
+		            //Drawing lText
+		            gg.DrawingColor = MyStyle.WTextColor
 		            If StyleType = StyleOutlook2013 then
-		              gg.ForeColor = mixColor(E.EventColor, &c0, &hB0)
+		              gg.DrawingColor = mixColor(E.EventColor, &c0, &hB0)
 		            else
 		              If E.EventColor.Hue = E.EventColor.Saturation then
 		                If E.EventColor.Value < 0.5 then
-		                  gg.ForeColor = InvertColor(gg.ForeColor)
+		                  gg.DrawingColor = InvertColor(gg.DrawingColor)
 		                End if
 		              elseif E.EventColor.Value < 0.9 then
-		                gg.ForeColor = InvertColor(gg.ForeColor)
+		                gg.DrawingColor = InvertColor(gg.DrawingColor)
 		              End If
 		            End If
-		            gg.TextSize = MyStyle.MEventTextSize
+		            gg.FontSize = MyStyle.MEventTextSize
 		            gg.Bold = MyStyle.MDayTextBold
 		            If E.DayEvent then
-		              gg.DrawString(E.Title, x+MyStyle.MTextOffset, y + yy + (MyStyle.MEventHeight-gg.TextHeight)\2 + gg.TextAscent, max(1, E.Length/86400+1) * DayWidth-MyStyle.MTextOffset*2, True)
+		              gg.DrawText(E.Title, x+MyStyle.MTextOffset, y + yy + (MyStyle.MEventHeight-gg.TextHeight)\2 + gg.FontAscent, max(1, E.Length/86400+1) * DayWidth-MyStyle.MTextOffset*2, True)
 		            else
-		              gg.DrawString(E.StartDate.ShortTime + " " + E.Title, x+MyStyle.MTextOffset, y + yy + (MyStyle.MEventHeight-gg.TextHeight)\2 + gg.TextAscent, max(1, E.Length/86400+1) * DayWidth-MyStyle.MTextOffset*2, True)
+		              gg.DrawText(E.StartDate.ToString(DateTime.FormatStyles.None, DateTime.FormatStyles.Short) + " " + E.Title, x+MyStyle.MTextOffset, y + yy + (MyStyle.MEventHeight-gg.TextHeight)\2 + gg.FontAscent, max(1, E.Length/86400+1) * DayWidth-MyStyle.MTextOffset*2, True)
 		            End If
 		            
 		          else //Not a whole day event
@@ -3020,8 +3060,8 @@ Inherits DesktopCanvas
 		            E.DrawW = DayWidth
 		            E.DrawH = MyStyle.MEventHeight
 		            
-		            //Drawing Text
-		            gg.ForeColor = E.EventColor
+		            //Drawing lText
+		            gg.DrawingColor = E.EventColor
 		            
 		            If MyStyle.MEventFill = FillOutlook2013 then
 		              //testing
@@ -3030,21 +3070,21 @@ Inherits DesktopCanvas
 		              
 		              'p = New Picture(DayWidth - LeftOffset * 2+1, MyStyle.MEventHeight, 32)
 		              'gp = p.Graphics
-		              'gp.ForeColor = E.EventColor
-		              'gp.FillRect(0, 0, 8, gp.Height)
-		              'gp.ForeColor = ShiftColor(E.EventColor, MyStyle.MColorOffset1)
-		              'gp.FillRect(8, 0, gp.Width, gp.Height)
+		              'gp.DrawingColor = E.EventColor
+		              'gp.FillRectangle(0, 0, 8, gp.Height)
+		              'gp.DrawingColor = ShiftColor(E.EventColor, MyStyle.MColorOffset1)
+		              'gp.FillRectangle(8, 0, gp.Width, gp.Height)
 		              'gg.DrawPicture(p, x+MyStyle.MLeftOffset, y+yy)
-		              'gg.ForeColor = mixColor(E.EventColor, &c0, &hB0)
+		              'gg.DrawingColor = mixColor(E.EventColor, &c0, &hB0)
 		            End If
 		            
-		            gg.TextSize = MyStyle.MEventTextSize
+		            gg.FontSize = MyStyle.MEventTextSize
 		            gg.Bold = MyStyle.MHourBold
-		            text = E.StartDate.ShortTime + " "
-		            gg.DrawString(text, x+MyStyle.MTextOffset,y+ yy + (MyStyle.MEventHeight-gg.TextHeight)\2 + gg.TextAscent, DayWidth-MyStyle.MTextOffset*2, True)
-		            xx = gg.StringWidth(text)
+		            lText = E.StartDate.ToString(DateTime.FormatStyles.None, DateTime.FormatStyles.Short) + " "
+		            gg.DrawText(lText, x+MyStyle.MTextOffset,y+ yy + (MyStyle.MEventHeight-gg.TextHeight)\2 + gg.FontAscent, DayWidth-MyStyle.MTextOffset*2, True)
+		            xx = gg.TextWidth(lText)
 		            gg.Bold = MyStyle.MTextBold
-		            gg.DrawString(E.Title, x+MyStyle.MTextOffset + xx, y+yy + (MyStyle.MEventHeight-gg.TextHeight)\2 + gg.TextAscent, DayWidth - MyStyle.MTextOffset - xx, True)
+		            gg.DrawText(E.Title, x+MyStyle.MTextOffset + xx, y+yy + (MyStyle.MEventHeight-gg.TextHeight)\2 + gg.FontAscent, DayWidth - MyStyle.MTextOffset - xx, True)
 		            
 		          end if //End of Drawing event
 		          
@@ -3067,10 +3107,10 @@ Inherits DesktopCanvas
 		      
 		      //Drawing the +xx hidden events
 		      If DrawPos.Hidden(i) > 0 then
-		        gg.TextSize = MyStyle.MEventTextSize
-		        gg.ForeColor = &c0000FF
+		        gg.FontSize = MyStyle.MEventTextSize
+		        gg.DrawingColor = &c0000FF
 		        yy = DrawPos.LockLast((DrawDate.TotalSeconds - FirstDate.TotalSeconds) / 86400, 0)+1
-		        gg.DrawString("+" + str(DrawPos.Hidden(i)), x+MyStyle.MTextOffset, y + yy*(MyStyle.MEventHeight))
+		        gg.DrawText("+" + str(DrawPos.Hidden(i)), x+MyStyle.MTextOffset, y + yy*(MyStyle.MEventHeight))
 		      End If
 		      
 		      If i mod 7 = 0 then
@@ -3093,15 +3133,16 @@ Inherits DesktopCanvas
 		  'Dim mp As new MethodProfiler(CurrentMethodName)
 		  
 		  Dim i, j, u, v, Idx, maxAmount As Integer
-		  Dim text As String
+		  Dim lText As String
 		  Dim x, xx,y, yy, w As Single
 		  
 		  Dim E As CalendarEvent
-		  Dim DrawDate As Date = New Date
-		  DrawDate.Hour = 0
-		  DrawDate.Minute = 0
-		  DrawDate.Second = 0
-		  DrawDate.SQLDate = FirstDate.SQLDate
+		  Dim DrawDate As DateTime '= New DateTime
+		  'DrawDate.Hour = 0
+		  'DrawDate.Minute = 0
+		  'DrawDate.Second = 0
+		  'DrawDate.SQLDate = FirstDate.SQLDate
+		  DrawDate = DateTime.FromString(FirstDate.SQLDate)
 		  
 		  Dim WholeDay As Boolean
 		  Dim FirstJ As Integer
@@ -3132,14 +3173,14 @@ Inherits DesktopCanvas
 		    E.EventColor = MyColors.WDefaultColor
 		    
 		    ReDim DisplayEvents(-1)
-		    DisplayEvents.Append E
+		    DisplayEvents.Add E
 		    SortEvents(FirstDate, LastDate, True)
 		  else
 		    SortEvents(FirstDate, LastDate)
 		  End If
 		  
 		  //If no events to draw we get out
-		  u = UBound(DisplayEvents)
+		  u = DisplayEvents.LastIndex
 		  If u =-1 then Return
 		  
 		  
@@ -3231,7 +3272,7 @@ Inherits DesktopCanvas
 		          yy = DrawPosDay.Search(max(0,(E.StartSeconds - FirstDate.TotalSeconds) / 86400), w-1) * MyStyle.WEventHeight
 		          
 		          //Seems this has no use
-		          'w = max(0, Ceil((E.EndDate.TotalSeconds - LastDate.TotalSeconds)/86400))
+		          'w = max(0, Ceiling((E.EndDate.TotalSeconds - LastDate.TotalSeconds)/86400))
 		          
 		        else
 		          DrawPosDay.AddHidden(i, E.Length/86400)
@@ -3243,13 +3284,13 @@ Inherits DesktopCanvas
 		        
 		        //Finding Y position of the Event
 		        If HideNightTime and E.StartDate.Hour >= DayStartHour and E.StartDate.Hour < DayEndHour then
-		          y = Ceil(ViewHeight - (VisibleHours-(gg.Height-ViewHeight)/HourHeight)*HourHeight*ScrollPosition/VisibleHours + (E.StartDate.Hour-DayStartHour+1 + E.StartDate.Minute/60) * Hourheight)
+		          y = Ceiling(ViewHeight - (VisibleHours-(gg.Height-ViewHeight)/HourHeight)*HourHeight*ScrollPosition/VisibleHours + (E.StartDate.Hour-DayStartHour+1 + E.StartDate.Minute/60) * Hourheight)
 		        elseif not HideNightTime then
-		          y = Ceil(ViewHeight - (VisibleHours-(gg.Height-ViewHeight)/HourHeight)*HourHeight*ScrollPosition/VisibleHours + (E.StartDate.Hour + E.StartDate.Minute/60) * Hourheight)
+		          y = Ceiling(ViewHeight - (VisibleHours-(gg.Height-ViewHeight)/HourHeight)*HourHeight*ScrollPosition/VisibleHours + (E.StartDate.Hour + E.StartDate.Minute/60) * Hourheight)
 		        End If
 		        
 		        If E.StartDate < DrawDate then
-		          Dim nbDays As Integer = Ceil((DrawDate.TotalSeconds - E.StartSeconds)/86400)
+		          Dim nbDays As Integer = Ceiling((DrawDate.TotalSeconds - E.StartSeconds)/86400)
 		          
 		          y = y - HourHeight*24*nbDays
 		        End If
@@ -3285,7 +3326,7 @@ Inherits DesktopCanvas
 		      end if
 		      
 		      
-		      //Drawing the event and Text
+		      //Drawing the event and lText
 		      If WholeDay then
 		        E.DrawX = X
 		        E.DrawY = Y + YY
@@ -3297,27 +3338,27 @@ Inherits DesktopCanvas
 		        DrawEvent(gDay, E, x, yy, DayWidth * w, MyStyle.WEventHeight, True)
 		        
 		        
-		        //Drawing Text
+		        //Drawing lText
 		        If MyStyle.WAutoTextColor then
-		          gDay.ForeColor = E.EventColor
+		          gDay.DrawingColor = E.EventColor
 		          
 		          If E.EventColor.Saturation < 1.0 then
-		            gDay.ForeColor = mixColor(E.EventColor, &c0, &h60)
+		            gDay.DrawingColor = mixColor(E.EventColor, &c0, &h60)
 		          End If
 		          
 		        else
-		          gDay.ForeColor = MyStyle.WTextColor
+		          gDay.DrawingColor = MyStyle.WTextColor
 		          If E.EventColor.Hue = E.EventColor.Saturation then
 		            If E.EventColor.Value < 0.5 then
-		              gDay.ForeColor = InvertColor(gDay.ForeColor)
+		              gDay.DrawingColor = InvertColor(gDay.DrawingColor)
 		            End if
 		          elseif E.EventColor.Value < 0.9 then
-		            gDay.ForeColor = InvertColor(gDay.ForeColor)
+		            gDay.DrawingColor = InvertColor(gDay.DrawingColor)
 		          End If
 		        End If
-		        gDay.TextSize = MyStyle.WHeaderTextSize
+		        gDay.FontSize = MyStyle.WHeaderTextSize
 		        
-		        gDay.DrawString(E.Title, x+MyStyle.MTextOffset,  yy + (18-gDay.TextHeight)\2 + gDay.TextAscent, max(1, E.Length/86400+1) * DayWidth -6, True)
+		        gDay.DrawText(E.Title, x+MyStyle.MTextOffset,  yy + (18-gDay.TextHeight)\2 + gDay.FontAscent, max(1, E.Length/86400+1) * DayWidth -6, True)
 		        
 		        
 		        
@@ -3339,15 +3380,15 @@ Inherits DesktopCanvas
 		        gpc = gc.Clip(Floor(X+XX), Y, W, E.DrawH-1)
 		        If E.MouseOver and E.Editable then
 		          If MyStyle.WAutoTextColor then
-		            gpc.ForeColor = E.EventColor
+		            gpc.DrawingColor = E.EventColor
 		          else
-		            gpc.ForeColor = MyStyle.WTextColor
+		            gpc.DrawingColor = MyStyle.WTextColor
 		            If E.EventColor.Hue = E.EventColor.Saturation then
 		              If E.EventColor.Value < 0.5 then
-		                gpc.ForeColor = InvertColor(gpc.ForeColor)
+		                gpc.DrawingColor = InvertColor(gpc.DrawingColor)
 		              End if
 		            elseif E.EventColor.Value < 0.9 then
-		              gpc.ForeColor = InvertColor(gpc.ForeColor)
+		              gpc.DrawingColor = InvertColor(gpc.DrawingColor)
 		            End If
 		          End If
 		          gpc.DrawLine(E.DrawW\2-3, E.DrawH-5, E.DrawW\2+3, E.DrawH-5)
@@ -3355,56 +3396,56 @@ Inherits DesktopCanvas
 		        End If
 		        
 		        
-		        //Drawing Text
+		        //Drawing lText
 		        If MyStyle.WAutoTextColor then
-		          gpc.ForeColor = E.EventColor
+		          gpc.DrawingColor = E.EventColor
 		          
 		          If E.EventColor.Saturation < 1.0 then
-		            gpc.ForeColor = mixColor(E.EventColor, &c0, &h60)
+		            gpc.DrawingColor = mixColor(E.EventColor, &c0, &h60)
 		          End If
 		          
 		        else
 		          
 		          If StyleType = StyleOutlook2013 then
-		            gpc.ForeColor = mixColor(E.EventColor, &c0, &hB0)
+		            gpc.DrawingColor = mixColor(E.EventColor, &c0, &hB0)
 		          else
-		            gpc.ForeColor = MyStyle.WTextColor
+		            gpc.DrawingColor = MyStyle.WTextColor
 		            If E.EventColor.Hue = E.EventColor.Saturation then
 		              If E.EventColor.Value < 0.5 then
-		                gpc.ForeColor = InvertColor(gpc.ForeColor)
+		                gpc.DrawingColor = InvertColor(gpc.DrawingColor)
 		              End if
 		            elseif E.EventColor.Value < 0.9 then
-		              gpc.ForeColor = InvertColor(gpc.ForeColor)
+		              gpc.DrawingColor = InvertColor(gpc.DrawingColor)
 		            End If
 		          End If
 		        End If
-		        gpc.TextSize = MyStyle.WHeaderTextSize
+		        gpc.FontSize = MyStyle.WHeaderTextSize
 		        gpc.Bold = MyStyle.WHeaderTextBold
 		        
 		        //Fix Version 1.7
 		        If MyStyle.WHeaderHeight > 0 then
-		          yy = (MyStyle.WHeaderHeight-gpc.TextSize)/2 + gpc.TextAscent
+		          yy = (MyStyle.WHeaderHeight-gpc.FontSize)/2 + gpc.FontAscent
 		        else
-		          yy = gpc.TextAscent + 1
+		          yy = gpc.FontAscent + 1
 		        End If
 		        
 		        If yy < E.DrawH then
-		          text = MyStyle.WHeaderTextFormat.Replace("%Start", E.StartDate.ShortTime).Replace("%End", E.EndDate.ShortTime)
-		          If text.InStr("%Length")>0 then
-		            text = text.Replace("%Length", str(Floor(E.Length/3600)) + ":" + Format(E.Length/60 - Floor(E.Length/3600) * 60, "00"))
+		          lText = MyStyle.WHeaderTextFormat.Replace("%Start", E.StartDate.ToString(DateTime.FormatStyles.None, DateTime.FormatStyles.Short)).Replace("%End", E.EndDate.ToString(DateTime.FormatStyles.None, DateTime.FormatStyles.Short))
+		          If lText.IndexOf("%Length")>0 then
+		            lText = lText.Replace("%Length", str(Floor(E.Length/3600)) + ":" + Format(E.Length/60 - Floor(E.Length/3600) * 60, "00"))
 		          End If
-		          If text <> "" then
-		            gpc.DrawString(text, 1+MyStyle.MTextOffset, yy, w-6, True)
+		          If lText <> "" then
+		            gpc.DrawText(lText, 1+MyStyle.MTextOffset, yy, w-6, True)
 		          End If
 		        else
-		          gpc.DrawString("...", 1+MyStyle.MTextOffset, E.DrawH - 1)
+		          gpc.DrawText("...", 1+MyStyle.MTextOffset, E.DrawH - 1)
 		          Continue for j
 		        End If
 		        'End If
-		        gpc.TextSize = MyStyle.WBodyTextSize
+		        gpc.FontSize = MyStyle.WBodyTextSize
 		        gpc.Bold = MyStyle.WBodyTextBold
 		        
-		        If text <> "" then
+		        If lText <> "" then
 		          If MyStyle.WHeaderHeight>0 then
 		            yy = max(yy+gpc.TextHeight, MyStyle.WHeaderHeight+gpc.TextHeight)
 		          else
@@ -3412,17 +3453,17 @@ Inherits DesktopCanvas
 		          End If
 		        End If
 		        
-		        text = ""
-		        text = E.Title
+		        lText = ""
+		        lText = E.Title
 		        if E.Location <> "" then
-		          text = text + " – " + E.Location
+		          lText = lText + " – " + E.Location
 		        end if
 		        if E.Description <> "" then
-		          text = text + EndOfLine + E.Description
+		          lText = lText + EndOfLine + E.Description
 		        end if
 		        
 		        
-		        gpc.DrawString(text, 1+MyStyle.MTextOffset, yy, w - 8, False)
+		        gpc.DrawText(lText, 1+MyStyle.MTextOffset, yy, w - 8, False)
 		        
 		      End If
 		      
@@ -3439,17 +3480,19 @@ Inherits DesktopCanvas
 		    
 		    //Drawing the +xx hidden events
 		    If DrawPosDay.Hidden(i) > 0 and DayEventsHeight <> 0 then
-		      gDay.TextSize = MyStyle.WHeaderTextSize
-		      gDay.ForeColor = &c0000FF
+		      gDay.FontSize = MyStyle.WHeaderTextSize
+		      gDay.DrawingColor = &c0000FF
 		      yy = DrawPosDay.LockLast((DrawDate.TotalSeconds - FirstDate.TotalSeconds) / 86400, 0)
 		      If yy*(MyStyle.WEventHeight) + gDay.TextHeight < DayEventsHeight then
-		        gDay.DrawString("+" + str(DrawPosDay.Hidden(i)), x+MyStyle.MTextOffset, yy*(MyStyle.WEventHeight) + gDay.TextHeight)
+		        gDay.DrawText("+" + str(DrawPosDay.Hidden(i)), x+MyStyle.MTextOffset, yy*(MyStyle.WEventHeight) + gDay.TextHeight)
 		      End If
 		    End If
 		    
 		    
 		    x = x + DayWidth
-		    DrawDate.Day = DrawDate.Day + 1
+		    'DrawDate.Day = DrawDate.Day + 1
+		    DrawDate = DrawDate + DIDay
+		    
 		  Next
 		  
 		  
@@ -3465,16 +3508,17 @@ Inherits DesktopCanvas
 		    'Dim mp As new MethodProfiler(CurrentMethodName)
 		    
 		    Dim i, j, u, v, Idx, maxAmount As Integer
-		    Dim text As String
+		    Dim lText As String
 		    Dim x, xx,y, yy, w As Single
 		    Dim p As Picture
 		    Dim gp As Graphics
 		    Dim E As CalendarEvent
-		    Dim DrawDate As Date = New Date
-		    DrawDate.Hour = 0
-		    DrawDate.Minute = 0
-		    DrawDate.Second = 0
-		    DrawDate.SQLDate = FirstDate.SQLDate
+		    Dim DrawDate As DateTime '= New DateTime
+		    'DrawDate.Hour = 0
+		    'DrawDate.Minute = 0
+		    'DrawDate.Second = 0
+		    'DrawDate.SQLDate = FirstDate.SQLDate
+		    DrawDate = DateTime.FromString(FirstDate.SQLDate)
 		    Dim WholeDay As Boolean
 		    Dim FirstJ As Integer
 		    Dim okToDraw As Boolean
@@ -3504,14 +3548,14 @@ Inherits DesktopCanvas
 		      E.EventColor = MyColors.WDefaultColor
 		      
 		      ReDim DisplayEvents(-1)
-		      DisplayEvents.Append E
+		      DisplayEvents.Add E
 		      SortEvents(FirstDate, LastDate, True)
 		    else
 		      SortEvents(FirstDate, LastDate)
 		    End If
 		    
 		    //If no events to draw we get out
-		    u = UBound(DisplayEvents)
+		    u = DisplayEvents.LastIndex
 		    If u =-1 then Return
 		    
 		    
@@ -3606,7 +3650,7 @@ Inherits DesktopCanvas
 		            yy = DrawPosDay.Search(max(0,(E.StartSeconds - FirstDate.TotalSeconds) / 86400), w-1) * MyStyle.WEventHeight
 		            
 		            //Seems this has no use
-		            'w = max(0, Ceil((E.EndDate.TotalSeconds - LastDate.TotalSeconds)/86400))
+		            'w = max(0, Ceiling((E.EndDate.TotalSeconds - LastDate.TotalSeconds)/86400))
 		            
 		          else
 		            DrawPosDay.AddHidden(i, E.Length/86400)
@@ -3618,13 +3662,13 @@ Inherits DesktopCanvas
 		          
 		          //Finding Y position of the Event
 		          If HideNightTime and E.StartDate.Hour >= DayStartHour and E.StartDate.Hour < DayEndHour then
-		            y = Ceil(ViewHeight - (VisibleHours-(gg.Height-ViewHeight)/HourHeight)*HourHeight*ScrollPosition/VisibleHours + (E.StartDate.Hour-DayStartHour+1 + E.StartDate.Minute/60) * Hourheight)
+		            y = Ceiling(ViewHeight - (VisibleHours-(gg.Height-ViewHeight)/HourHeight)*HourHeight*ScrollPosition/VisibleHours + (E.StartDate.Hour-DayStartHour+1 + E.StartDate.Minute/60) * Hourheight)
 		          elseif not HideNightTime then
-		            y = Ceil(ViewHeight - (VisibleHours-(gg.Height-ViewHeight)/HourHeight)*HourHeight*ScrollPosition/VisibleHours + (E.StartDate.Hour + E.StartDate.Minute/60) * Hourheight)
+		            y = Ceiling(ViewHeight - (VisibleHours-(gg.Height-ViewHeight)/HourHeight)*HourHeight*ScrollPosition/VisibleHours + (E.StartDate.Hour + E.StartDate.Minute/60) * Hourheight)
 		          End If
 		          
 		          If E.StartDate < DrawDate then
-		            Dim nbDays As Integer = Ceil((DrawDate.TotalSeconds - E.StartSeconds)/86400)
+		            Dim nbDays As Integer = Ceiling((DrawDate.TotalSeconds - E.StartSeconds)/86400)
 		            
 		            y = y - HourHeight*24*nbDays
 		          End If
@@ -3677,17 +3721,17 @@ Inherits DesktopCanvas
 		            
 		            
 		            If MyStyle.WBodyColorOffset1 = MyStyle.WBodyColorOffset2 then //No gradient
-		              gp.ForeColor = E.EventColor
-		              gp.FillRect(0, 0, gp.Width, gp.Height)
+		              gp.DrawingColor = E.EventColor
+		              gp.FillRectangle(0, 0, gp.Width, gp.Height)
 		              If MyStyle.WHeaderHeight > 0 and not WholeDay then
-		                gp.ForeColor = mixColor(E.EventColor, &cFFFFFF, MyStyle.WHeaderColorOffset)
-		                gp.FillRoundRect(1, 1, gp.Width-2, 1+MyStyle.WHeaderHeight, 6,6)
-		                gp.FillRect(1, 1+MyStyle.WHeaderHeight-2, gp.Width-2, 3)
+		                gp.DrawingColor = mixColor(E.EventColor, &cFFFFFF, MyStyle.WHeaderColorOffset)
+		                gp.FillRoundRectangle(1, 1, gp.Width-2, 1+MyStyle.WHeaderHeight, 6,6)
+		                gp.FillRectangle(1, 1+MyStyle.WHeaderHeight-2, gp.Width-2, 3)
 		              End If
 		              
-		              gp.ForeColor = mixColor(E.EventColor, &cFFFFFF, MyStyle.WBodyColorOffset1)
-		              gp.FillRoundRect(1, 1 + MyStyle.WHeaderHeight, gp.Width-2, gp.Height - 2 - MyStyle.WHeaderHeight, 6, 6)
-		              gp.FillRect(1, 1 + MyStyle.WHeaderHeight, gp.Width-2, 3)
+		              gp.DrawingColor = mixColor(E.EventColor, &cFFFFFF, MyStyle.WBodyColorOffset1)
+		              gp.FillRoundRectangle(1, 1 + MyStyle.WHeaderHeight, gp.Width-2, gp.Height - 2 - MyStyle.WHeaderHeight, 6, 6)
+		              gp.FillRectangle(1, 1 + MyStyle.WHeaderHeight, gp.Width-2, 3)
 		            else
 		              If MyStyle.WBodyGradientVertical then
 		                gradient(gp, 1+ MyStyle.WHeaderHeight, gp.Height - 1 - MyStyle.WHeaderHeight, _
@@ -3698,45 +3742,45 @@ Inherits DesktopCanvas
 		                ShiftColor(E.EventColor, MyStyle.WBodyColorOffset2), False)
 		              End If
 		              
-		              gp.ForeColor = E.EventColor
-		              gp.DrawRect(0, 0, gp.Width, gp.Height)
-		              gp.DrawRoundRect(0, 0, gp.Width, gp.Height, 6,6)
-		              gp.DrawRoundRect(0, 0, gp.Width, gp.Height, 8,8)
+		              gp.DrawingColor = E.EventColor
+		              gp.DrawRectangle(0, 0, gp.Width, gp.Height)
+		              gp.DrawRoundRectangle(0, 0, gp.Width, gp.Height, 6,6)
+		              gp.DrawRoundRectangle(0, 0, gp.Width, gp.Height, 8,8)
 		              If MyStyle.WHeaderHeight > 0 and not WholeDay then
-		                gp.ForeColor = mixColor(E.EventColor, &cFFFFFF, MyStyle.WHeaderColorOffset)
-		                gp.FillRoundRect(1, 1, gp.Width-2, 1+MyStyle.WHeaderHeight, 6,6)
-		                gp.FillRect(1, 1+MyStyle.WHeaderHeight-2, gp.Width-2, 3)
+		                gp.DrawingColor = mixColor(E.EventColor, &cFFFFFF, MyStyle.WHeaderColorOffset)
+		                gp.FillRoundRectangle(1, 1, gp.Width-2, 1+MyStyle.WHeaderHeight, 6,6)
+		                gp.FillRectangle(1, 1+MyStyle.WHeaderHeight-2, gp.Width-2, 3)
 		              End If
 		            End If
 		            
 		            'If E.MouseOver and E.Editable then
 		            'If MyStyle.WAutoTextColor then
-		            'gp.ForeColor = E.EventColor
+		            'gp.DrawingColor = E.EventColor
 		            'else
-		            'gp.ForeColor = MyStyle.WTextColor
+		            'gp.DrawingColor = MyStyle.WTextColor
 		            'If E.EventColor.Hue = E.EventColor.Saturation then
 		            'If E.EventColor.Value < 0.5 then
-		            'gp.ForeColor = InvertColor(gp.ForeColor)
+		            'gp.DrawingColor = InvertColor(gp.DrawingColor)
 		            'End if
 		            'elseif E.EventColor.Value < 0.9 then
-		            'gp.ForeColor = InvertColor(gp.ForeColor)
+		            'gp.DrawingColor = InvertColor(gp.DrawingColor)
 		            'End If
 		            'End If
 		            'gp.DrawLine(gp.Width\2-3, gp.Height-5, gp.Width\2+3, gp.Height-5)
 		            'gp.DrawLine(gp.Width\2-3, gp.Height-3, gp.Width\2+3, gp.Height-3)
 		            'End If
 		            
-		            gp = p.Mask.Graphics
+		            gp = p.CopyMask.Graphics
 		            
 		            //Drawing picture mask
-		            gp.ForeColor = &cFFFFFF
-		            gp.FillRect(0, 0, gp.Width, gp.Height)
-		            gp.ForeColor = &cDDDDDD
-		            gp.DrawRoundRect(0, 0, gp.Width, gp.Height, 4, 4)
-		            gp.ForeColor = &c888888
-		            gp.DrawRoundRect(0, 0, gp.Width, gp.Height, 6, 6)
-		            gp.ForeColor = &c0
-		            gp.DrawRoundRect(0, 0, gp.Width, gp.Height, 8, 8)
+		            gp.DrawingColor = &cFFFFFF
+		            gp.FillRectangle(0, 0, gp.Width, gp.Height)
+		            gp.DrawingColor = &cDDDDDD
+		            gp.DrawRoundRectangle(0, 0, gp.Width, gp.Height, 4, 4)
+		            gp.DrawingColor = &c888888
+		            gp.DrawRoundRectangle(0, 0, gp.Width, gp.Height, 6, 6)
+		            gp.DrawingColor = &c0
+		            gp.DrawRoundRectangle(0, 0, gp.Width, gp.Height, 8, 8)
 		            gp.Pixel(1, 1) = &c707070
 		            gp.Pixel(gp.Width-2, 1) = &c707070
 		            gp.Pixel(1, gp.Height-2) = &c707070
@@ -3746,39 +3790,39 @@ Inherits DesktopCanvas
 		            If MyStyle.WBodyTransparency <> &c0 or MyStyle.WHeaderTransparency <> &c0 then
 		              
 		              If WholeDay then
-		                gp.ForeColor = MyStyle.WBodyTransparency
-		                gp.FillRoundRect(1, 1, gp.Width-2, gp.Height-2, 6, 6)
+		                gp.DrawingColor = MyStyle.WBodyTransparency
+		                gp.FillRoundRectangle(1, 1, gp.Width-2, gp.Height-2, 6, 6)
 		                
 		              Else //not WholeDay
 		                
 		                If MyStyle.WHeaderHeight > 0  then
-		                  gp.ForeColor = MyStyle.WHeaderTransparency
-		                  gp.FillRoundRect(1, 1, gp.Width-2, 1+MyStyle.WHeaderHeight, 6,6)
-		                  gp.FillRect(1, 1+MyStyle.WHeaderHeight-3, gp.Width-2, 3)
+		                  gp.DrawingColor = MyStyle.WHeaderTransparency
+		                  gp.FillRoundRectangle(1, 1, gp.Width-2, 1+MyStyle.WHeaderHeight, 6,6)
+		                  gp.FillRectangle(1, 1+MyStyle.WHeaderHeight-3, gp.Width-2, 3)
 		                End If
-		                gp.ForeColor = MyStyle.WBodyTransparency
-		                gp.FillRoundRect(1, 1+MyStyle.WHeaderHeight, gp.Width-2, gp.Height-2-MyStyle.WHeaderHeight, 6, 6)
+		                gp.DrawingColor = MyStyle.WBodyTransparency
+		                gp.FillRoundRectangle(1, 1+MyStyle.WHeaderHeight, gp.Width-2, gp.Height-2-MyStyle.WHeaderHeight, 6, 6)
 		                If MyStyle.WHeaderHeight > 0 then
-		                  gp.FillRect(1, 1+MyStyle.WHeaderHeight, gp.Width-2, 3)
+		                  gp.FillRectangle(1, 1+MyStyle.WHeaderHeight, gp.Width-2, 3)
 		                End If
 		                
 		                'If E.MouseOver and E.Editable then
-		                'gp.ForeColor = &c0
+		                'gp.DrawingColor = &c0
 		                'gp.DrawLine(gp.Width\2-3, gp.Height-5, gp.Width\2+3, gp.Height-5)
 		                'gp.DrawLine(gp.Width\2-3, gp.Height-3, gp.Width\2+3, gp.Height-3)
 		                'End If
 		                
 		              End If
 		            else
-		              gp.ForeColor = &c0
-		              gp.FillRoundRect(1, 1, gp.Width-2, gp.Height-2, 6, 6)
+		              gp.DrawingColor = &c0
+		              gp.FillRoundRectangle(1, 1, gp.Width-2, gp.Height-2, 6, 6)
 		            End If
 		            
 		          Else //not RoundRect
 		            
 		            If MyStyle.WEventFill = FillSolid then //No gradient
-		              gp.ForeColor = mixColor(E.EventColor, &cFFFFFF, MyStyle.WBodyColorOffset1)
-		              gp.FillRect(1, 1 + MyStyle.WHeaderHeight, gp.Width-2, gp.Height - 2 - MyStyle.WHeaderHeight)
+		              gp.DrawingColor = mixColor(E.EventColor, &cFFFFFF, MyStyle.WBodyColorOffset1)
+		              gp.FillRectangle(1, 1 + MyStyle.WHeaderHeight, gp.Width-2, gp.Height - 2 - MyStyle.WHeaderHeight)
 		            elseif MyStyle.WEventFill = FillGradientVertical then
 		              
 		              gradient(gp, 1+ MyStyle.WHeaderHeight, gp.Height - 1 - MyStyle.WHeaderHeight, shiftColor(E.EventColor, MyStyle.WBodyColorOffset1), _
@@ -3789,57 +3833,57 @@ Inherits DesktopCanvas
 		              
 		              //Outlook 2013 Style
 		            elseif MyStyle.WEventFill = FillOutlook2013 then
-		              gp.ForeColor = E.EventColor
-		              gp.FillRect(0, 0, 8, gp.Height)
-		              gp.ForeColor = ShiftColor(E.EventColor, MyStyle.MColorOffset1)
-		              gp.FillRect(8, 0, gp.Width, gp.Height)
+		              gp.DrawingColor = E.EventColor
+		              gp.FillRectangle(0, 0, 8, gp.Height)
+		              gp.DrawingColor = ShiftColor(E.EventColor, MyStyle.MColorOffset1)
+		              gp.FillRectangle(8, 0, gp.Width, gp.Height)
 		              If E.DayEvent then
-		                gp.ForeColor = &cFFFFFF
-		                gp.FillRect(1, 1, 6, gp.Height-2)
+		                gp.DrawingColor = &cFFFFFF
+		                gp.FillRectangle(1, 1, 6, gp.Height-2)
 		              End If
 		            End If
 		            
 		            //Drawing border
 		            If MyStyle.WEventFill <> FillOutlook2013 then
-		              gp.ForeColor = E.EventColor
-		              gp.DrawRect(0, 0, gp.Width, gp.Height)
+		              gp.DrawingColor = E.EventColor
+		              gp.DrawRectangle(0, 0, gp.Width, gp.Height)
 		            End If
 		            If MyStyle.WHeaderHeight > 0 then
-		              gp.ForeColor = mixColor(E.EventColor, &cFFFFFF, MyStyle.WHeaderColorOffset)
-		              gp.FillRect(1, 1, gp.Width-2, MyStyle.WHeaderHeight)
+		              gp.DrawingColor = mixColor(E.EventColor, &cFFFFFF, MyStyle.WHeaderColorOffset)
+		              gp.FillRectangle(1, 1, gp.Width-2, MyStyle.WHeaderHeight)
 		            End If
 		            
 		            'If E.MouseOver and E.Editable then
 		            'If MyStyle.WAutoTextColor then
-		            'gp.ForeColor = E.EventColor
+		            'gp.DrawingColor = E.EventColor
 		            'else
-		            'gp.ForeColor = MyStyle.WTextColor
+		            'gp.DrawingColor = MyStyle.WTextColor
 		            'If E.EventColor.Hue = E.EventColor.Saturation then
 		            'If E.EventColor.Value < 0.5 then
-		            'gp.ForeColor = InvertColor(gp.ForeColor)
+		            'gp.DrawingColor = InvertColor(gp.DrawingColor)
 		            'End if
 		            'elseif E.EventColor.Value < 0.9 then
-		            'gp.ForeColor = InvertColor(gp.ForeColor)
+		            'gp.DrawingColor = InvertColor(gp.DrawingColor)
 		            'End If
 		            'End If
 		            'gp.DrawLine(gp.Width\2-3, gp.Height-5, gp.Width\2+3, gp.Height-5)
 		            'gp.DrawLine(gp.Width\2-3, gp.Height-3, gp.Width\2+3, gp.Height-3)
 		            'End If
 		            
-		            gp = p.Mask.Graphics
+		            gp = p.CopyMask.Graphics
 		            If MyStyle.WHeaderHeight > 0 and MyStyle.WHeaderTransparency <> &c0 then
 		              //Drawing picture mask
-		              gp.ForeColor = MyStyle.WHeaderTransparency
-		              gp.FillRect(1, 1, gp.Width-2, MyStyle.WHeaderHeight)
+		              gp.DrawingColor = MyStyle.WHeaderTransparency
+		              gp.FillRectangle(1, 1, gp.Width-2, MyStyle.WHeaderHeight)
 		            End If
 		            If MyStyle.WBodyTransparency <> &c0 then
-		              gp.ForeColor = MyStyle.WBodyTransparency
-		              gp.FillRect(1, MyStyle.WHeaderHeight+1, gp.Width-2, gp.Height-MyStyle.WHeaderHeight-2)
+		              gp.DrawingColor = MyStyle.WBodyTransparency
+		              gp.FillRectangle(1, MyStyle.WHeaderHeight+1, gp.Width-2, gp.Height-MyStyle.WHeaderHeight-2)
 		            End If
 		            
 		            
 		            'If E.MouseOver and E.Editable then
-		            'gp.ForeColor = &c0
+		            'gp.DrawingColor = &c0
 		            'gp.DrawLine(gp.Width\2-3, gp.Height-5, gp.Width\2+3, gp.Height-5)
 		            'gp.DrawLine(gp.Width\2-3, gp.Height-3, gp.Width\2+3, gp.Height-3)
 		            'End If
@@ -3864,27 +3908,27 @@ Inherits DesktopCanvas
 		          End If
 		          
 		          
-		          //Drawing Text
+		          //Drawing lText
 		          If MyStyle.WAutoTextColor then
-		            gDay.ForeColor = E.EventColor
+		            gDay.DrawingColor = E.EventColor
 		            
 		            If E.EventColor.Saturation < 1.0 then
-		              gDay.ForeColor = mixColor(E.EventColor, &c0, &h60)
+		              gDay.DrawingColor = mixColor(E.EventColor, &c0, &h60)
 		            End If
 		            
 		          else
-		            gDay.ForeColor = MyStyle.WTextColor
+		            gDay.DrawingColor = MyStyle.WTextColor
 		            If E.EventColor.Hue = E.EventColor.Saturation then
 		              If E.EventColor.Value < 0.5 then
-		                gDay.ForeColor = InvertColor(gDay.ForeColor)
+		                gDay.DrawingColor = InvertColor(gDay.DrawingColor)
 		              End if
 		            elseif E.EventColor.Value < 0.9 then
-		              gDay.ForeColor = InvertColor(gDay.ForeColor)
+		              gDay.DrawingColor = InvertColor(gDay.DrawingColor)
 		            End If
 		          End If
-		          gDay.TextSize = MyStyle.WHeaderTextSize
+		          gDay.FontSize = MyStyle.WHeaderTextSize
 		          
-		          gDay.DrawString(E.Title, x+MyStyle.MTextOffset,  yy + (18-gDay.TextHeight)\2 + gDay.TextAscent, max(1, E.Length/86400+1) * DayWidth -6, True)
+		          gDay.DrawText(E.Title, x+MyStyle.MTextOffset,  yy + (18-gDay.TextHeight)\2 + gDay.FontAscent, max(1, E.Length/86400+1) * DayWidth -6, True)
 		          
 		          
 		          
@@ -3914,15 +3958,15 @@ Inherits DesktopCanvas
 		          
 		          If E.MouseOver and E.Editable then
 		            If MyStyle.WAutoTextColor then
-		              gpc.ForeColor = E.EventColor
+		              gpc.DrawingColor = E.EventColor
 		            else
-		              gpc.ForeColor = MyStyle.WTextColor
+		              gpc.DrawingColor = MyStyle.WTextColor
 		              If E.EventColor.Hue = E.EventColor.Saturation then
 		                If E.EventColor.Value < 0.5 then
-		                  gpc.ForeColor = InvertColor(gpc.ForeColor)
+		                  gpc.DrawingColor = InvertColor(gpc.DrawingColor)
 		                End if
 		              elseif E.EventColor.Value < 0.9 then
-		                gpc.ForeColor = InvertColor(gpc.ForeColor)
+		                gpc.DrawingColor = InvertColor(gpc.DrawingColor)
 		              End If
 		            End If
 		            gpc.DrawLine(gp.Width\2-3, gp.Height-5, gp.Width\2+3, gp.Height-5)
@@ -3930,61 +3974,61 @@ Inherits DesktopCanvas
 		          End If
 		          
 		          
-		          //Drawing Text
+		          //Drawing lText
 		          If MyStyle.WAutoTextColor then
-		            gpc.ForeColor = E.EventColor
+		            gpc.DrawingColor = E.EventColor
 		            
 		            If E.EventColor.Saturation < 1.0 then
-		              gpc.ForeColor = mixColor(E.EventColor, &c0, &h60)
+		              gpc.DrawingColor = mixColor(E.EventColor, &c0, &h60)
 		            End If
 		            
 		          else
 		            
 		            If StyleType = StyleOutlook2013 then
-		              gpc.ForeColor = mixColor(E.EventColor, &c0, &hB0)
+		              gpc.DrawingColor = mixColor(E.EventColor, &c0, &hB0)
 		            else
-		              gpc.ForeColor = MyStyle.WTextColor
+		              gpc.DrawingColor = MyStyle.WTextColor
 		              If E.EventColor.Hue = E.EventColor.Saturation then
 		                If E.EventColor.Value < 0.5 then
-		                  gpc.ForeColor = InvertColor(gpc.ForeColor)
+		                  gpc.DrawingColor = InvertColor(gpc.DrawingColor)
 		                End if
 		              elseif E.EventColor.Value < 0.9 then
-		                gpc.ForeColor = InvertColor(gpc.ForeColor)
+		                gpc.DrawingColor = InvertColor(gpc.DrawingColor)
 		              End If
 		            End If
 		          End If
-		          gpc.TextSize = MyStyle.WHeaderTextSize
+		          gpc.FontSize = MyStyle.WHeaderTextSize
 		          gpc.Bold = MyStyle.WHeaderTextBold
 		          
 		          yy = 11
 		          
 		          If gpc.TextHeight < E.DrawH then
-		            text = MyStyle.WHeaderTextFormat.Replace("%Start", E.StartDate.ShortTime).Replace("%End", E.EndDate.ShortTime)
-		            If text.InStr("%Length")>0 then
-		              text = text.Replace("%Length", str(Floor(E.Length/3600)) + ":" + Format(E.Length/60 - Floor(E.Length/3600) * 60, "00"))
+		            lText = MyStyle.WHeaderTextFormat.Replace("%Start", E.StartDate.ToString(DateTime.FormatStyles.None, DateTime.FormatStyles.Short)).Replace("%End", E.EndDate.ToString(DateTime.FormatStyles.None, DateTime.FormatStyles.Short))
+		            If lText.IndexOf("%Length")>0 then
+		              lText = lText.Replace("%Length", str(Floor(E.Length/3600)) + ":" + Format(E.Length/60 - Floor(E.Length/3600) * 60, "00"))
 		            End If
-		            If text <> "" then
-		              gpc.DrawString(text, 1+MyStyle.MTextOffset, yy, w-6, True)
+		            If lText <> "" then
+		              gpc.DrawText(lText, 1+MyStyle.MTextOffset, yy, w-6, True)
 		              yy = 24
 		            End If
 		          else
-		            gpc.DrawString("...", 1+MyStyle.MTextOffset, E.DrawH - 1)
+		            gpc.DrawText("...", 1+MyStyle.MTextOffset, E.DrawH - 1)
 		            Continue for j
 		          End If
 		          'End If
-		          gpc.TextSize = MyStyle.WBodyTextSize
+		          gpc.FontSize = MyStyle.WBodyTextSize
 		          gpc.Bold = MyStyle.WBodyTextBold
-		          text = ""
-		          text = E.Title
+		          lText = ""
+		          lText = E.Title
 		          if E.Location <> "" then
-		            text = text + " – " + E.Location
+		            lText = lText + " – " + E.Location
 		          end if
 		          if E.Description <> "" then
-		            text = text + EndOfLine + E.Description
+		            lText = lText + EndOfLine + E.Description
 		          end if
 		          
 		          
-		          gpc.DrawString(text, 1+MyStyle.MTextOffset, yy, w - 8, False)
+		          gpc.DrawText(lText, 1+MyStyle.MTextOffset, yy, w - 8, False)
 		          
 		        End If
 		        
@@ -4001,10 +4045,10 @@ Inherits DesktopCanvas
 		      
 		      //Drawing the +xx hidden events
 		      If DrawPosDay.Hidden(i) > 0 and DayEventsHeight <> 0 then
-		        gDay.TextSize = MyStyle.WHeaderTextSize
-		        gDay.ForeColor = &c0000FF
+		        gDay.FontSize = MyStyle.WHeaderTextSize
+		        gDay.DrawingColor = &c0000FF
 		        yy = DrawPosDay.LockLast((DrawDate.TotalSeconds - FirstDate.TotalSeconds) / 86400, 0)
-		        gDay.DrawString("+" + str(DrawPosDay.Hidden(i)), x+MyStyle.MTextOffset, yy*(MyStyle.WEventHeight) + gDay.TextHeight)
+		        gDay.DrawText("+" + str(DrawPosDay.Hidden(i)), x+MyStyle.MTextOffset, yy*(MyStyle.WEventHeight) + gDay.TextHeight)
 		      End If
 		      
 		      
@@ -4022,15 +4066,15 @@ Inherits DesktopCanvas
 		  #if TargetWeb
 		    Dim Data() As String
 		    Dim text, cla, claArr() As String
-		    Dim DrawDate, Today As Date
+		    Dim DrawDate, Today As DateTime
 		    Dim i, u As Integer
 		    Dim onClick As String = " onclick=""Xojo.triggerServerEvent('" + Self.ControlID + "','Click',['%date%']); return false;"" "
 		    
 		    Dim onClick2 As String = "onclick=""Xojo.triggerServerEvent('" + Self.ControlID + "','ChangeMonth',['%value%']); return false;"" "
 		    
 		    //Setting FirstDate
-		    DrawDate = New Date(FirstDate)
-		    Today = New Date
+		    DrawDate = New DateTime(FirstDate)
+		    Today = New DateTime
 		    
 		    //Month Title
 		    text = MonthNames(DisplayDate.Month) + " " + str(DisplayDate.Year)
@@ -4063,9 +4107,9 @@ Inherits DesktopCanvas
 		    
 		    For i = 0 to 6
 		      If (FirstDayOfWeek + i) = 7 then
-		        text = TitleCase(DayNames(7))
+		        text = DayNames(7).Titlecase
 		      else
-		        text = TitleCase(DayNames((FirstDayOfWeek + i) mod 7))
+		        text = DayNames((FirstDayOfWeek + i) mod 7).Titlecase
 		      End If
 		      
 		      Data.Append "<th " + cla + " title=""" + text + """>" + text.Left(1) + "</th>"
@@ -4133,7 +4177,7 @@ Inherits DesktopCanvas
 		  #if TargetWeb
 		    Dim Data() As String
 		    Dim cla, claArr() As String
-		    Dim DrawDate As Date
+		    Dim DrawDate As DateTime
 		    Dim i As Integer
 		    
 		    Dim VAmount As Integer
@@ -4141,21 +4185,21 @@ Inherits DesktopCanvas
 		    //Finding amount of months per line
 		    If Width > Height then
 		      If Width / Height > 2.45 then
-		        HAmount = max(1, Ceil(YearMonthsAmount/6))
+		        HAmount = max(1, Ceiling(YearMonthsAmount/6))
 		        VAmount = YearMonthsAmount/HAmount
 		        
 		      else
-		        HAmount = max(1, Ceil(YearMonthsAmount/4))
+		        HAmount = max(1, Ceiling(YearMonthsAmount/4))
 		        VAmount = YearMonthsAmount/HAmount
 		        
 		      End If
 		    else
 		      If Width / Height < 0.6 then
-		        HAmount = max(1, Ceil(YearMonthsAmount/6))
+		        HAmount = max(1, Ceiling(YearMonthsAmount/6))
 		        VAmount = YearMonthsAmount/HAmount
 		        
 		      else
-		        HAmount = max(1, Ceil(YearMonthsAmount/4))
+		        HAmount = max(1, Ceiling(YearMonthsAmount/4))
 		        VAmount = YearMonthsAmount/HAmount
 		        
 		      End If
@@ -4174,7 +4218,7 @@ Inherits DesktopCanvas
 		    'Dim dayHeight As Integer
 		    
 		    
-		    DrawDate = New Date(FirstDate)
+		    DrawDate = New DateTime(FirstDate)
 		    
 		    
 		    'dayWidth = Floor((gg.Width-(VAmount-1)*minHGap)/(VAmount*7))
@@ -4191,7 +4235,7 @@ Inherits DesktopCanvas
 		    
 		    
 		    //Setting up DayColor for each day in the year
-		    If UBound(DisplayEvents) = -1 then
+		    If DisplayEvents.LastIndex = -1 then
 		      SetDayColor()
 		    End If
 		    
@@ -4231,7 +4275,7 @@ Inherits DesktopCanvas
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function DrawHTMLYearSingle(StartDate As Date) As String
+		Protected Function DrawHTMLYearSingle(StartDate As DateTime) As String
 		  #if TargetDesktop
 		    #Pragma Unused StartDate
 		    
@@ -4239,7 +4283,7 @@ Inherits DesktopCanvas
 		    Dim Data() As String
 		    Dim text, cla, claArr(), sty, styArr() As String
 		    Dim css As String
-		    Dim DrawDate As Date
+		    Dim DrawDate As DateTime
 		    Dim i, u As Integer
 		    Dim onClick As String = " onclick=""Xojo.triggerServerEvent('" + Self.ControlID + "','Click',['%date%']); return false;"" "
 		    
@@ -4248,7 +4292,7 @@ Inherits DesktopCanvas
 		    css = self.ControlID
 		    
 		    //Setting FirstDate
-		    DrawDate = New Date(StartDate)
+		    DrawDate = New DateTime(StartDate)
 		    DrawDate.Day = 1
 		    DrawDate.Hour = 0
 		    DrawDate.Minute = 0
@@ -4279,9 +4323,9 @@ Inherits DesktopCanvas
 		    
 		    For i = 0 to 6
 		      If (FirstDayOfWeek + i) = 7 then
-		        text = TitleCase(DayNames(7))
+		        text = DayNames(7).Titlecase
 		      else
-		        text = TitleCase(DayNames((FirstDayOfWeek + i) mod 7))
+		        text = DayNames((FirstDayOfWeek + i) mod 7).Titlecase
 		      End If
 		      
 		      Data.Append "<th " + cla + " title=""" + text + """>" + text.Left(1) + "</th>"
@@ -4372,23 +4416,24 @@ Inherits DesktopCanvas
 		Protected Sub DrawMonthPopup(gg As Graphics, X As Integer, Y As Integer, DayWidth As Integer, DayHeight As Integer)
 		  Dim w, i, u, xx, yy As Integer
 		  Dim h As Integer = 100
-		  Dim D As new Date
-		  D.Hour = 0
-		  d.Minute = 0
-		  d.Second = 0
-		  d.SQLDate = MonthsPopup.SQLDate
-		  Dim text As String = d.LongDate
+		  Dim D As DateTime
+		  'D.Hour = 0
+		  'd.Minute = 0
+		  'd.Second = 0
+		  'd.SQLDate = MonthsPopup.SQLDate
+		  D = DateTime.FromString(MonthsPopup.SQLDate)
+		  Dim lText As String = d.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None)
 		  Dim E As CalendarEvent
 		  Dim padding As Integer = 10
 		  Dim needsScrollbar As Boolean
 		  
-		  u = UBound(DisplayEvents)
+		  u = DisplayEvents.LastIndex
 		  
 		  
-		  gg.TextSize = MyStyle.MNumbersTextSize
+		  gg.FontSize = MyStyle.MNumbersTextSize
 		  
 		  //Normal width
-		  w = max(gg.StringWidth(text)+4 + 20, DayWidth)+padding*2
+		  w = max(gg.TextWidth(lText)+4 + 20, DayWidth)+padding*2
 		  
 		  DayWidth = w-padding*2
 		  
@@ -4400,11 +4445,11 @@ Inherits DesktopCanvas
 		    If DisplayEvents(i).StartDate.SQLDate = d.SQLDate or _
 		      (DisplayEvents(i).StartDate.TotalSeconds <= d.TotalSeconds and _
 		      DisplayEvents(i).EndDate.TotalSeconds >= d.TotalSeconds) then
-		      EventList.Append DisplayEvents(i)
+		      EventList.Add DisplayEvents(i)
 		    End If
 		  Next
 		  
-		  u = UBound(EventList)
+		  u = EventList.LastIndex
 		  
 		  //Total height of events
 		  h = max(DayHeight, min(17+MyStyle.MNumberYOffset + (MyStyle.MEventHeight +1) * (u+1), gg.Height-padding*2))+padding*2
@@ -4415,7 +4460,7 @@ Inherits DesktopCanvas
 		    
 		    //setting new width
 		    Dim eventsInH As Integer = Floor((h-17-MyStyle.MNumberYOffset-MonthsPopup.Yoffset-padding*2)/(MyStyle.MEventHeight+1))
-		    w = w + Ceil(((u+1)/eventsInH)-1.0)*DayWidth
+		    w = w + Ceiling(((u+1)/eventsInH)-1.0)*DayWidth
 		    
 		  End If
 		  
@@ -4424,16 +4469,16 @@ Inherits DesktopCanvas
 		  End If
 		  
 		  //Drawing Background
-		  gg.ForeColor = MyColors.WeekDay
-		  gg.FillRect(X, Y, w, h)
+		  gg.DrawingColor = MyColors.WeekDay
+		  gg.FillRectangle(X, Y, w, h)
 		  
 		  //Drawing the Frame
-		  gg.ForeColor = MyColors.Line
-		  gg.DrawRect(X, Y, w, h)
+		  gg.DrawingColor = MyColors.Line
+		  gg.DrawRectangle(X, Y, w, h)
 		  
 		  //Drawing date
-		  gg.ForeColor = MyColors.DayNumberActive
-		  gg.DrawString(text, X+2, Y+14+MyStyle.MNumberYOffset)
+		  gg.DrawingColor = MyColors.DayNumberActive
+		  gg.DrawText(lText, X+2, Y+14+MyStyle.MNumberYOffset)
 		  
 		  If picCloseMonthPopup <> Nil then
 		    gg.DrawPicture(picCloseMonthPopup, X+ w-2-picCloseMonthPopup.Width, Y+ (17-picCloseMonthPopup.Height)\2)
@@ -4464,31 +4509,31 @@ Inherits DesktopCanvas
 		      'DrawEvent(gClip, E, x+MyStyle.MLeftOffset, y + yy, w-padding*2, MyStyle.MEventHeight, E.DayEvent)
 		      DrawEvent(gClip, E, x+MyStyle.MLeftOffset, y + yy, DayWidth-padding*2, MyStyle.MEventHeight, E.DayEvent)
 		      
-		      //Drawing Text
-		      gClip.ForeColor = MyStyle.WTextColor
+		      //Drawing lText
+		      gClip.DrawingColor = MyStyle.WTextColor
 		      If StyleType = StyleOutlook2013 then
-		        gClip.ForeColor = mixColor(E.EventColor, &c0, &hB0)
+		        gClip.DrawingColor = mixColor(E.EventColor, &c0, &hB0)
 		      else
 		        If E.EventColor.Hue = E.EventColor.Saturation then
 		          If E.EventColor.Value < 0.5 then
-		            gClip.ForeColor = InvertColor(gClip.ForeColor)
+		            gClip.DrawingColor = InvertColor(gClip.DrawingColor)
 		          End if
 		        elseif E.EventColor.Value < 0.9 then
-		          gClip.ForeColor = InvertColor(gClip.ForeColor)
+		          gClip.DrawingColor = InvertColor(gClip.DrawingColor)
 		        End If
 		      End If
-		      gClip.TextSize = MyStyle.MEventTextSize
+		      gClip.FontSize = MyStyle.MEventTextSize
 		      gClip.Bold = MyStyle.MDayTextBold
 		      If E.DayEvent then
-		        gClip.DrawString(E.Title, x+MyStyle.MTextOffset, y + yy + (MyStyle.MEventHeight-gClip.TextHeight)\2 + gClip.TextAscent, DayWidth-MyStyle.MTextOffset, True)
+		        gClip.DrawText(E.Title, x+MyStyle.MTextOffset, y + yy + (MyStyle.MEventHeight-gClip.TextHeight)\2 + gClip.FontAscent, DayWidth-MyStyle.MTextOffset, True)
 		      else
-		        gClip.DrawString(E.StartDate.ShortTime + " " + E.Title, x+MyStyle.MTextOffset, y + yy + (MyStyle.MEventHeight-gClip.TextHeight)\2 + gClip.TextAscent, max(1, E.Length/86400+1) * DayWidth-MyStyle.MTextOffset*2, True)
+		        gClip.DrawText(E.StartDate.ToString(DateTime.FormatStyles.None, DateTime.FormatStyles.Short) + " " + E.Title, x+MyStyle.MTextOffset, y + yy + (MyStyle.MEventHeight-gClip.TextHeight)\2 + gClip.FontAscent, max(1, E.Length/86400+1) * DayWidth-MyStyle.MTextOffset*2, True)
 		      End If
 		      
 		    Else //Not a Day event
 		      
-		      //Drawing Text
-		      gClip.ForeColor = E.EventColor
+		      //Drawing lText
+		      gClip.DrawingColor = E.EventColor
 		      
 		      If MyStyle.MEventFill = FillOutlook2013 then
 		        //testing
@@ -4497,13 +4542,13 @@ Inherits DesktopCanvas
 		        
 		      End If
 		      
-		      gClip.TextSize = MyStyle.MEventTextSize
+		      gClip.FontSize = MyStyle.MEventTextSize
 		      gClip.Bold = MyStyle.MHourBold
-		      text = E.StartDate.ShortTime + " "
-		      gClip.DrawString(text, x+MyStyle.MTextOffset,y+ yy + (MyStyle.MEventHeight-gClip.TextHeight)\2 + gClip.TextAscent, DayWidth-MyStyle.MTextOffset*2, True)
-		      xx = gClip.StringWidth(text)
+		      lText = E.StartDate.ToString(DateTime.FormatStyles.None, DateTime.FormatStyles.Short) + " "
+		      gClip.DrawText(lText, x+MyStyle.MTextOffset,y+ yy + (MyStyle.MEventHeight-gClip.TextHeight)\2 + gClip.FontAscent, DayWidth-MyStyle.MTextOffset*2, True)
+		      xx = gClip.TextWidth(lText)
 		      gClip.Bold = MyStyle.MTextBold
-		      gClip.DrawString(E.Title, x+MyStyle.MTextOffset + xx, y+yy + (MyStyle.MEventHeight-gClip.TextHeight)\2 + gClip.TextAscent, DayWidth - MyStyle.MTextOffset - xx, True)
+		      gClip.DrawText(E.Title, x+MyStyle.MTextOffset + xx, y+yy + (MyStyle.MEventHeight-gClip.TextHeight)\2 + gClip.FontAscent, DayWidth - MyStyle.MTextOffset - xx, True)
 		      
 		      
 		    End If
@@ -4535,7 +4580,7 @@ Inherits DesktopCanvas
 		  //In DebugBuild we check performance of drawing
 		  
 		  #if DebugBuild
-		    Dim ms As Double = Microseconds
+		    Dim ms As Double = System.Microseconds
 		  #endif
 		  
 		  
@@ -4546,19 +4591,19 @@ Inherits DesktopCanvas
 		  
 		  
 		  Dim i, u As Integer
-		  Dim text As String
+		  Dim lText As String
 		  Dim x, xx, y As Single
-		  Dim DrawDate As Date
+		  Dim DrawDate As DateTime
 		  Dim DayWidth As Single = gg.Width / 7
 		  Dim DayHeight As Single
 		  Dim Pos As Integer
-		  Dim Today As Date = New Date
+		  Dim Today As DateTime = DateTime.Now
 		  Dim HeaderHeight As Integer = 39
 		  
 		  
 		  
 		  //Setting FirstDate
-		  DrawDate = New Date(FirstDate)
+		  DrawDate = New DateTime(FirstDate)
 		  
 		  #if TargetDesktop
 		    If mYearPicker <> Nil then
@@ -4572,8 +4617,8 @@ Inherits DesktopCanvas
 		  If MyStyle.FillGradient then
 		    gradient(gg, 0, gg.Height, MyColors.PBackground, MyColors.PBackground2, True)
 		  else
-		    gg.ForeColor = MyColors.PBackground
-		    gg.FillRect(0, 0, gg.Width, gg.Height)
+		    gg.DrawingColor = MyColors.PBackground
+		    gg.FillRectangle(0, 0, gg.Width, gg.Height)
 		  End If
 		  
 		  //Header Background
@@ -4581,11 +4626,11 @@ Inherits DesktopCanvas
 		    Dim gh As Graphics = gg.Clip(0, 0, gg.Width, HeaderHeight)
 		    DrawBackground(gh)
 		  else
-		    gg.ForeColor = MyColors.Header
+		    gg.DrawingColor = MyColors.Header
 		    If StyleType = StyleOutlook2013 then
-		      gg.FillRect(0, 0, gg.Width, 22)
+		      gg.FillRectangle(0, 0, gg.Width, 22)
 		    else
-		      gg.FillRect(0, 0, gg.Width, HeaderHeight)
+		      gg.FillRectangle(0, 0, gg.Width, HeaderHeight)
 		    End If
 		  End If
 		  
@@ -4597,19 +4642,19 @@ Inherits DesktopCanvas
 		  #elseif TargetWeb
 		    If me isa WebCalendarView then
 		  #endif
-		  gg.ForeColor = MyColors.PArrow
+		  gg.DrawingColor = MyColors.PArrow
 		  
 		  
 		  If mHiDPI then
-		    gg.Pixel(6, y) = gg.ForeColor
-		    gg.Pixel(gg.Width-7, y) = gg.ForeColor
+		    gg.Pixel(6, y) = gg.DrawingColor
+		    gg.Pixel(gg.Width-7, y) = gg.DrawingColor
 		    For i = 7 to 14
 		      gg.DrawLine(i, y-i+6, i, y+i-6)
 		      gg.DrawLine(gg.Width-i-1, y-i+6, gg.Width-i-1, y+i-6)
 		    Next
 		  else
-		    gg.Pixel(5, y) = gg.ForeColor
-		    gg.Pixel(gg.Width-6, y) = gg.ForeColor
+		    gg.Pixel(5, y) = gg.DrawingColor
+		    gg.Pixel(gg.Width-6, y) = gg.DrawingColor
 		    For i = 6 to 9
 		      gg.DrawLine(i, y-i+5, i, y+i-5)
 		      gg.DrawLine(gg.Width-i-1, y-i+5, gg.Width-i-1, y+i-5)
@@ -4617,9 +4662,9 @@ Inherits DesktopCanvas
 		  End If
 		  
 		  else
-		    gg.ForeColor = MyColors.PArrow
-		    gg.Pixel(2, y) = gg.ForeColor
-		    gg.Pixel(gg.Width-3, y) = gg.ForeColor
+		    gg.DrawingColor = MyColors.PArrow
+		    gg.Pixel(2, y) = gg.DrawingColor
+		    gg.Pixel(gg.Width-3, y) = gg.DrawingColor
 		    
 		    For i = 3 to 6
 		      gg.DrawLine(i, y-i+2, i, y+i-2)
@@ -4629,16 +4674,16 @@ Inherits DesktopCanvas
 		  
 		  
 		  //Drawing Month
-		  gg.ForeColor = MyColors.Title
+		  gg.DrawingColor = MyColors.Title
 		  gg.Bold = True
-		  text = MonthNames(DisplayDate.Month) + " " + str(DisplayDate.Year)
-		  gg.DrawString(text, (gg.Width-gg.StringWidth(text))\2, (22-gg.TextHeight)\2 + gg.TextAscent)
+		  lText = MonthNames(DisplayDate.Month) + " " + str(DisplayDate.Year)
+		  gg.DrawText(lText, (gg.Width-gg.TextWidth(lText))\2, (22-gg.TextHeight)\2 + gg.FontAscent)
 		  
 		  //Drawing Day names
 		  #if TargetDesktop
-		    gg.TextSize = 0
+		    gg.FontSize = 0
 		  #elseif TargetWeb
-		    gg.TextSize = 12
+		    gg.FontSize = 12
 		  #endif
 		  gg.Bold = MyStyle.PDayNameBold
 		  If MyStyle.PDayNamePos = 0 then
@@ -4658,21 +4703,21 @@ Inherits DesktopCanvas
 		  //Finding how many characters can be displayed
 		  For i = 0 to 6
 		    If (FirstDayOfWeek + i) = 7 then
-		      text = TitleCase(DayNames(7))
+		      lText = DayNames(7).Titlecase
 		    else
-		      text = TitleCase(DayNames((FirstDayOfWeek + i) mod 7))
+		      lText = DayNames((FirstDayOfWeek + i) mod 7).Titlecase
 		    End If
-		    If gg.StringWidth(text) < DayWidth-2 then
+		    If gg.TextWidth(lText) < DayWidth-2 then
 		      
-		    elseif gg.StringWidth(text.Left(3)) < DayWidth-2 then
+		    elseif gg.TextWidth(lText.Left(3)) < DayWidth-2 then
 		      If NameLength = 0 then
 		        NameLength = 3
 		      End If
-		    elseif gg.StringWidth(text.Left(2)) < DayWidth-2 then
+		    elseif gg.TextWidth(lText.Left(2)) < DayWidth-2 then
 		      If NameLength = 0 or NameLength = 3 then
 		        NameLength = 2
 		      End If
-		    elseif gg.StringWidth(text.Left(1)) <=DayWidth-2 then
+		    elseif gg.TextWidth(lText.Left(1)) <=DayWidth-2 then
 		      NameLength = 1
 		      exit for i
 		    End If
@@ -4681,23 +4726,23 @@ Inherits DesktopCanvas
 		  //Drawing day names
 		  For i = 0 to 6
 		    If (FirstDayOfWeek + i) = 7 then
-		      text = TitleCase(DayNames(7))
+		      lText = DayNames(7).Titlecase
 		    else
-		      text = TitleCase(DayNames((FirstDayOfWeek + i) mod 7))
+		      lText = DayNames((FirstDayOfWeek + i) mod 7).Titlecase
 		    End If
 		    If NameLength <> 0 then
-		      text = text.Left(NameLength)
+		      lText = lText.Left(NameLength)
 		    End If
 		    
-		    gg.ForeColor = MyColors.DayName
+		    gg.DrawingColor = MyColors.DayName
 		    If Pos = 0 then
-		      gg.DrawString(text, DayWidth * i + xx, y)
+		      gg.DrawText(lText, DayWidth * i + xx, y)
 		    elseif Pos = 1 then
-		      gg.DrawString(text, DayWidth * i + max(1, (DayWidth - gg.StringWidth(text)) \ 2), y)
+		      gg.DrawText(lText, DayWidth * i + max(1, (DayWidth - gg.TextWidth(lText)) \ 2), y)
 		      
 		    else
-		      x =DayWidth * i + xx - min(DayWidth-xx, gg.StringWidth(text))
-		      gg.DrawString(text, DayWidth * i + xx - min(xx-3, gg.StringWidth(text)), y)
+		      x =DayWidth * i + xx - min(DayWidth-xx, gg.TextWidth(lText))
+		      gg.DrawText(lText, DayWidth * i + xx - min(xx-3, gg.TextWidth(lText)), y)
 		    End If
 		  Next
 		  
@@ -4721,40 +4766,40 @@ Inherits DesktopCanvas
 		    
 		    //Today Background
 		    If DrawDate.SQLDate = Today.SQLDate then
-		      gg.ForeColor = MyColors.Today
-		      gg.FillRect(x, y, Ceil(DayWidth), Ceil(DayHeight))
+		      gg.DrawingColor = MyColors.Today
+		      gg.FillRectangle(x, y, Ceiling(DayWidth), Ceiling(DayHeight))
 		      
 		      //Selected
 		    ElseIf SelStart <> Nil and SelEnd <> nil and DrawDate.SQLDate >= SelStart.SQLDate and DrawDate.SQLDate <= SelEnd.SQLDate then
-		      gg.ForeColor = MyColors.PSelected
-		      gg.FillRect(x, y, Ceil(DayWidth), Ceil(DayHeight))
+		      gg.DrawingColor = MyColors.PSelected
+		      gg.FillRectangle(x, y, Ceiling(DayWidth), Ceiling(DayHeight))
 		      
 		      //MouseOver
 		    ElseIf i = LastDayOver or (DisplayDate <> Nil and DrawDate.SQLDate = DisplayDate.SQLDate) then
-		      gg.ForeColor = MyColors.POver
+		      gg.DrawingColor = MyColors.POver
 		      If StyleType = StyleOutlook2013 then
-		        gg.DrawRoundRect(x+1, y+1, Ceil(DayWidth)-2, Ceil(DayHeight)-2, 2, 2)
+		        gg.DrawRoundRectangle(x+1, y+1, Ceiling(DayWidth)-2, Ceiling(DayHeight)-2, 2, 2)
 		      else
-		        gg.FillRect(x, y, Ceil(DayWidth), Ceil(DayHeight))
+		        gg.FillRectangle(x, y, Ceiling(DayWidth), Ceiling(DayHeight))
 		      End If
 		    End If
 		    
 		    If StyleType = StyleOutlook2013 then
 		      If i = LastDayOver then
-		        gg.ForeColor = MyColors.POver
-		        gg.DrawRoundRect(x+1, y+1, Ceil(DayWidth)-2, Ceil(DayHeight)-2, 2, 2)
+		        gg.DrawingColor = MyColors.POver
+		        gg.DrawRoundRectangle(x+1, y+1, Ceiling(DayWidth)-2, Ceiling(DayHeight)-2, 2, 2)
 		      End If
 		    End If
 		    
-		    text = str(DrawDate.Day)
+		    lText = str(DrawDate.Day)
 		    
 		    
 		    If DrawDate.Month <> DisplayDate.Month then
-		      If gg.ForeColor <> MyColors.PDayNumber then
-		        gg.ForeColor = MyColors.PDayNumber
+		      If gg.DrawingColor <> MyColors.PDayNumber then
+		        gg.DrawingColor = MyColors.PDayNumber
 		      End If
 		      If MyColors.PDayNumber = MyColors.PBackground then
-		        gg.FillRect(x, y, Ceil(DayWidth), Ceil(DayHeight))
+		        gg.FillRectangle(x, y, Ceiling(DayWidth), Ceiling(DayHeight))
 		        oktoDraw = False
 		      else
 		        oktoDraw = true
@@ -4762,23 +4807,24 @@ Inherits DesktopCanvas
 		    else
 		      oktoDraw = true
 		      If StyleType = StyleOutlook2013 and DrawDate.SQLDate = Today.SQLDate then
-		        gg.ForeColor = MyColors.PDayNumberToday
-		      elseIf gg.ForeColor <> MyColors.PDayNumberActive then
-		        gg.ForeColor = MyColors.PDayNumberActive
+		        gg.DrawingColor = MyColors.PDayNumberToday
+		      elseIf gg.DrawingColor <> MyColors.PDayNumberActive then
+		        gg.DrawingColor = MyColors.PDayNumberActive
 		      End If
 		    End If
 		    If oktoDraw then
 		      If Pos = 0 then
-		        gg.DrawString(text, x, y+(DayHeight-gg.TextHeight)\2 + gg.TextAscent)
+		        gg.DrawText(lText, x, y+(DayHeight-gg.TextHeight)\2 + gg.FontAscent)
 		      elseif Pos = 1 then
-		        gg.DrawString(text, x + (DayWidth - gg.StringWidth(text))\2, y+(DayHeight-gg.TextHeight)\2 + gg.TextAscent)
+		        gg.DrawText(lText, x + (DayWidth - gg.TextWidth(lText))\2, y+(DayHeight-gg.TextHeight)\2 + gg.FontAscent)
 		      else
-		        gg.DrawString(text, x - gg.StringWidth(text), y+(DayHeight-gg.TextHeight)\2 + gg.TextAscent)
+		        gg.DrawText(lText, x - gg.TextWidth(lText), y+(DayHeight-gg.TextHeight)\2 + gg.FontAscent)
 		      End If
 		    End If
 		    
 		    
-		    DrawDate.Day = DrawDate.Day + 1
+		    'DrawDate.Day = DrawDate.Day + 1
+		    DrawDate = DrawDate + DIDay
 		    If i mod 7 = 0 then
 		      y = y + DayHeight
 		      x = xx
@@ -4790,10 +4836,10 @@ Inherits DesktopCanvas
 		  If MyStyle.PLineVertical > LineNone then
 		    For i = 1 to 6
 		      x = DayWidth * i
-		      gg.ForeColor = MyColors.Line
+		      gg.DrawingColor = MyColors.Line
 		      If MyStyle.PLineVertical = LineThinSolid then
 		        If mHiDPI then
-		          gg.FillRect(x, 36, 2, gg.Height)
+		          gg.FillRectangle(x, 36, 2, gg.Height)
 		        else
 		          gg.DrawLine(x, 36, x, gg.Height)
 		        End If
@@ -4805,7 +4851,7 @@ Inherits DesktopCanvas
 		          gg.DrawLine(x-2, 36, x-2, gg.Height)
 		        End If
 		        gg.DrawLine(x-1, 36, x-1, gg.Height)
-		        gg.ForeColor = MyColors.Line2
+		        gg.DrawingColor = MyColors.Line2
 		        gg.DrawLine(x, 36, x, gg.Height)
 		        If mHiDPI then
 		          gg.DrawLine(x+1, 36, x+1, gg.Height)
@@ -4815,16 +4861,16 @@ Inherits DesktopCanvas
 		  End If
 		  
 		  If Border then
-		    gg.ForeColor = MyColors.Border
+		    gg.DrawingColor = MyColors.Border
 		    If TransparentBackground then
-		      gg.DrawRect(0, HeaderHeight, gg.Width, gg.Height-HeaderHeight)
+		      gg.DrawRectangle(0, HeaderHeight, gg.Width, gg.Height-HeaderHeight)
 		      If mHiDPI then
-		        gg.DrawRect(1, HeaderHeight+1, gg.Width-2, gg.Height-HeaderHeight-2)
+		        gg.DrawRectangle(1, HeaderHeight+1, gg.Width-2, gg.Height-HeaderHeight-2)
 		      End If
 		    else
-		      gg.DrawRect(0, 0, gg.Width, gg.Height)
+		      gg.DrawRectangle(0, 0, gg.Width, gg.Height)
 		      If mHiDPI then
-		        gg.DrawRect(1, 1, gg.Width-2, gg.Height-2)
+		        gg.DrawRectangle(1, 1, gg.Width-2, gg.Height-2)
 		      End If
 		    End If
 		  End If
@@ -4833,7 +4879,7 @@ Inherits DesktopCanvas
 		  
 		  //In DebugBuild we check performance of drawing
 		  #if DebugBuild
-		    ms = (Microseconds-ms)/1000
+		    ms = (System.Microseconds-ms)/1000
 		    'DrawInfo = str(ms)
 		  #endif
 		  
@@ -4846,25 +4892,25 @@ Inherits DesktopCanvas
 		    
 		    //In DebugBuild we check performance of drawing
 		    #if DebugBuild
-		      Dim ms As Double = Microseconds
+		      Dim ms As Double = System.Microseconds
 		    #endif
 		    
 		    Dim i, u As Integer
-		    Dim text As String
+		    Dim lText As String
 		    Dim x, xx, y As Single
-		    Dim DrawDate As Date
+		    Dim DrawDate As DateTime
 		    Dim DayWidth As Single = gg.Width / 4
 		    Dim DayHeight As Single
 		    Dim Pos As Integer
-		    Dim Today As Date = New Date
+		    Dim Today As DateTime = DateTime.Now
 		    Dim HeaderHeight As Integer = 39
 		    
 		    
 		    
 		    //Setting FirstDate
-		    DrawDate = New Date(FirstDate)
-		    DrawDate.Month = 1
-		    DrawDate.Day = 1
+		    DrawDate = New DateTime(FirstDate.Year,1,1)
+		    'DrawDate.Month = 1
+		    'DrawDate.Day = 1
 		    
 		    If mYearPicker <> Nil then
 		      mYearPicker.Draw(gg, self)
@@ -4876,8 +4922,8 @@ Inherits DesktopCanvas
 		    If MyStyle.FillGradient then
 		      gradient(gg, 0, gg.Height, MyColors.PBackground, MyColors.PBackground2, True)
 		    else
-		      gg.ForeColor = MyColors.PBackground
-		      gg.FillRect(0, 0, gg.Width, gg.Height)
+		      gg.DrawingColor = MyColors.PBackground
+		      gg.FillRectangle(0, 0, gg.Width, gg.Height)
 		    End If
 		    
 		    //Header Background
@@ -4885,11 +4931,11 @@ Inherits DesktopCanvas
 		      Dim gh As Graphics = gg.Clip(0, 0, gg.Width, HeaderHeight)
 		      DrawBackground(gh)
 		    else
-		      gg.ForeColor = MyColors.Header
+		      gg.DrawingColor = MyColors.Header
 		      If StyleType = StyleOutlook2013 then
-		        gg.FillRect(0, 0, gg.Width, 22)
+		        gg.FillRectangle(0, 0, gg.Width, 22)
 		      else
-		        gg.FillRect(0, 0, gg.Width, HeaderHeight)
+		        gg.FillRectangle(0, 0, gg.Width, HeaderHeight)
 		      End If
 		    End If
 		    
@@ -4897,19 +4943,19 @@ Inherits DesktopCanvas
 		    y = 22 \ 2
 		    
 		    If me isa CalendarView then
-		      gg.ForeColor = MyColors.PArrow
+		      gg.DrawingColor = MyColors.PArrow
 		      
 		      
 		      If mHiDPI then
-		        gg.Pixel(6, y) = gg.ForeColor
-		        gg.Pixel(gg.Width-7, y) = gg.ForeColor
+		        gg.Pixel(6, y) = gg.DrawingColor
+		        gg.Pixel(gg.Width-7, y) = gg.DrawingColor
 		        For i = 7 to 14
 		          gg.DrawLine(i, y-i+6, i, y+i-6)
 		          gg.DrawLine(gg.Width-i-1, y-i+6, gg.Width-i-1, y+i-6)
 		        Next
 		      else
-		        gg.Pixel(5, y) = gg.ForeColor
-		        gg.Pixel(gg.Width-6, y) = gg.ForeColor
+		        gg.Pixel(5, y) = gg.DrawingColor
+		        gg.Pixel(gg.Width-6, y) = gg.DrawingColor
 		        For i = 6 to 9
 		          gg.DrawLine(i, y-i+5, i, y+i-5)
 		          gg.DrawLine(gg.Width-i-1, y-i+5, gg.Width-i-1, y+i-5)
@@ -4917,9 +4963,9 @@ Inherits DesktopCanvas
 		      End If
 		      
 		    else
-		      gg.ForeColor = MyColors.PArrow
-		      gg.Pixel(2, y) = gg.ForeColor
-		      gg.Pixel(gg.Width-3, y) = gg.ForeColor
+		      gg.DrawingColor = MyColors.PArrow
+		      gg.Pixel(2, y) = gg.DrawingColor
+		      gg.Pixel(gg.Width-3, y) = gg.DrawingColor
 		      
 		      For i = 3 to 6
 		        gg.DrawLine(i, y-i+2, i, y+i-2)
@@ -4929,13 +4975,13 @@ Inherits DesktopCanvas
 		    
 		    
 		    //Drawing Month
-		    gg.ForeColor = MyColors.Title
+		    gg.DrawingColor = MyColors.Title
 		    gg.Bold = True
-		    text = str(DisplayDate.Year)
-		    gg.DrawString(text, gg.Width-gg.StringWidth(text)\2, (22-gg.TextHeight)\2 + gg.TextAscent)
+		    lText = str(DisplayDate.Year)
+		    gg.DrawText(lText, gg.Width-gg.TextWidth(lText)\2, (22-gg.TextHeight)\2 + gg.FontAscent)
 		    
 		    //Drawing Day names
-		    'gg.TextSize = 0
+		    'gg.FontSize = 0
 		    'gg.Bold = MyStyle.PDayNameBold
 		    'If MyStyle.PDayNamePos = 0 then
 		    'Pos = 0
@@ -4954,21 +5000,21 @@ Inherits DesktopCanvas
 		    '//Finding how many characters can be displayed
 		    'For i = 0 to 6
 		    'If (FirstDayOfWeek + i) = 7 then
-		    'text = TitleCase(DayNames(7))
+		    'lText = TitleCase(DayNames(7))
 		    'else
-		    'text = TitleCase(DayNames((FirstDayOfWeek + i) mod 7))
+		    'lText = TitleCase(DayNames((FirstDayOfWeek + i) mod 7))
 		    'End If
-		    'If gg.StringWidth(text) < DayWidth-2 then
+		    'If gg.TextWidth(lText) < DayWidth-2 then
 		    '
-		    'elseif gg.StringWidth(text.Left(3)) < DayWidth-2 then
+		    'elseif gg.TextWidth(lText.Left(3)) < DayWidth-2 then
 		    'If NameLength = 0 then
 		    'NameLength = 3
 		    'End If
-		    'elseif gg.StringWidth(text.Left(2)) < DayWidth-2 then
+		    'elseif gg.TextWidth(lText.Left(2)) < DayWidth-2 then
 		    'If NameLength = 0 or NameLength = 3 then
 		    'NameLength = 2
 		    'End If
-		    'elseif gg.StringWidth(text.Left(1)) <=DayWidth-2 then
+		    'elseif gg.TextWidth(lText.Left(1)) <=DayWidth-2 then
 		    'NameLength = 1
 		    'exit for i
 		    'End If
@@ -4977,23 +5023,23 @@ Inherits DesktopCanvas
 		    '//Drawing day names
 		    'For i = 0 to 6
 		    'If (FirstDayOfWeek + i) = 7 then
-		    'text = TitleCase(DayNames(7))
+		    'lText = TitleCase(DayNames(7))
 		    'else
-		    'text = TitleCase(DayNames((FirstDayOfWeek + i) mod 7))
+		    'lText = TitleCase(DayNames((FirstDayOfWeek + i) mod 7))
 		    'End If
 		    'If NameLength <> 0 then
-		    'text = text.Left(NameLength)
+		    'lText = lText.Left(NameLength)
 		    'End If
 		    '
-		    'gg.ForeColor = MyColors.DayName
+		    'gg.DrawingColor = MyColors.DayName
 		    'If Pos = 0 then
-		    'gg.DrawString(text, DayWidth * i + xx, y)
+		    'gg.DrawText(lText, DayWidth * i + xx, y)
 		    'elseif Pos = 1 then
-		    'gg.DrawString(text, DayWidth * i + max(1, (DayWidth - gg.StringWidth(text)) \ 2), y)
+		    'gg.DrawText(lText, DayWidth * i + max(1, (DayWidth - gg.TextWidth(lText)) \ 2), y)
 		    '
 		    'else
-		    'x =DayWidth * i + xx - min(DayWidth-xx, gg.StringWidth(text))
-		    'gg.DrawString(text, DayWidth * i + xx - min(xx-3, gg.StringWidth(text)), y)
+		    'x =DayWidth * i + xx - min(DayWidth-xx, gg.TextWidth(lText))
+		    'gg.DrawText(lText, DayWidth * i + xx - min(xx-3, gg.TextWidth(lText)), y)
 		    'End If
 		    'Next
 		    
@@ -5017,53 +5063,54 @@ Inherits DesktopCanvas
 		      
 		      //Today Background
 		      If DrawDate.Month = Today.Month then
-		        gg.ForeColor = MyColors.Today
-		        gg.FillRect(x, y, Ceil(DayWidth), Ceil(DayHeight))
+		        gg.DrawingColor = MyColors.Today
+		        gg.FillRectangle(x, y, Ceiling(DayWidth), Ceiling(DayHeight))
 		        
 		        //Selected
 		      ElseIf SelStart <> Nil and SelEnd <> nil and DrawDate.Month >= SelStart.Month and DrawDate.Month <= SelEnd.Month then
-		        gg.ForeColor = MyColors.PSelected
-		        gg.FillRect(x, y, Ceil(DayWidth), Ceil(DayHeight))
+		        gg.DrawingColor = MyColors.PSelected
+		        gg.FillRectangle(x, y, Ceiling(DayWidth), Ceiling(DayHeight))
 		        
 		        //MouseOver
 		      ElseIf i = LastDayOver or (DisplayDate <> Nil and DrawDate.Month = DisplayDate.Month) then
-		        gg.ForeColor = MyColors.POver
+		        gg.DrawingColor = MyColors.POver
 		        If StyleType = StyleOutlook2013 then
-		          gg.DrawRoundRect(x+1, y+1, Ceil(DayWidth)-2, Ceil(DayHeight)-2, 2, 2)
+		          gg.DrawRoundRectangle(x+1, y+1, Ceiling(DayWidth)-2, Ceiling(DayHeight)-2, 2, 2)
 		        else
-		          gg.FillRect(x, y, Ceil(DayWidth), Ceil(DayHeight))
+		          gg.FillRectangle(x, y, Ceiling(DayWidth), Ceiling(DayHeight))
 		        End If
 		      End If
 		      
 		      If StyleType = StyleOutlook2013 then
 		        If i = LastDayOver then
-		          gg.ForeColor = MyColors.POver
-		          gg.DrawRoundRect(x+1, y+1, Ceil(DayWidth)-2, Ceil(DayHeight)-2, 2, 2)
+		          gg.DrawingColor = MyColors.POver
+		          gg.DrawRoundRectangle(x+1, y+1, Ceiling(DayWidth)-2, Ceiling(DayHeight)-2, 2, 2)
 		        End If
 		      End If
 		      
-		      text = MonthNames(DrawDate.Month)
+		      lText = MonthNames(DrawDate.Month)
 		      
 		      
 		      If StyleType = StyleOutlook2013 and DrawDate.Month = Today.Month and DrawDate.Year = Today.Year then
-		        gg.ForeColor = MyColors.PDayNumberToday
-		      elseIf gg.ForeColor <> MyColors.PDayNumberActive then
-		        gg.ForeColor = MyColors.PDayNumberActive
+		        gg.DrawingColor = MyColors.PDayNumberToday
+		      elseIf gg.DrawingColor <> MyColors.PDayNumberActive then
+		        gg.DrawingColor = MyColors.PDayNumberActive
 		      End If
 		      
 		      If Pos = 0 then
-		        gg.DrawString(text, x, y+(DayHeight-gg.TextHeight)\2 + gg.TextAscent, DayWidth, True)
+		        gg.DrawText(lText, x, y+(DayHeight-gg.TextHeight)\2 + gg.FontAscent, DayWidth, True)
 		      elseif Pos = 1 then
-		        gg.DrawString(text, x + (DayWidth - gg.StringWidth(text))\2, y+(DayHeight-gg.TextHeight)\2 + _
-		        gg.TextAscent, DayWidth, True)
+		        gg.DrawText(lText, x + (DayWidth - gg.TextWidth(lText))\2, y+(DayHeight-gg.TextHeight)\2 + _
+		        gg.FontAscent, DayWidth, True)
 		      else
-		        gg.DrawString(text, x - gg.StringWidth(text), y+(DayHeight-gg.TextHeight)\2 + gg.TextAscent, _
+		        gg.DrawText(lText, x - gg.TextWidth(lText), y+(DayHeight-gg.TextHeight)\2 + gg.FontAscent, _
 		        DayWidth, True)
 		      End If
 		      
 		      
 		      
-		      DrawDate.Month = DrawDate.Month + 1
+		      'DrawDate.Month = DrawDate.Month + 1
+		      DrawDate = DrawDate + DIMonth
 		      If i mod 4 = 0 then
 		        y = y + DayHeight
 		        x = xx
@@ -5075,7 +5122,7 @@ Inherits DesktopCanvas
 		    If MyStyle.PLineVertical > LineNone then
 		      For i = 1 to 3
 		        x = DayWidth * i
-		        gg.ForeColor = MyColors.Line
+		        gg.DrawingColor = MyColors.Line
 		        If MyStyle.PLineVertical = LineThinSolid then
 		          
 		          gg.DrawLine(x, 36, x, gg.Height)
@@ -5086,7 +5133,7 @@ Inherits DesktopCanvas
 		        elseif MyStyle.PLineVertical = LineThinDouble then
 		          
 		          gg.DrawLine(x-1, 36, x-1, gg.Height)
-		          gg.ForeColor = MyColors.Line2
+		          gg.DrawingColor = MyColors.Line2
 		          gg.DrawLine(x, 36, x, gg.Height)
 		          
 		        End If
@@ -5094,12 +5141,12 @@ Inherits DesktopCanvas
 		    End If
 		    
 		    If Border then
-		      gg.ForeColor = MyColors.Border
+		      gg.DrawingColor = MyColors.Border
 		      If TransparentBackground then
-		        gg.DrawRect(0, HeaderHeight, gg.Width, gg.Height-HeaderHeight)
+		        gg.DrawRectangle(0, HeaderHeight, gg.Width, gg.Height-HeaderHeight)
 		        
 		      else
-		        gg.DrawRect(0, 0, gg.Width, gg.Height)
+		        gg.DrawRectangle(0, 0, gg.Width, gg.Height)
 		        
 		      End If
 		    End If
@@ -5108,7 +5155,7 @@ Inherits DesktopCanvas
 		    
 		    //In DebugBuild we check performance of drawing
 		    #if DebugBuild
-		      ms = (Microseconds-ms)/1000
+		      ms = (System.Microseconds-ms)/1000
 		      'DrawInfo = str(ms)
 		    #endif
 		    
@@ -5149,21 +5196,21 @@ Inherits DesktopCanvas
 		  
 		  
 		  If Antialiasing Then
-		    gp.ForeColor = &c4D4D4D22
-		    gp.FillRoundRect(0, 0, gp.Width, gp.Height, 8, 8)
+		    gp.DrawingColor = &c4D4D4D22
+		    gp.FillRoundRectangle(0, 0, gp.Width, gp.Height, 8, 8)
 		  Else
-		    gp.ForeColor = &c4D4D4D
-		    gp.FillRect(0, 0, gp.Width, gp.Height)
+		    gp.DrawingColor = &c4D4D4D
+		    gp.FillRectangle(0, 0, gp.Width, gp.Height)
 		    
-		    gp = p.Mask.Graphics
-		    gp.ForeColor = &cFFFFFF
-		    gp.FillRect(0, 0, gp.Width, gp.Height)
-		    gp.ForeColor = mixColor(&c4D4D4D, &cFFFFFF, &hBB)
-		    gp.DrawRoundRect(0, 0, gp.Width, gp.Height, 4, 4)
-		    gp.ForeColor = mixColor(&c4D4D4D, &cFFFFFF, &h88)
-		    gp.DrawRoundRect(0, 0, gp.Width, gp.Height, 6, 6)
-		    gp.ForeColor = mixColor(&c4D4D4D, &cFFFFFF, &h22)
-		    gp.FillRoundRect(1, 1, gp.Width-2, gp.Height-2, 4,4)
+		    gp = p.CopyMask.Graphics
+		    gp.DrawingColor = &cFFFFFF
+		    gp.FillRectangle(0, 0, gp.Width, gp.Height)
+		    gp.DrawingColor = mixColor(&c4D4D4D, &cFFFFFF, &hBB)
+		    gp.DrawRoundRectangle(0, 0, gp.Width, gp.Height, 4, 4)
+		    gp.DrawingColor = mixColor(&c4D4D4D, &cFFFFFF, &h88)
+		    gp.DrawRoundRectangle(0, 0, gp.Width, gp.Height, 6, 6)
+		    gp.DrawingColor = mixColor(&c4D4D4D, &cFFFFFF, &h22)
+		    gp.FillRoundRectangle(1, 1, gp.Width-2, gp.Height-2, 4,4)
 		    
 		    
 		    gg.DrawPicture(p, Width-p.Width, ViewHeight + (Height-ViewHeight-ScrollBarHeight)*ScrollPosition/24)
@@ -5179,7 +5226,7 @@ Inherits DesktopCanvas
 		  
 		  If pattern is nil then Return
 		  
-		  Dim p As Picture = Picture.FromData(Pattern.GetData(Picture.FormatPNG))
+		  Dim p As Picture = Picture.FromData(Pattern.ToData(Picture.Formats.PNG))
 		  
 		  If not Enabled then
 		    Dim m, x, y As Integer
@@ -5191,7 +5238,7 @@ Inherits DesktopCanvas
 		      For x = 0 to p.Width-1
 		        c = s.Pixel(x, y)
 		        m = (c.red*0.2989)+(c.Green*0.5870)+(c.Blue*0.114)
-		        s.Pixel(x, y) = RGB(m, m, m)
+		        s.Pixel(x, y) = Color.RGB(m, m, m)
 		      Next
 		    Next
 		    
@@ -5254,30 +5301,30 @@ Inherits DesktopCanvas
 		  
 		  If StyleType = StyleOutlook2010 then
 		    
-		    gc.ForeColor = &cFFD85A
+		    gc.DrawingColor = &cFFD85A
 		    gc.DrawLine(0, y-1, TimeWidth-1, y-1)
 		    gc.DrawLine(0, y+1, TimeWidth-1, y+1)
-		    gc.ForeColor = &cEB8900
+		    gc.DrawingColor = &cEB8900
 		    gc.DrawLine(0, y, TimeWidth-1, y)
 		    
 		  elseif StyleType = StyleOutlook2013 then
-		    gc.ForeColor = &cB1D6F0
+		    gc.DrawingColor = &cB1D6F0
 		    gc.DrawLine(0, y-1, Width, y-1)
 		    gc.DrawLine(0, y+1, Width, y+1)
-		    gc.ForeColor = &c2A8DD4
+		    gc.DrawingColor = &c2A8DD4
 		    gc.DrawLine(0, y, Width, y)
 		    
 		  else
-		    gc.ForeColor = &cFF7F6E
+		    gc.DrawingColor = &cFF7F6E
 		    
 		    If Today.TotalSeconds >= FirstDate.TotalSeconds and Today.TotalSeconds <= LastDate.TotalSeconds then
 		      If mHiDPI then
-		        gc.ForeColor = ShiftColor(gc.ForeColor, 20)
-		        gc.FillRect(TimeWidth + (Today.Day-FirstDate.Day) * DayWidth, y, Ceil(DayWidth)-1, 4)
-		        gc.ForeColor = &cFF7F6E
-		        gc.FillRect(TimeWidth + (Today.Day-FirstDate.Day) * DayWidth, y+1, Ceil(DayWidth)-1, 2)
+		        gc.DrawingColor = ShiftColor(gc.DrawingColor, 20)
+		        gc.FillRectangle(TimeWidth + (Today.Day-FirstDate.Day) * DayWidth, y, Ceiling(DayWidth)-1, 4)
+		        gc.DrawingColor = &cFF7F6E
+		        gc.FillRectangle(TimeWidth + (Today.Day-FirstDate.Day) * DayWidth, y+1, Ceiling(DayWidth)-1, 2)
 		      else
-		        gc.FillRect(TimeWidth + (Today.Day-FirstDate.Day) * DayWidth, y, Ceil(DayWidth), 2)
+		        gc.FillRectangle(TimeWidth + (Today.Day-FirstDate.Day) * DayWidth, y, Ceiling(DayWidth), 2)
 		      End If
 		    End If
 		    
@@ -5294,7 +5341,7 @@ Inherits DesktopCanvas
 		    Next
 		    
 		    If y >-1 and y < gc.Height then
-		      gc.Pixel(3+start, y) = gc.ForeColor
+		      gc.Pixel(3+start, y) = gc.DrawingColor
 		    End If
 		    
 		  End If
@@ -5306,7 +5353,7 @@ Inherits DesktopCanvas
 		  #if False
 		    //Erasing all buffers
 		    Dim i, u As Integer
-		    u = UBound(Events())
+		    u = Events.LastIndex
 		    For i = 0 to u
 		      If Events(i).Buffer <> Nil then
 		        Events(i).Buffer = Nil
@@ -5327,7 +5374,7 @@ Inherits DesktopCanvas
 		  End If
 		  
 		  Dim i, u As Integer
-		  u = UBound(DisplayEvents)
+		  u = DisplayEvents.LastIndex
 		  Dim E As CalendarEvent
 		  Dim Found As Boolean
 		  Dim FoundI As Integer = -1
@@ -5374,62 +5421,63 @@ Inherits DesktopCanvas
 		  
 		  Dim Line() As String
 		  Dim i, u As Integer
-		  u = UBound(Events)
+		  u = Events.LastIndex
 		  If u = -1 then Return ""
 		  Dim Time As String
 		  Dim E As CalendarEvent
 		  
-		  Line.Append "BEGIN:VCALENDAR"
-		  Line.Append "VERSION:2.0"
-		  Line.Append "PRODID:XOJO CalendarView"
+		  Line.Add "BEGIN:VCALENDAR"
+		  Line.Add "VERSION:2.0"
+		  Line.Add "PRODID:XOJO CalendarView"
 		  
 		  For i = 0 to u
 		    E = Events(i)
 		    
-		    Line.Append "BEGIN:VEVENT"
+		    Line.Add "BEGIN:VEVENT"
 		    
 		    If E.Length mod 86400 <> 0 then
 		      Time = E.StartDate.SQLDateTime.ReplaceAll("-", "").Replace(" ", "T").ReplaceAll(":", "")
-		      If E.StartDate.GMTOffset = 0 then
+		      'If E.StartDate.GMTOffset = 0 then
+		      If E.StartDate.Timezone.SecondsFromGMT = 0 then
 		        Time = Time + "Z"
 		      End If
 		    else
 		      Time = E.StartDate.SQLDate.ReplaceAll("-", "")
 		    End If
 		    
-		    Line.Append "DTSTART:" + Time
+		    Line.Add "DTSTART:" + Time
 		    
 		    //Length
 		    If E.Length <> 0 then
 		      If E.Length mod 86400 <> 0 then
 		        Time = E.EndDate.SQLDateTime.ReplaceAll("-", "").Replace(" ", "T").ReplaceAll(":", "")
-		        If E.EndDate.GMTOffset = 0 then
+		        If E.EndDate.Timezone.SecondsFromGMT = 0 then
 		          Time = Time + "Z"
 		        End If
 		      else
 		        Time = E.EndDate.SQLDate.ReplaceAll("-", "")
 		      End If
-		      Line.Append "DTEND:" + Time
+		      Line.Add "DTEND:" + Time
 		    End If
 		    
 		    //Text information
-		    Line.Append "SUMMARY:" + E.Title
+		    Line.Add "SUMMARY:" + E.Title
 		    If E.Location <> "" then
-		      Line.Append "LOCATION:" + E.Location
+		      Line.Add "LOCATION:" + E.Location
 		    End If
 		    If E.Description <> "" then
-		      Line.Append "DESCRIPTION:" + E.Description
+		      Line.Add "DESCRIPTION:" + E.Description
 		    End If
 		    
 		    //Recurrence
 		    If E.Recurrence <> Nil then
-		      Line.Append "RRULE:" + E.Recurrence.ToICS(E)
+		      Line.Add "RRULE:" + E.Recurrence.ToICS(E)
 		    End If
 		    
-		    Line.Append "UID:" + E.ID
-		    Line.Append "X-RSCV-COLOR:" + FormatColor(E.EventColor)
-		    Line.Append "X-RSCV-TAG:" + E.Tag.StringValue
-		    Line.Append "END:VEVENT"
+		    Line.Add "UID:" + E.ID
+		    Line.Add "X-RSCV-COLOR:" + FormatColor(E.EventColor)
+		    Line.Add "X-RSCV-TAG:" + E.Tag.StringValue
+		    Line.Add "END:VEVENT"
 		  Next
 		  
 		  
@@ -5438,10 +5486,10 @@ Inherits DesktopCanvas
 		  
 		  
 		  
-		  Line.Append "END:VCALENDAR"
+		  Line.Add "END:VCALENDAR"
 		  
 		  
-		  Return Join(Line, EndOfLine)
+		  Return Line.Join(EndOfLine)
 		End Function
 	#tag EndMethod
 
@@ -5453,28 +5501,42 @@ Inherits DesktopCanvas
 		    System.DebugLog(CurrentMethodName + " DB is Nil")
 		    Return False
 		  End If
-		  If db.Connect = False then
+		  
+		  Try
+		    db.Connect
+		  Catch dbe As DatabaseException
 		    System.DebugLog(CurrentMethodName + " DB.Connect failed")
 		    Return False
-		  End If
+		  End Try
 		  
-		  Dim Rec As DatabaseRecord
+		  Dim Rec As DatabaseRow
 		  Dim cEvent As CalendarEvent
 		  Dim i As Integer
 		  Dim maxID As String
-		  Dim RS As RecordSet
+		  Dim RS As RowSet
 		  Dim wSQL As String
 		  
-		  For i = 0 to UBound(DeletedIDs)
-		    DB.SQLExecute("DELETE FROM " + TableName + " WHERE " + ID + "='" + DeletedIDs(i) + "'")
+		  For i = 0 to DeletedIDs.LastIndex
+		    Try
+		      DB.ExecuteSQL("DELETE FROM " + TableName + " WHERE " + ID + "='" + DeletedIDs(i) + "'")
+		    Catch dbe As DatabaseException
+		      System.DebugLog(CurrentMethodName + " - DB has error while deleting - " + dbe.Message)
+		      Return False
+		    End Try
 		  Next
 		  
 		  
 		  //Finding the maximum ID
-		  RS = DB.SQLSelect("SELECT " + ID + " FROM " + TableName + " ORDER BY " + ID + " DESC LIMIT 0,1")
+		  Try
+		    RS = DB.SelectSQL("SELECT " + ID + " FROM " + TableName + " ORDER BY " + ID + " DESC LIMIT 0,1")
+		  Catch dbe As DatabaseException
+		    System.DebugLog(CurrentMethodName + " - DB has error finding max id - " + dbe.Message)
+		    Return False
+		  End Try
+		  
 		  If RS <> Nil then
-		    If RS.RecordCount > 0 then
-		      maxID = RS.IdxField(1)
+		    If RS.RowCount > 0 then
+		      maxID = RS.ColumnAt(1)
 		    else
 		      maxID = "0"
 		    End If
@@ -5482,7 +5544,7 @@ Inherits DesktopCanvas
 		    maxID = "0"
 		  End If
 		  
-		  For i = 0 to UBound(Events)
+		  For i = 0 to Events.LastIndex
 		    cEvent = Events(i)
 		    
 		    If cEvent.ID <> "" and cEvent.ID.left(4) <> "auto" then
@@ -5504,23 +5566,35 @@ Inherits DesktopCanvas
 		      End If
 		      
 		      wSQL = wSQL + " FROM " + TableName + " WHERE " + ID + "=" + cEvent.ID
-		      RS = DB.SQLSelect(wSQL)
+		      
+		      Try
+		        RS = DB.SelectSQL(wSQL)
+		      Catch dbe As DatabaseException
+		        System.DebugLog(CurrentMethodName + " - DB has error on select - " + dbe.Message)
+		        Return False
+		      End Try
+		      
 		    End If
-		    If cEvent.ID <> "" and cEvent.ID.left(4) <> "auto" and RS <> Nil and RS.RecordCount > 0 then
+		    If cEvent.ID <> "" and cEvent.ID.left(4) <> "auto" and RS <> Nil and RS.RowCount > 0 then
 		      
-		      RS.Edit()
+		      RS.EditRow()
 		      
-		      RS.Field(StartDate).Value = cEvent.StartDate.SQLDateTime
-		      RS.Field(EndDate).Value = cEvent.EndDate.SQLDateTime
-		      RS.Field(Title).StringValue = cEvent.Title
-		      RS.Field(EventColor).StringValue = FormatColor(cEvent.EventColor)
-		      RS.Field(Location).StringValue = cEvent.Location
-		      RS.Field(Description).StringValue = cEvent.Description
+		      RS.Column(StartDate).Value = cEvent.StartDate.SQLDateTime
+		      RS.Column(EndDate).Value = cEvent.EndDate.SQLDateTime
+		      RS.Column(Title).StringValue = cEvent.Title
+		      RS.Column(EventColor).StringValue = FormatColor(cEvent.EventColor)
+		      RS.Column(Location).StringValue = cEvent.Location
+		      RS.Column(Description).StringValue = cEvent.Description
 		      If cEvent.Recurrence <> Nil then
-		        RS.Field(Recurrence).StringValue = cEvent.Recurrence.ToICS(cEvent)
+		        RS.Column(Recurrence).StringValue = cEvent.Recurrence.ToICS(cEvent)
 		      End If
 		      
-		      RS.Update
+		      Try
+		        RS.SaveRow
+		      Catch dbe As DatabaseException
+		        System.DebugLog(CurrentMethodName + " - DB has error before Commit - " + dbe.Message)
+		        Return False
+		      End Try
 		      
 		    else
 		      
@@ -5528,7 +5602,7 @@ Inherits DesktopCanvas
 		      
 		      cEvent.ID = maxID
 		      
-		      rec = New DatabaseRecord
+		      rec = New DatabaseRow
 		      rec.Column(ID) = cEvent.ID
 		      rec.Column(StartDate) = cEvent.StartDate.SQLDateTime
 		      If EndDate <> "" then
@@ -5546,22 +5620,20 @@ Inherits DesktopCanvas
 		        rec.Column(Recurrence) = cEvent.Recurrence.ToICS(cEvent)
 		      End If
 		      
-		      db.InsertRecord TableName, Rec
-		      
-		    End If
-		    
-		    If db.Error = False then
-		      db.Commit
-		      If db.Error then
-		        System.DebugLog(CurrentMethodName + " DB has error after Commit")
+		      Try
+		        db.AddRow TableName, Rec
+		      Catch dbe As DatabaseException
+		        System.DebugLog(CurrentMethodName + " - DB has error before Commit - " + dbe.Message)
 		        Return False
-		      End If
-		    else
-		      db.Rollback
-		      System.DebugLog(CurrentMethodName + " DB has error before Commit")
-		      Return False
+		      End Try
 		    End If
 		    
+		    Try
+		      db.CommitTransaction
+		    Catch dbe As DatabaseException
+		      System.DebugLog(CurrentMethodName + " DB has error after Commit")
+		      Return False
+		    End Try
 		    
 		  Next
 		  
@@ -5573,7 +5645,7 @@ Inherits DesktopCanvas
 	#tag Method, Flags = &h1
 		Protected Function FindScreen() As Integer
 		  #if TargetDesktop
-		    Dim w As Window = self.TrueWindow
+		    Dim w As DesktopWindow = self.Window
 		    
 		    For i as Integer = 0 to ScreenCount-1
 		      
@@ -5647,13 +5719,13 @@ Inherits DesktopCanvas
 		  G = Hex(c.Green)
 		  B = Hex(c.Blue)
 		  
-		  If len(R) = 1 then
+		  If R.Length = 1 then
 		    R = "0" + R
 		  End If
-		  If len(G) = 1 then
+		  If G.Length = 1 then
 		    G = "0" + G
 		  End If
-		  If len(B) = 1 then
+		  If B.Length = 1 then
 		    B = "0" + B
 		  End If
 		  
@@ -5689,14 +5761,14 @@ Inherits DesktopCanvas
 		    if System.IsFunctionAvailable( "GetLocaleInfoW", "Kernel32" ) then
 		      if mb <> nil then
 		        returnValue = GetLocaleInfoW( LCID, type, mb, size ) * 2
-		        retVal = ReplaceAll( DefineEncoding( mb.StringValue( 0, returnValue ), Encodings.UTF16 ), Chr( 0 ), "" )
+		        retVal = DefineEncoding( mb.StringValue( 0, returnValue ), Encodings.UTF16 ).ReplaceAll( Chr( 0 ), "" )
 		      else
 		        returnValue = GetLocaleInfoW( LCID, type, nil, size ) * 2
 		      end if
 		    else
 		      if mb <> nil then
 		        returnValue = GetLocaleInfoA( LCID, type, mb, size ) * 2
-		        retVal = ReplaceAll( DefineEncoding( mb.StringValue( 0, returnValue ), Encodings.ASCII ), Chr( 0 ), "" )
+		        retVal = DefineEncoding( mb.StringValue( 0, returnValue ), Encodings.ASCII ).ReplaceAll( Chr( 0 ), "" )
 		      else
 		        returnValue = GetLocaleInfoA( LCID, type, nil, size ) * 2
 		      end if
@@ -5715,7 +5787,7 @@ Inherits DesktopCanvas
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function getTimeTextForWeek(text As String, Hour As Integer, StartHour As Integer, DrawDate As Date) As String
+		Protected Function getTimeTextForWeek(text As String, Hour As Integer, StartHour As Integer, DrawDate As DateTime) As String
 		  
 		  Dim HiddenHour As Boolean
 		  
@@ -5728,15 +5800,17 @@ Inherits DesktopCanvas
 		  End If
 		  
 		  
-		  If MyStyle.WTimeFormat.instr("(a)")>0 then
+		  If MyStyle.WTimeFormat.IndexOf("(a)")>0 then
 		    
 		    If HiddenHour then
 		      Dim mText As String = text
 		      text = ParseTime(DrawDate, mtext) + " - "
 		      If Hour = StartHour then
-		        DrawDate.Hour = DayStartHour
+		        'DrawDate.Hour = DayStartHour
+		        DrawDate = DrawDate - New DateInterval(0,0,DrawDate.Hour,drawdate.Minute) + New DateInterval(0,0,0,DayStartHour)
 		      elseif Hour = VisibleHours then
-		        DrawDate.Hour = 0
+		        'DrawDate.Hour = 0
+		        DrawDate = DrawDate - New DateInterval(0,0,DrawDate.Hour,drawdate.Minute) 
 		      End If
 		      text = text + ParseDate(DrawDate, mText)
 		    Else
@@ -5745,13 +5819,15 @@ Inherits DesktopCanvas
 		    
 		  else
 		    
-		    If ForceAM_PM or DrawDate.ShortTime.InStr("am")>0 or DrawDate.ShortTime.InStr("pm")>0 then
+		    If ForceAM_PM or DrawDate.ToString(DateTime.FormatStyles.None, DateTime.FormatStyles.Short).IndexOf("am")>0 or DrawDate.ToString(DateTime.FormatStyles.None, DateTime.FormatStyles.Short).IndexOf("pm")>0 then
 		      If HiddenHour then
 		        text = ParseTime(DrawDate, MyStyle.WTimeFormat, "HH ") + " - "
 		        If Hour = StartHour then
-		          DrawDate.Hour = DayStartHour
+		          'DrawDate.Hour = DayStartHour
+		          DrawDate = DrawDate - New DateInterval(0,0,DrawDate.Hour,drawdate.Minute) + New DateInterval(0,0,0,DayStartHour)
 		        elseif Hour = VisibleHours then
-		          DrawDate.Hour = 0
+		          'DrawDate.Hour = 0
+		          DrawDate = DrawDate - New DateInterval(0,0,DrawDate.Hour,drawdate.Minute) 
 		        End If
 		        text = text + ParseTime(DrawDate, MyStyle.WTimeFormat, "HH ")
 		      Else
@@ -5762,9 +5838,11 @@ Inherits DesktopCanvas
 		      If HiddenHour then
 		        text = ParseTime(DrawDate, MyStyle.WTimeFormat, "HH:MM") + " - "
 		        If Hour = StartHour then
-		          DrawDate.Hour = DayStartHour
+		          'DrawDate.Hour = DayStartHour
+		          DrawDate = DrawDate - New DateInterval(0,0,DrawDate.Hour,drawdate.Minute) + New DateInterval(0,0,0,DayStartHour)
 		        elseif Hour = VisibleHours then
-		          DrawDate.Hour = 0
+		          'DrawDate.Hour = 0
+		          DrawDate = DrawDate - New DateInterval(0,0,DrawDate.Hour,drawdate.Minute) 
 		        End If
 		        text = text + ParseTime(DrawDate, MyStyle.WTimeFormat, "HH:MM")
 		      Else
@@ -5781,11 +5859,11 @@ Inherits DesktopCanvas
 		Protected Function GetWindowColor() As Color
 		  #if TargetDesktop
 		    #if RBVersion>2009 then
-		      If me.TrueWindow.HasBackColor then
-		        Return me.TrueWindow.BackColor
+		      If me.Window.HasBackgroundColor then
+		        Return me.Window.BackgroundColor
 		    #else
-		      If me.Window.HasBackColor then
-		        Return me.Window.BackColor
+		      If me.Window.HasBackgroundColor then
+		        Return me.Window.BackgroundColor
 		    #endif
 		    Else
 		      #if TargetMacOS
@@ -5793,7 +5871,7 @@ Inherits DesktopCanvas
 		        Return &cF0F0F0
 		        Return &cE8E8E8
 		      #else
-		        Return FillColor()
+		        Return Color.FillColor()
 		      #endif
 		    End If
 		    
@@ -5837,10 +5915,10 @@ Inherits DesktopCanvas
 		    
 		    endratio = ((i-start)/length)
 		    If calcAlpha then
-		      g.ForeColor = RGB(EndColor.Red * endratio + StartColor.Red * ratio, EndColor.Green * endratio +_
+		      g.DrawingColor = Color.RGB(EndColor.Red * endratio + StartColor.Red * ratio, EndColor.Green * endratio +_
 		      StartColor.Green * ratio, EndColor.Blue * endratio + StartColor.Blue * ratio, endColor.Alpha * endratio + startColor.Alpha * ratio)
 		    else
-		      g.ForeColor = RGB(EndColor.Red * endratio + StartColor.Red * ratio, EndColor.Green * endratio +_
+		      g.DrawingColor = Color.RGB(EndColor.Red * endratio + StartColor.Red * ratio, EndColor.Green * endratio +_
 		      StartColor.Green * ratio, EndColor.Blue * endratio + StartColor.Blue * ratio, Alpha)
 		    End If
 		    
@@ -5907,10 +5985,10 @@ Inherits DesktopCanvas
 		    
 		    endratio = ((i-start)/length)
 		    If calcAlpha then
-		      gg.ForeColor = RGB(EndColor.Red * endratio + StartColor.Red * ratio, EndColor.Green * endratio +_
+		      gg.DrawingColor = Color.RGB(EndColor.Red * endratio + StartColor.Red * ratio, EndColor.Green * endratio +_
 		      StartColor.Green * ratio, EndColor.Blue * endratio + StartColor.Blue * ratio, endColor.Alpha * endratio + startColor.Alpha * ratio)
 		    else
-		      gg.ForeColor = RGB(EndColor.Red * endratio + StartColor.Red * ratio, EndColor.Green * endratio +_
+		      gg.DrawingColor = Color.RGB(EndColor.Red * endratio + StartColor.Red * ratio, EndColor.Green * endratio +_
 		      StartColor.Green * ratio, EndColor.Blue * endratio + StartColor.Blue * ratio, Alpha)
 		    End If
 		    
@@ -5927,7 +6005,7 @@ Inherits DesktopCanvas
 
 	#tag Method, Flags = &h1
 		Protected Sub HandleDragEvent(X As Integer, Y As Integer)
-		  Dim tmpDate As Date = DateForXY(X, Y)
+		  Dim tmpDate As DateTime = DateForXY(X, Y)
 		  
 		  If LastMouseOver is Nil then Return
 		  
@@ -5939,10 +6017,12 @@ Inherits DesktopCanvas
 		      If LastMouseOver.StartSeconds <= tmpDate.TotalSeconds  then
 		        
 		        If LastMouseOver.StartDate.Hour = tmpDate.Hour and LastMouseOver.StartDate.Minute = tmpDate.Minute then
-		          LastMouseOver.EndDate.Hour = LastMouseOver.StartDate.Hour
-		          LastMouseOver.EndDate.Minute = LastMouseOver.StartDate.Minute + 15
+		          'LastMouseOver.EndDate.Hour = LastMouseOver.StartDate.Hour
+		          'LastMouseOver.EndDate.Minute = LastMouseOver.StartDate.Minute + 15
+		          LastMouseOver.EndDate = LastMouseOver.EndDate - New DateInterval(0,0,LastMouseOver.EndDate.Hour,LastMouseOver.EndDate.Minute) + New DateInterval(0,0,0,LastMouseOver.StartDate.Hour,LastMouseOver.StartDate.Minute+15)
 		        else
-		          LastMouseOver.EndDate.TotalSeconds = tmpDate.TotalSeconds
+		          'LastMouseOver.EndDate.TotalSeconds = tmpDate.TotalSeconds
+		          LastMouseOver.EndDate = New DateTime(tmpDate)
 		          'LastMouseOver.EndDate.Hour = tmpDate.Hour
 		          'LastMouseOver.EndDate.Minute = tmpDate.Minute
 		          'LastMouseOver.EndDate.Month = tmpDate.Month
@@ -5958,14 +6038,16 @@ Inherits DesktopCanvas
 		      Dim lastStart As Double = LastMouseOver.StartSeconds
 		      Dim Length As Double = LastMouseOver.Length
 		      If DayEventClicked then
-		        tmpDate.Hour = 0
-		        tmpDate.Minute = 0
-		        tmpDate.Second = 0
-		        LastMouseOver.StartDate = New Date(tmpDate)
+		        'tmpDate.Hour = 0
+		        'tmpDate.Minute = 0
+		        'tmpDate.Second = 0
+		        tmpDate = tmpDate - new DateInterval(0,0,0,tmpDate.Hour,tmpDate.Minute,tmpDate.Second)
+		        LastMouseOver.StartDate = New DateTime(tmpDate)
 		        LastMouseOver.SetLength(Length)
 		      else
-		        LastMouseOver.StartDate = New Date(tmpDate)
-		        LastMouseOver.StartDate.TotalSeconds = Max(tmpDate.TotalSeconds - tmpDate.Hour * 3600 - tmpDate.Minute * 60, tmpDate.TotalSeconds - DragOffset)
+		        'LastMouseOver.StartDate = New DateTime(tmpDate)
+		        'LastMouseOver.StartDate.TotalSeconds = Max(tmpDate.TotalSeconds - tmpDate.Hour * 3600 - tmpDate.Minute * 60, tmpDate.TotalSeconds - DragOffset)
+		        LastMouseOver.StartDate = New DateTime(Max(tmpDate.TotalSeconds - tmpDate.Hour * 3600 - tmpDate.Minute * 60, tmpDate.TotalSeconds - DragOffset), TimeZone.Current)
 		        LastMouseOver.SetLength(Length)
 		      End If
 		      
@@ -6003,7 +6085,7 @@ Inherits DesktopCanvas
 	#tag Method, Flags = &h1
 		Protected Function handleMouseDown(X As Integer, Y As Integer) As Boolean
 		  #if TargetDesktop
-		    If me.AcceptFocus then
+		    If me.AllowFocus then
 		      me.SetFocus
 		    End If
 		    
@@ -6054,7 +6136,7 @@ Inherits DesktopCanvas
 		      
 		      If MonthsPopup.Visible then
 		        Dim r As New Xojo.Rect(MonthsPopup.Left, MonthsPopup.Top, MonthsPopup.Width, MonthsPopup.Height)
-		        If r.Contains(New REALbasic.Point(X, Y)) Then
+		        If r.Contains(New xojo.Point(X, Y)) Then
 		          
 		          If picCloseMonthPopup <> Nil then
 		            #if DebugBuild
@@ -6167,9 +6249,9 @@ Inherits DesktopCanvas
 		  lastY = Y
 		  
 		  #if TargetWeb
-		    lastMouseDown = Ticks
+		    lastMouseDown = System.Ticks
 		    If SelStart <> Nil then
-		      SelEnd = New Date(SelStart)
+		      SelEnd = New DateTime(SelStart)
 		      Redisplay()
 		    End If
 		    
@@ -6245,8 +6327,8 @@ Inherits DesktopCanvas
 		        End If
 		        
 		        If Idx > -1 Then
-		          Events.Remove(Idx)
-		          Events.Insert(Idx, tmpEvent)
+		          Events.RemoveAt(Idx)
+		          Events.AddAt(Idx, tmpEvent)
 		          
 		          #if TargetDesktop
 		            FullRefresh = True
@@ -6263,14 +6345,20 @@ Inherits DesktopCanvas
 		  //Type Picker
 		  If ViewType = TypePicker then
 		    If X < 15 and Y<36 then
-		      DisplayDate.Day = 1
-		      DisplayDate.Month = DisplayDate.Month -1
+		      'DisplayDate.Day = 1
+		      'DisplayDate.Month = DisplayDate.Month -1
+		      DisplayDate = New DateTime(DisplayDate)
+		      DisplayDate = DisplayDate - New DateInterval(0,0,DisplayDate.Day-1)
+		      DisplayDate = DisplayDate - DIMonth
 		      mFirstDate = Nil
 		      
 		      ViewChanged()
 		    elseif X > Width-15 and Y<36 then
-		      DisplayDate.Day = 1
-		      DisplayDate.Month = DisplayDate.Month +1
+		      'DisplayDate.Day = 1
+		      'DisplayDate.Month = DisplayDate.Month +1
+		      DisplayDate = New DateTime(DisplayDate)
+		      DisplayDate = DisplayDate - New DateInterval(0,0,DisplayDate.Day-1)
+		      DisplayDate = DisplayDate + DIMonth
 		      mFirstDate = Nil
 		      
 		      ViewChanged()
@@ -6284,12 +6372,14 @@ Inherits DesktopCanvas
 		      'mYearPicker = New CalendarYearPicker
 		      
 		    else
-		      Dim D As Date = DateForXY(X, Y)
+		      Dim D As DateTime = DateForXY(X, Y)
 		      
 		      If PickerView = PickerDay then
-		        DisplayDate = New Date(D)
+		        DisplayDate = New DateTime(D)
 		      Elseif PickerView = PickerMonth then
-		        DisplayDate.Month = D.Month
+		        'DisplayDate.Month = D.Month
+		        Var dd As DateTime = DisplayDate
+		        DisplayDate = New DateTime(dd.Year,d.Month,dd.Day,dd.Hour,dd.Minute,dd.Second,dd.Nanosecond,dd.Timezone)
 		        
 		      End If
 		      
@@ -6308,7 +6398,7 @@ Inherits DesktopCanvas
 		    
 		  Elseif ViewType = TypeMonth and LastMouseOver <> Nil and LastMouseOver.Visible = False then
 		    //User clicked the +# event
-		    Dim D As Date = DateForXY(X, Y)
+		    Dim D As DateTime = DateForXY(X, Y)
 		    If RaiseEvent ShowMoreEvents(D) then
 		      Return
 		    Else
@@ -6337,23 +6427,25 @@ Inherits DesktopCanvas
 		  
 		  If ViewType = TypeMonth and LastMouseOver is Nil then
 		    
-		    
-		    SelStart.Hour = 0
-		    SelStart.Minute = 0
-		    SelStart.Second = 0
+		    SelStart = SelStart - New DateInterval(0,0,0,SelStart.Hour,SelStart.Minute,SelStart.Second)
+		    'SelStart.Hour = 0
+		    'SelStart.Minute = 0
+		    'SelStart.Second = 0
 		    
 		    Freeze = True
 		    DisplayDate = SelStart
 		    Freeze = False
 		    
 		    If SelEnd <> Nil then
-		      SelEnd.Hour = 0
-		      SelEnd.Minute = 0
-		      SelEnd.Second = 0
+		      SelEnd = SelEnd - New DateInterval(0,0,0,SelEnd.Hour,SelEnd.Minute,SelEnd.Second)
+		      
+		      'SelEnd.Hour = 0
+		      'SelEnd.Minute = 0
+		      'SelEnd.Second = 0
 		      
 		      
 		      #if TargetWeb
-		        If Ticks-lastMouseDown > 30 or SelEnd <> Nil then
+		        If System.Ticks-lastMouseDown > 30 or SelEnd <> Nil then
 		          NewEvent(SelStart, SelEnd)
 		        End If
 		      #else
@@ -6445,7 +6537,7 @@ Inherits DesktopCanvas
 		  
 		  //In DebugBuild we check performance of drawing
 		  #if DebugBuild
-		    Dim ms As Double = Microseconds
+		    Dim ms As Double = System.Microseconds
 		  #endif
 		  
 		  
@@ -6488,7 +6580,7 @@ Inherits DesktopCanvas
 		    
 		    Call HiDPI //Initialize the HiDPI property for the rest of the drawing.
 		    
-		    lastToday = New Date(Today)
+		    lastToday = New DateTime(Today)
 		    
 		    
 		    
@@ -6530,7 +6622,7 @@ Inherits DesktopCanvas
 		      
 		      HeaderHeight = 23
 		      Dim DayWidth As Single = (g.Width - TimeWidth) / ViewDays
-		      HourHeight = max(minHourHeight, Ceil((g.Height-(HeaderHeight + MyStyle.WEventHeight))/VisibleHours))
+		      HourHeight = max(minHourHeight, Ceiling((g.Height-(HeaderHeight + MyStyle.WEventHeight))/VisibleHours))
 		      
 		      //Drawing Background
 		      DrawBackgroundWeek(gg, DayWidth)
@@ -6580,17 +6672,17 @@ Inherits DesktopCanvas
 		        End If
 		      Next
 		      
-		      Dim startTime As Double = Microseconds/1000
+		      Dim startTime As Double = System.Microseconds/1000
 		      
 		      For i = 0 to MaxFrame
-		        currentTime = Microseconds / 1000
+		        currentTime = System.Microseconds / 1000
 		        
 		        If i<MaxFrame and i>0 and currentTime - startTime > Times(i) then
 		          Continue for i
 		        End If
 		        While i>0 and currentTime-startTime <  Times(i-1)
 		          App.DoEvents (max(1, Times(i-1) - (currentTime-startTime)-1))
-		          currentTime = Microseconds / 1000
+		          currentTime = System.Microseconds / 1000
 		        Wend
 		        
 		        If AnimationInProgress>0 then
@@ -6611,34 +6703,34 @@ Inherits DesktopCanvas
 		  
 		  #if not DebugBuild
 		    If not Registered then
-		      g.ForeColor = &cFF0000
+		      g.DrawingColor = &cFF0000
 		      g.Bold = True
-		      g.TextSize = 16
-		      g.DrawString("Demo Version", (g.Width-g.StringWidth("Demo Version"))\2, g.Height\2)
+		      g.FontSize = 16
+		      g.DrawText("Demo Version", (g.Width-g.TextWidth("Demo Version"))\2, g.Height\2)
 		    End If
 		  #elseif TargetWeb
 		    g.DrawPicture(Buffer, 0, 0)
 		  #endif
 		  
 		  #if TargetWeb
-		    g.ForeColor = &cFF0000
-		    g.TextSize = 12
-		    g.TextFont = "System"
+		    g.DrawingColor = &cFF0000
+		    g.FontSize = 12
+		    g.FontName = "System"
 		    g.Bold = True
-		    g.DrawString("Beta", g.Width-40, g.Height-10)
+		    g.DrawText("Beta", g.Width-40, g.Height-10)
 		  #endif
 		  
 		  
 		  //In DebugBuild we check performance of drawing
 		  #if DebugBuild
-		    ms = (Microseconds-ms)/1000
-		    'g.ForeColor = &c0
-		    'g.TextSize = 12
+		    ms = (System.Microseconds-ms)/1000
+		    'g.DrawingColor = &c0
+		    'g.FontSize = 12
 		    'g.Bold = False
-		    'g.DrawString(str(ms), 0, 10)
-		    'g.ForeColor = &cFF0000
-		    'g.DrawString(str(ScrollPosition), 10, 20)
-		    'g.DrawString(DrawInfo, 0, 25)
+		    'g.DrawText(str(ms), 0, 10)
+		    'g.DrawingColor = &cFF0000
+		    'g.DrawText(str(ScrollPosition), 10, 20)
+		    'g.DrawText(DrawInfo, 0, 25)
 		  #endif
 		End Sub
 	#tag EndMethod
@@ -6678,63 +6770,66 @@ Inherits DesktopCanvas
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ImportFromDB(RS As RecordSet, ID As String = "ID", StartDate As String = "Start", EndDate As String = "End", Title As String = "Title", EventColor As String = "Color", Location As String = "Location", Description As String = "Description", Recurrence As String = "Recurrence", Editable As Boolean = True, AllDay As Boolean = False) As Boolean
+		Function ImportFromDB(RS As RowSet, ID As String = "ID", StartDate As String = "Start", EndDate As String = "End", Title As String = "Title", EventColor As String = "Color", Location As String = "Location", Description As String = "Description", Recurrence As String = "Recurrence", Editable As Boolean = True, AllDay As Boolean = False) As Boolean
 		  //Imports CalendarEvents from a Database.
 		  //Returns True if import is successful.
 		  //
 		  //If you set the AllDay parameter to True, all events will be a Day event.
 		  
 		  If RS is Nil then Return False
-		  If RS.RecordCount = 0 then Return False
+		  If RS.RowCount = 0 then Return False
 		  
 		  Dim cEvent As CalendarEvent
 		  
-		  While not RS.EOF
+		  While not RS.AfterLastRow
 		    cEvent = New CalendarEvent
 		    
-		    cEvent.StartDate = New Date
-		    cEvent.StartDate.SQLDateTime = RS.Field(StartDate).StringValue
+		    'cEvent.StartDate = New DateTime
+		    'cEvent.StartDate.SQLDateTime = RS.Column(StartDate).StringValue
+		    cEvent.StartDate = DateTime.FromString(RS.Column(StartDate).StringValue)
 		    
-		    cEvent.EndDate = New Date(cEvent.StartDate)
+		    cEvent.EndDate = New DateTime(cEvent.StartDate)
 		    
 		    If EndDate <> "" then
-		      If RS.Field(StartDate).StringValue = RS.Field(EndDate).StringValue then
+		      If RS.Column(StartDate).StringValue = RS.Column(EndDate).StringValue then
 		        
-		      elseif RS.Field(EndDate).StringValue <> "" then
-		        cEvent.EndDate.SQLDateTime = RS.Field(EndDate).StringValue
+		      elseif RS.Column(EndDate).StringValue <> "" then
+		        'cEvent.EndDate.SQLDateTime = RS.Column(EndDate).StringValue
+		        cEvent.EndDate = DateTime.FromString(RS.Column(EndDate).StringValue)
 		      End If
 		    End If
 		    
 		    If AllDay then
-		      cEvent.StartDate.Hour = 0
-		      cEvent.StartDate.Minute = 0
-		      cEvent.StartDate.Second = 0
-		      cEvent.EndDate = New Date(cEvent.StartDate)
+		      'cEvent.StartDate.Hour = 0
+		      'cEvent.StartDate.Minute = 0
+		      'cEvent.StartDate.Second = 0
+		      cEvent.StartDate = cEvent.StartDate - New DateInterval(cEvent.StartDate.Year,cEvent.StartDate.Month,cEvent.StartDate.day,0,0,0)
+		      cEvent.EndDate = New DateTime(cEvent.StartDate)
 		    End If
 		    
-		    cEvent.ID = RS.Field(ID).StringValue
-		    cEvent.Title = RS.Field(Title).StringValue
+		    cEvent.ID = RS.Column(ID).StringValue
+		    cEvent.Title = RS.Column(Title).StringValue
 		    If EventColor <> "" then
-		      cEvent.EventColor = String2Color(RS.Field(EventColor).StringValue)
+		      cEvent.EventColor = String2Color(RS.Column(EventColor).StringValue)
 		    End If
 		    If Location <> "" then
-		      cEvent.Location = RS.Field(Location).StringValue
+		      cEvent.Location = RS.Column(Location).StringValue
 		    End If
 		    If Description <> "" then
-		      cEvent.Description = RS.Field(Description).StringValue
+		      cEvent.Description = RS.Column(Description).StringValue
 		    End If
 		    If Recurrence <> "" then
-		      If RS.Field(Recurrence).StringValue <> "" then
-		        cEvent.Recurrence = New CalendarRecurrence(rs.Field(Recurrence).StringValue)
+		      If RS.Column(Recurrence).StringValue <> "" then
+		        cEvent.Recurrence = New CalendarRecurrence(RS.Column(Recurrence).StringValue)
 		      End If
 		    End If
 		    
 		    cEvent.Editable = Editable
 		    
 		    
-		    Events.Append cEvent
+		    Events.Add cEvent
 		    
-		    RS.MoveNext()
+		    RS.MoveToNextRow()
 		  Wend
 		  
 		  SelStart = Nil
@@ -6764,40 +6859,40 @@ Inherits DesktopCanvas
 		    
 		    
 		    cEvent = New CalendarEvent
-		    If JS.HasName("Title") then
+		    If JS.HasKey("Title") then
 		      cEvent.Title = JS.Value("Title").StringValue
 		    End If
-		    If JS.HasName("StartDate") then
-		      cEvent.StartDate = JS.Value("StartDate").DateValue
+		    If JS.HasKey("StartDate") then
+		      cEvent.StartDate = JS.Value("StartDate").DateTimeValue
 		    End If
-		    If JS.HasName("EndDate") then
-		      cEvent.EndDate = JS.Value("EndDate").DateValue
+		    If JS.HasKey("EndDate") then
+		      cEvent.EndDate = JS.Value("EndDate").DateTimeValue
 		    End If
-		    If JS.HasName("Color") then
+		    If JS.HasKey("Color") then
 		      cEvent.EventColor = JS.Value("Color").ColorValue
 		    End If
-		    If JS.HasName("Location") then
+		    If JS.HasKey("Location") then
 		      cEvent.Location = JS.Value("Location").StringValue
 		    End If
-		    If JS.HasName("Description") then
+		    If JS.HasKey("Description") then
 		      cEvent.Description = JS.Value("Description").StringValue
 		    End If
-		    If JS.HasName("ID") then
+		    If JS.HasKey("ID") then
 		      cEvent.ID = JS.Value("ID").StringValue
 		    End If
-		    If JS.HasName("Editable") then
+		    If JS.HasKey("Editable") then
 		      cEvent.Editable = JS.Value("Editable").BooleanValue
 		    End If
-		    If JS.HasName("Tag") then
+		    If JS.HasKey("Tag") then
 		      cEvent.Tag = JS.Value("Tag")
 		    End If
-		    If JS.HasName("Recurrence") then
+		    If JS.HasKey("Recurrence") then
 		      Dim Rec As New CalendarRecurrence(JS.Value("Recurrence").StringValue)
 		      cEvent.Recurrence = Rec
 		    End If
 		    
 		    #if False
-		      If js.HasName("title") then
+		      If JS.HasKey("title") then
 		        Title = js.Value("title")
 		      End If
 		      
@@ -6890,10 +6985,10 @@ Inherits DesktopCanvas
 		  'Dim mp As new MethodProfiler(CurrentMethodName)
 		  
 		  #if DebugBuild
-		    Dim ms As Double = Microseconds
+		    Dim ms As Double = System.Microseconds
 		  #endif
 		  
-		  Dim Lines() As String = ReplaceLineEndings(txt, EndOfLine).Split(EndOfLine)
+		  Dim Lines() As String = txt.ReplaceLineEndings(EndOfLine).Split(EndOfLine)
 		  
 		  txt = ""
 		  
@@ -6901,15 +6996,15 @@ Inherits DesktopCanvas
 		  
 		  Dim DocumentOK As Boolean
 		  
-		  u = UBound(Lines)
+		  u = Lines.LastIndex
 		  
 		  If u>1000 then
 		    Freeze = True
 		  End If
 		  
 		  Dim Summary, Description, Location, UID As String
-		  Dim DateStart As Date
-		  Dim DateEnd As Date
+		  Dim DateStart As DateTime
+		  Dim DateEnd As DateTime
 		  Dim Recurrence As CalendarRecurrence
 		  Dim Item, Value As String
 		  Dim HasColor As Boolean
@@ -6924,10 +7019,10 @@ Inherits DesktopCanvas
 		        End If
 		        
 		      else
-		        Lines(i) = Trim(Lines(i))
+		        Lines(i) = Lines(i).Trim
 		        
 		        Item = Lines(i).NthField(":", 1)
-		        Value = Lines(i).Mid(Item.len + 2)
+		        Value = Lines(i).Middle(Item.Length + 2)
 		        Item = Item.NthField(";", 1)
 		        
 		        
@@ -6948,7 +7043,7 @@ Inherits DesktopCanvas
 		          
 		        Case "DTSTART"
 		          
-		          DateStart = New Date(VDate2SQLDate(Value))
+		          DateStart = New DateTime(VDate2SQLDate(Value))
 		          
 		        Case "SUMMARY"
 		          Summary = Value
@@ -6964,7 +7059,7 @@ Inherits DesktopCanvas
 		          
 		        Case "DTEND"
 		          
-		          DateEnd = New Date(VDate2SQLDate(Value))
+		          DateEnd = New DateTime(VDate2SQLDate(Value))
 		          
 		        Case "RRULE"
 		          
@@ -6972,7 +7067,7 @@ Inherits DesktopCanvas
 		          
 		        Case "X-RSCV-COLOR"
 		          HasColor = True
-		          MyColor = RGB(val("&h" + Value.Mid(2, 2)), val("&h" + Value.Mid(4, 2)), val("&h" + Value.Mid(6, 2)))
+		          MyColor = Color.RGB(val("&h" + Value.Middle(2, 2)), val("&h" + Value.Middle(4, 2)), val("&h" + Value.Middle(6, 2)))
 		          
 		        Case "X-RSCV-TAG"
 		          Tag = Value
@@ -6981,7 +7076,7 @@ Inherits DesktopCanvas
 		          If Lines(i) = "END:VEVENT" then
 		            If DateStart <> Nil then
 		              
-		              'If UID <> "" then UID=str(Microseconds)
+		              'If UID <> "" then UID=str(System.Microseconds)
 		              
 		              If HasColor then
 		                me.AddEvent New CalendarEvent(Summary, DateStart, DateEnd, MyColor, Location, _
@@ -7011,7 +7106,7 @@ Inherits DesktopCanvas
 		  End Try
 		  
 		  #if DebugBuild
-		    ms = (Microseconds-ms)/1000
+		    ms = (System.Microseconds-ms)/1000
 		    'DrawInfo = str(ms)
 		  #endif
 		  
@@ -7024,12 +7119,12 @@ Inherits DesktopCanvas
 	#tag Method, Flags = &h21
 		Private Function InvertColor(c As Color) As Color
 		  
-		  Return RGB(255-c.Red, 255-c.Green, 255-c.Blue)
+		  Return Color.RGB(255-c.Red, 255-c.Green, 255-c.Blue)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function ISOWeekNumber(dt As Date) As Integer
+		Protected Function ISOWeekNumber(dt As DateTime) As Integer
 		  // ISO 8601 week number
 		  // https://en.wikipedia.org/wiki/ISO_week_date
 		  
@@ -7040,12 +7135,12 @@ Inherits DesktopCanvas
 		  woy=Floor((10+dt.DayOfYear-dow)/7)
 		  
 		  if woy=0 then
-		    var dp as new date (dt.Year-1,12,31)
+		    var dp as new DateTime (dt.Year-1,12,31)
 		    dow=dp.DayOfWeek-1
 		    if dow=0 then dow=7
 		    woy=Floor((10+dp.DayOfYear-dow)/7)
 		  elseif woy=53 then
-		    var dp as new date (dt.Year+1,1,1)
+		    var dp as new DateTime (dt.Year+1,1,1)
 		    dow=dp.DayOfWeek
 		    if dow<6 and dow>1 then woy=1
 		  end if
@@ -7060,7 +7155,7 @@ Inherits DesktopCanvas
 		  Dim a As Single = (255-Alpha) / 255
 		  Dim b As Single = Alpha / 255
 		  
-		  c = RGB( frontC.red * a + BackC.Red * b,  frontC.Green * a + BackC.Green * b,  frontC.Blue * a + BackC.Blue * b)
+		  c = Color.RGB( frontC.red * a + BackC.Red * b,  frontC.Green * a + BackC.Green * b,  frontC.Blue * a + BackC.Blue * b)
 		  
 		  Return C
 		  
@@ -7069,134 +7164,137 @@ Inherits DesktopCanvas
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Function ParseDate(D As Date, Format As String, Default As String = "") As String
+		Protected Function ParseDate(D As DateTime, Format As String, Default As String = "") As String
 		  If D is Nil then Return ""
 		  
 		  If Format = "" then
-		    If Default = "" then Return D.LongDate
+		    If Default = "" then Return D.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None)
 		    
 		    Format = Default
 		  End If
 		  
-		  Dim text As String = Format
+		  Dim lText As String = Format
 		  
 		  //Default formats
-		  If text.InStr("Long Date")>0 then
-		    text = text.Replace("Long Date", D.LongDate)
-		  elseif text.InStr("longdate")>0 then
-		    text = text.Replace("Longdate", D.LongDate)
-		  elseif text.InStr("Short Date")>0 then
-		    text = text.Replace("Short Date", D.ShortDate)
-		  elseif text.InStr("ShortDate")>0 then
-		    text = text.Replace("Shortdate", D.ShortDate)
-		  elseif text.InStr("Abbreviated Date")>0 then
-		    text = text.Replace("Abbreviated Date", D.AbbreviatedDate)
-		  elseif text.InStr("AbbreviatedDate")>0 then
-		    text = text.Replace("AbbreviatedDate", D.AbbreviatedDate)
-		  elseif text.InStr("SQLDateTime")>0 then
-		    text = text.Replace("SQLDateTime", D.SQLDateTime)
-		  elseif text.InStr("SQLDate")>0 then
-		    text = text.Replace("SQLDate", D.SQLDate)
+		  If lText.IndexOf("Long Date")>0 then
+		    lText = lText.Replace("Long Date", D.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None))
+		  elseif lText.IndexOf("longdate")>0 then
+		    lText = lText.Replace("Longdate", D.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None))
+		  elseif lText.IndexOf("Short Date")>0 then
+		    lText = lText.Replace("Short Date", D.ToString(DateTime.FormatStyles.Short, DateTime.FormatStyles.None))
+		  elseif lText.IndexOf("ShortDate")>0 then
+		    lText = lText.Replace("Shortdate", D.ToString(DateTime.FormatStyles.Short, DateTime.FormatStyles.None))
+		  elseif lText.IndexOf("Abbreviated Date")>0 then
+		    lText = lText.Replace("Abbreviated Date", D.ToString(DateTime.FormatStyles.Medium, DateTime.FormatStyles.None)) 'AbbreviatedDate)
+		  elseif lText.IndexOf("AbbreviatedDate")>0 then
+		    lText = lText.Replace("AbbreviatedDate", D.ToString(DateTime.FormatStyles.Medium, DateTime.FormatStyles.None)) 'AbbreviatedDate)
+		  elseif lText.IndexOf("SQLDateTime")>0 then
+		    lText = lText.Replace("SQLDateTime", D.SQLDateTime)
+		  elseif lText.IndexOf("SQLDate")>0 then
+		    lText = lText.Replace("SQLDate", D.SQLDate)
 		  End If
 		  
-		  If text <> Format then
-		    Return Text
+		  If lText <> Format then
+		    Return lText
 		  End If
 		  
 		  Dim Chars() As String = Format.Split("")
 		  
 		  Dim i As Integer
-		  Dim u As Integer = UBound(Chars)
+		  Dim u As Integer = Chars.LastIndex
 		  For i = u DownTo 1
-		    If left(Chars(i), 1) = Chars(i-1) or chars(i-1) = "\" then
+		    If Chars(i).left(1) = Chars(i-1) or chars(i-1) = "\" then
 		      Chars(i-1) = Chars(i-1) + Chars(i)
-		      Chars.Remove(i)
+		      Chars.RemoveAt(i)
 		    End If
 		  Next
 		  
-		  u = UBound(Chars)
+		  u = Chars.LastIndex
 		  For i = 0 to u
-		    text = Chars(i)
+		    lText = Chars(i)
 		    
-		    If text.left(1) = "\" then
-		      Chars(i) = mid(text, 2)
+		    If lText.left(1) = "\" then
+		      Chars(i) = lText.Middle(2)
 		      Continue for i
 		    End If
 		    
 		    //Day
-		    If text.InStrB("dddd")>0 then
-		      text = text.ReplaceB("dddd", DayNames(D.DayOfWeek))
-		    elseif text.InStrB("l")>0 then
-		      text = text.ReplaceB("l", DayNames(D.DayOfWeek))
+		    If lText.IndexOfBytes("dddd")>0 then
+		      lText = lText.ReplaceBytes("dddd", DayNames(D.DayOfWeek))
+		    elseif lText.IndexOfBytes("l")>0 then
+		      lText = lText.ReplaceBytes("l", DayNames(D.DayOfWeek))
 		      
 		      //Thanks to Dr. Michael Oeser for this suggestion
-		    ElseIf text.InStrB("dd")>0 then
-		      text = text.ReplaceB("dd", DayNames(D.DayOfWeek).Left(2))
-		    ElseIf text.InStrB("ddd")>0 then
-		      text = text.ReplaceB("ddd", DayNames(D.DayOfWeek).Left(3))
-		    ElseIf text.InStrB("d")>0 then
-		      text = text.ReplaceB("d", Format(D.Day, "00"))
-		    elseif text.InStrB("j")>0 then
-		      text = text.ReplaceB("j", str(D.Day))
-		    ElseIf text.InStrB("mmmm")>0 then
-		      text = text.ReplaceB("mmmm", MonthNames(D.Month))
-		    elseif text.InStrB("mm")>0 then
-		      text = text.ReplaceB("mm", Format(D.Month, "00"))
-		    elseif text.InStrB("m")>0 then
-		      text = text.ReplaceB("m", Format(D.Month, "00"))
-		    elseif text.InStrB("n")>0 then
-		      text = text.ReplaceB("n", str(D.Month))
-		    elseif text.InStrB("N")>0 then
-		      text = text.ReplaceB("N", str((D.DayOfWeek+7-1) mod 7))
-		    elseif text.InStrB("M")>0 then
-		      text = text.ReplaceB("M", MonthNames(D.Month).Left(3))
-		    elseif text.InStrB("F")>0 then
-		      text = text.ReplaceB("F", MonthNames(D.Month))
-		    elseif text.InStrB("w")>0 then
-		      text = text.ReplaceB("w", str(D.DayOfWeek))
-		    elseif text.InStrB("W")>0 then
-		      text = text.ReplaceB("W", str(D.WeekOfYear))
-		    elseif text.InStrB("z")>0 then
-		      text = text.ReplaceB("z", str(D.DayOfYear))
-		    elseif text.InStrB("t")>0 then
-		      Dim DD As Date = New Date(D)
-		      DD.day = 1
-		      DD.Month = DD.Month+1
-		      DD.Day = DD.Day-1
-		      text = text.ReplaceB("t", str(DD.Day))
-		    elseif text.InStrB("yyyy")>0 then
-		      text = text.ReplaceB("yyyy", str(D.Year))
-		    elseif text.InStrB("yy")>0 then
-		      text = text.ReplaceB("yy", mid(str(D.Year), 3))
-		    elseif text.InStrB("Y")>0 then
-		      text = text.ReplaceB("Y", str(D.Year))
-		    elseif text.InStrB("y")>0 then
-		      text = text.ReplaceB("y", str(D.Year))
+		    ElseIf lText.IndexOfBytes("dd")>0 then
+		      lText = lText.ReplaceBytes("dd", DayNames(D.DayOfWeek).Left(2))
+		    ElseIf lText.IndexOfBytes("ddd")>0 then
+		      lText = lText.ReplaceBytes("ddd", DayNames(D.DayOfWeek).Left(3))
+		    ElseIf lText.IndexOfBytes("d")>0 then
+		      lText = lText.ReplaceBytes("d", Format(D.Day, "00"))
+		    elseif lText.IndexOfBytes("j")>0 then
+		      lText = lText.ReplaceBytes("j", str(D.Day))
+		    ElseIf lText.IndexOfBytes("mmmm")>0 then
+		      lText = lText.ReplaceBytes("mmmm", MonthNames(D.Month))
+		    elseif lText.IndexOfBytes("mm")>0 then
+		      lText = lText.ReplaceBytes("mm", Format(D.Month, "00"))
+		    elseif lText.IndexOfBytes("m")>0 then
+		      lText = lText.ReplaceBytes("m", Format(D.Month, "00"))
+		    elseif lText.IndexOfBytes("n")>0 then
+		      lText = lText.ReplaceBytes("n", str(D.Month))
+		    elseif lText.IndexOfBytes("N")>0 then
+		      lText = lText.ReplaceBytes("N", str((D.DayOfWeek+7-1) mod 7))
+		    elseif lText.IndexOfBytes("M")>0 then
+		      lText = lText.ReplaceBytes("M", MonthNames(D.Month).Left(3))
+		    elseif lText.IndexOfBytes("F")>0 then
+		      lText = lText.ReplaceBytes("F", MonthNames(D.Month))
+		    elseif lText.IndexOfBytes("w")>0 then
+		      lText = lText.ReplaceBytes("w", str(D.DayOfWeek))
+		    elseif lText.IndexOfBytes("W")>0 then
+		      lText = lText.ReplaceBytes("W", str(D.WeekOfYear))
+		    elseif lText.IndexOfBytes("z")>0 then
+		      lText = lText.ReplaceBytes("z", str(D.DayOfYear))
+		    elseif lText.IndexOfBytes("t")>0 then
+		      Dim DD As DateTime = New DateTime(D)
+		      'DD.day = 1
+		      'DD.Month = DD.Month+1
+		      'DD.Day = DD.Day-1
+		      DD = DD - New DateInterval(0,0,DD.Day-1)
+		      DD = DD + DIMonth
+		      DD = DD - DIDay
+		      lText = lText.ReplaceBytes("t", str(DD.Day))
+		    elseif lText.IndexOfBytes("yyyy")>0 then
+		      lText = lText.ReplaceBytes("yyyy", str(D.Year))
+		    elseif lText.IndexOfBytes("yy")>0 then
+		      lText = lText.ReplaceBytes("yy", D.Year.ToString.Middle(3))
+		    elseif lText.IndexOfBytes("Y")>0 then
+		      lText = lText.ReplaceBytes("Y", str(D.Year))
+		    elseif lText.IndexOfBytes("y")>0 then
+		      lText = lText.ReplaceBytes("y", str(D.Year))
 		    End If
 		    
-		    Chars(i) = text
+		    Chars(i) = lText
 		  Next
 		  
-		  Return Join(Chars(), "")
+		  Return Chars.Join("")
 		  
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function ParseTime(D As Date, Format As String, Default As String = "") As String
+		Private Function ParseTime(D As DateTime, Format As String, Default As String = "") As String
 		  If D is Nil then Return ""
 		  
 		  If Format = "" then
-		    If Default = "" then Return D.ShortTime
+		    If Default = "" then Return D.ToString(DateTime.FormatStyles.None, DateTime.FormatStyles.Short)
 		    
 		    Format = Default
 		  End If
 		  
-		  Dim text As String = Format
+		  Dim lText As String = Format
 		  Dim AMPM As Boolean
 		  Dim Hour As Integer = D.Hour
 		  
-		  If text.InStr("a")>0 then
+		  If lText.IndexOf("a")>0 then
 		    AMPM = True
 		  elseif ForceAM_PM then
 		    AMPM = True
@@ -7209,48 +7307,48 @@ Inherits DesktopCanvas
 		  End If
 		  
 		  //Hours
-		  If text.InStr("hh")>0 Then
-		    text = text.Replace("hh", Format(Hour, "0#"))
-		  elseif text.InStr("h")>0 then
-		    text = text.Replace("h", str(Hour))
+		  If lText.IndexOf("hh")>0 Then
+		    lText = lText.Replace("hh", Format(Hour, "0#"))
+		  elseif lText.IndexOf("h")>0 then
+		    lText = lText.Replace("h", str(Hour))
 		  End If
 		  
 		  //Minutes
-		  If text.InStr("mm")>0 then
-		    text = text.Replace("mm", Format(D.Minute, "0#"))
-		  elseif text.InStr("m")>0 then
-		    text = text.Replace("m", str(D.Minute))
+		  If lText.IndexOf("mm")>0 then
+		    lText = lText.Replace("mm", Format(D.Minute, "0#"))
+		  elseif lText.IndexOf("m")>0 then
+		    lText = lText.Replace("m", str(D.Minute))
 		  End If
 		  
 		  //Seconds
-		  If text.InStr("ss")>0 then
-		    text = text.Replace("ss", Format(D.Second, "0#"))
-		  elseif text.InStr("s")>0 then
-		    text = text.Replace("s", str(D.Second))
+		  If lText.IndexOf("ss")>0 then
+		    lText = lText.Replace("ss", Format(D.Second, "0#"))
+		  elseif lText.IndexOf("s")>0 then
+		    lText = lText.Replace("s", str(D.Second))
 		  End If
 		  
 		  //AM_PM
-		  If text.InStrB("a")>0 then
+		  If lText.IndexOfBytes("a")>0 then
 		    If D.Hour < 12 then
-		      text = text.Replace("a", "am")
+		      lText = lText.Replace("a", "am")
 		    elseif D.Hour>=12 then
-		      text = text.Replace("a", "pm")
+		      lText = lText.Replace("a", "pm")
 		    End If
-		  elseif text.InStrB("A")>0 then
+		  elseif lText.IndexOfBytes("A")>0 then
 		    If D.Hour < 12 then
-		      text = text.Replace("a", "AM")
+		      lText = lText.Replace("a", "AM")
 		    elseif D.Hour>=12 then
-		      text = text.Replace("a", "PM")
+		      lText = lText.Replace("a", "PM")
 		    End If
 		  elseif AMPM then
 		    If D.Hour < 12 then
-		      text = text + "AM"
+		      lText = lText + "AM"
 		    elseif D.Hour>=12 then
-		      text = text + "PM"
+		      lText = lText + "PM"
 		    End If
 		  End If
 		  
-		  Return text
+		  Return lText
 		End Function
 	#tag EndMethod
 
@@ -7297,7 +7395,7 @@ Inherits DesktopCanvas
 		    DrawBackgroundMonth(g, WeeksPerMonth, DayWidth, DayHeight, PrintToday)
 		    'Next
 		    
-		    'ms = (Microseconds - ms)/1000
+		    'ms = (System.Microseconds - ms)/1000
 		    'MsgBox(str(ms) + " ms")
 		    
 		    '//Drawing Background
@@ -7312,7 +7410,7 @@ Inherits DesktopCanvas
 		    
 		    HeaderHeight = 23
 		    Dim DayWidth As Single = (g.Width - TimeWidth) / ViewDays
-		    HourHeight = max(minHourHeight, Ceil((g.Height-(HeaderHeight + MyStyle.WEventHeight))/24))
+		    HourHeight = max(minHourHeight, Ceiling((g.Height-(HeaderHeight + MyStyle.WEventHeight))/24))
 		    
 		    //Drawing Background
 		    DrawBackgroundWeek(g, DayWidth, PrintToday)
@@ -7343,10 +7441,10 @@ Inherits DesktopCanvas
 		  
 		  #if not DebugBuild
 		    If not Registered then
-		      g.ForeColor = &cFF0000
+		      g.DrawingColor = &cFF0000
 		      g.Bold = True
-		      g.TextSize = 16
-		      g.DrawString("Demo Version", (g.Width-g.StringWidth("Demo Version"))\2, g.Height\2)
+		      g.FontSize = 16
+		      g.DrawText("Demo Version", (g.Width-g.TextWidth("Demo Version"))\2, g.Height\2)
 		    End If
 		  #endif
 		  
@@ -7384,13 +7482,13 @@ Inherits DesktopCanvas
 		    
 		    p=New PrinterSetup
 		    
-		    If p.PageSetupDialog(self.TrueWindow) then
+		    If p.ShowPageSetupDialog(self.Window) then
 		      
 		      //The greater the value, the smaller the text will be when printed.
-		      p.maxHorizontalResolution=120
-		      p.maxVerticalResolution=120
+		      p.MaximumHorizontalResolution=120
+		      p.MaximumVerticalResolution=120
 		      
-		      g=OpenPrinterDialog(p, self.TrueWindow)
+		      g = p.ShowPrinterDialog(self.Window)
 		      
 		      If g <> Nil then
 		        
@@ -7585,14 +7683,14 @@ Inherits DesktopCanvas
 		  
 		  
 		  
-		  If RemoveFromDB And Trim(cEvent.ID) <> "" and cEvent.ID.left(4) <> "auto" Then
-		    DeletedIDs.Append cEvent.ID
+		  If RemoveFromDB And cEvent.ID.Trim <> "" and cEvent.ID.left(4) <> "auto" Then
+		    DeletedIDs.Add cEvent.ID
 		  End If
 		  
 		  Dim idx As Integer = Events.IndexOf(cEvent)
 		  
 		  If idx > -1 then
-		    Events.Remove(idx)
+		    Events.RemoveAt(idx)
 		    Redim DisplayEvents(-1)
 		    Redisplay
 		  End If
@@ -7607,11 +7705,11 @@ Inherits DesktopCanvas
 		  //If RemoveFromDB is True, next time ExportToDB is called, all removed events will also be removed from the Database
 		  
 		  
-		  Dim uEvents As Integer = UBound(Events)
-		  Dim uIDs As Integer = UBound(EventIds)
+		  Dim uEvents As Integer = Events.LastIndex
+		  Dim uIDs As Integer = EventIds.LastIndex
 		  Dim cEvent As CalendarEvent
 		  
-		  Dim ms As Double = Microseconds
+		  Dim ms As Double = System.Microseconds
 		  
 		  Dim i As Integer
 		  
@@ -7631,7 +7729,7 @@ Inherits DesktopCanvas
 		      cnt = cnt + 1
 		      RemoveEvent(cEvent)
 		      dicIDs.Remove(cEvent.ID)
-		      If dicIDs.Count = 0 then Exit for i
+		      If dicIDs.KeyCount = 0 then Exit for i
 		    End If
 		  next
 		  
@@ -7643,11 +7741,11 @@ Inherits DesktopCanvas
 		  'If cEvent.ID = EventIds(j) then
 		  'RemoveEvent(cEvent)
 		  'cnt = cnt + 1
-		  'uEvents = UBound(Events)
+		  'uEvents = Events.LastIndex
 		  'End If
 		  'Next
 		  'Next
-		  System.DebugLog str((Microseconds-ms)/1000) + "ms" + EndOfLine + "Removed: " + str(cnt) + " events"
+		  System.DebugLog str((System.Microseconds-ms)/1000) + "ms" + EndOfLine + "Removed: " + str(cnt) + " events"
 		  
 		  //Now Refresh the view
 		  
@@ -7668,7 +7766,7 @@ Inherits DesktopCanvas
 		    MoreIds() = Array(EventID)
 		  End If
 		  
-		  MoreIDs.Insert(0, EventID)
+		  MoreIDs.AddAt(0, EventID)
 		  
 		  RemoveEventByID(MoreIDs)
 		End Sub
@@ -7687,18 +7785,20 @@ Inherits DesktopCanvas
 		  'End If
 		  
 		  If ViewType = TypeYear Then
-		    DisplayDate.Day = 1
+		    'DisplayDate.Day = 1
 		    
-		    DisplayDate.Year = DisplayDate.Year + deltaX
+		    'DisplayDate.Year = DisplayDate.Year + deltaX
+		    DisplayDate = DisplayDate + New DateInterval(deltaX) - New DateInterval(0,0,DisplayDate.Day)
 		    
 		    ViewChanged
 		    
 		    FullRefresh = True
 		    
 		  Elseif ViewType = TypeMonth or ViewType = TypePicker Then
-		    DisplayDate.Day = 1
+		    'DisplayDate.Day = 1
 		    
-		    DisplayDate.Month = DisplayDate.Month + deltaX
+		    'DisplayDate.Month = DisplayDate.Month + deltaX
+		    DisplayDate = DisplayDate + New DateInterval(0,deltaX) - New DateInterval(0,0,DisplayDate.Day)
 		    
 		    ViewChanged
 		    
@@ -7710,9 +7810,11 @@ Inherits DesktopCanvas
 		    Dim lastScroll As Double = mScrollPosition
 		    
 		    If ViewType = TypeOther And ViewDays = 5 Then
-		      DisplayDate.Day = DisplayDate.Day + deltaX * 7
+		      'DisplayDate.Day = DisplayDate.Day + deltaX * 7
+		      DisplayDate = DisplayDate + New DateInterval(0,0,deltaX * 7)
 		    Else
-		      DisplayDate.Day = DisplayDate.Day + deltaX * ViewDays
+		      'DisplayDate.Day = DisplayDate.Day + deltaX * ViewDays
+		      DisplayDate = DisplayDate + New DateInterval(0,0,deltaX * ViewDays)
 		    End If
 		    
 		    If Abs(deltaY) > (Me.Height-ViewHeight)\HourHeight And DeltaY <> 0 Then
@@ -7758,17 +7860,17 @@ Inherits DesktopCanvas
 		  //Searches through all events to find the passed txt string in the event
 		  //If no CalendarEvent matching the search term is found, Nil is returned
 		  
-		  Dim dFirst, dLast As Date
-		  dFirst = New Date(FirstDate)
-		  dLast = New Date(Today.Year + 20)
+		  Dim dFirst, dLast As DateTime
+		  dFirst = New DateTime(FirstDate)
+		  dLast = New DateTime(Today.Year + 20)
 		  
 		  If FromBeginning then
 		    LastSearchResult=Nil
-		    dFirst = New Date()
-		    dFirst.TotalSeconds = 1
+		    dFirst = New DateTime(1, TimeZone.Current)
+		    'dFirst.TotalSeconds = 1
 		    EventsSorted = False
 		  elseif LastSearchResult <> Nil then
-		    dFirst = new date(LastSearchResult.StartDate)
+		    dFirst = new DateTime(LastSearchResult.StartDate)
 		  End If
 		  
 		  //First we sort events
@@ -7779,7 +7881,7 @@ Inherits DesktopCanvas
 		  'End If
 		  
 		  Dim i As Integer
-		  Dim U As Integer = UBound(DisplayEvents)
+		  Dim U As Integer = DisplayEvents.LastIndex
 		  Dim cEvent As CalendarEvent
 		  Dim foundID As Integer = -1
 		  
@@ -7793,13 +7895,13 @@ Inherits DesktopCanvas
 		    End If
 		    
 		    If cEvent <> LastSearchResult then
-		      If cEvent.Title.InStr(txt)>0 then
+		      If cEvent.Title.IndexOf(txt)>0 then
 		        foundID = i
 		        exit
-		      elseif cEvent.Description.InStr(txt)>0 then
+		      elseif cEvent.Description.IndexOf(txt)>0 then
 		        foundID = i
 		        Exit
-		      elseif cEvent.Location.InStr(txt)>0 then
+		      elseif cEvent.Location.IndexOf(txt)>0 then
 		        foundID = i
 		        Exit
 		      End If
@@ -7822,12 +7924,12 @@ Inherits DesktopCanvas
 		Protected Sub SetDayColor()
 		  //In DebugBuild we check performance of drawing
 		  #If DebugBuild
-		    Dim ms As Double = Microseconds
+		    Dim ms As Double = System.Microseconds
 		  #EndIf
 		  
 		  //Sets the Day Colors for each day in the year depending on the events
 		  
-		  Dim DrawDate As New Date(FirstDate)
+		  Dim DrawDate As New DateTime(FirstDate)
 		  Dim amount As Integer
 		  Dim i, j As Integer
 		  Dim idx As Integer
@@ -7842,7 +7944,7 @@ Inherits DesktopCanvas
 		  If YearHeatMap Then
 		    
 		    SortEvents(FirstDate, LastDate)
-		    u = UBound(DisplayEvents)
+		    u = DisplayEvents.LastIndex
 		    
 		    Dim EventsPerDay(366) As Integer
 		    Dim maxVal As Integer
@@ -7867,7 +7969,8 @@ Inherits DesktopCanvas
 		        
 		        EventsPerDay(i) = amount
 		        maxVal = Max(maxVal, amount)
-		        DrawDate.Day = DrawDate.Day + 1
+		        'DrawDate.Day = DrawDate.Day + 1
+		        DrawDate = DrawDate + DIDay
 		      Next
 		    End If
 		    
@@ -7887,7 +7990,7 @@ Inherits DesktopCanvas
 		  Else //Regular view
 		    
 		    SortEvents(FirstDate, LastDate, False, Not YearMultipleEvents)
-		    u = UBound(DisplayEvents)
+		    u = DisplayEvents.LastIndex
 		    
 		    For i = 1 To 366
 		      
@@ -7914,12 +8017,13 @@ Inherits DesktopCanvas
 		        End If
 		      Next
 		      
-		      DrawDate.Day = DrawDate.Day + 1
+		      'DrawDate.Day = DrawDate.Day + 1
+		      DrawDate = DrawDate + DIDay
 		    Next
 		  End If
 		  
 		  #If DebugBuild
-		    ms = (Microseconds-ms)/1000
+		    ms = (System.Microseconds-ms)/1000
 		    DrawInfo = Str(ms)
 		  #EndIf
 		End Sub
@@ -7937,7 +8041,7 @@ Inherits DesktopCanvas
 		  Dim DefaultTextSize As Integer
 		  
 		  #if TargetDesktop
-		    Dim FillColor As Color = FillColor
+		    Dim FillColor As Color = Color.FillColor
 		    #If TargetMacOS Then
 		      FillColor = &cEDEDED
 		    #EndIf
@@ -8034,7 +8138,7 @@ Inherits DesktopCanvas
 		    MyStyle.WHourLineStartX=TimeWidth
 		    MyStyle.WHalfHourLineStyle = 1
 		    MyStyle.WHalfHourColorOffset = &h10
-		    MyColors.WDefaultColor = HighlightColor
+		    MyColors.WDefaultColor = Color.HighlightColor
 		    MyStyle.YLineHorizontal = LineThinSolid
 		    MyStyle.YLineVertical = LineThinSolid
 		    
@@ -8116,7 +8220,7 @@ Inherits DesktopCanvas
 		    MyStyle.WHourLineStartX = TimeWidth
 		    MyStyle.WHalfHourLineStyle = 0
 		    MyStyle.WHalfHourColorOffset = &h10
-		    MyColors.WDefaultColor = HighlightColor
+		    MyColors.WDefaultColor = Color.HighlightColor
 		    MyStyle.YLineHorizontal = LineThinSolid
 		    MyStyle.YLineVertical = LineThinSolid
 		    
@@ -8284,7 +8388,7 @@ Inherits DesktopCanvas
 		    MyStyle.WHourLineStartX = TimeWidth
 		    MyStyle.WHalfHourLineStyle = 1
 		    MyStyle.WHalfHourColorOffset = &h10
-		    MyColors.WDefaultColor = HighlightColor
+		    MyColors.WDefaultColor = Color.HighlightColor
 		    MyStyle.YLineHorizontal = LineNone
 		    MyStyle.YLineVertical = LineThinDouble
 		    
@@ -8453,9 +8557,12 @@ Inherits DesktopCanvas
 		    
 		    ColorWeekend = True
 		    
-		    Dim D As New Date
-		    D.Hour = 1
-		    If D.ShortTime.InStr("AM")>0 or ForceAM_PM then
+		    Dim D As DateTime
+		    'D.Hour = 1
+		    D = DateTime.Now 
+		    D = New DateTime(D.Year, D.Month, D.Day, 1, 0, 0)
+		    
+		    If D.ToString(DateTime.FormatStyles.None, DateTime.FormatStyles.Short).IndexOf("AM")>0 or ForceAM_PM then
 		      MyStyle.WTimeFormat = "HH (A)"
 		    else
 		      MyStyle.WTimeFormat = "HH"
@@ -8656,7 +8763,7 @@ Inherits DesktopCanvas
 		    
 		    for i = 0 to 6
 		      ret = GetLocaleInfo( dayConst( i ), mb, retVal )
-		      DayNames((i+1) mod 7 +1) = Titlecase ( ConvertEncoding(retVal, Encodings.UTF8) )
+		      DayNames((i+1) mod 7 +1) = ConvertEncoding(retVal, Encodings.UTF8).Titlecase
 		    next
 		    
 		    //Month Names
@@ -8682,7 +8789,7 @@ Inherits DesktopCanvas
 		    ReDim MonthNames(12)
 		    for i = 0 to 11
 		      ret = GetLocaleInfo( monthConst( i ), mb, retVal )
-		      MonthNames(i+1) = Titlecase( ConvertEncoding(retVal, Encodings.UTF8) )
+		      MonthNames(i+1) = ConvertEncoding(retVal, Encodings.UTF8).Titlecase
 		    next
 		    
 		    //Day of Week
@@ -8692,23 +8799,23 @@ Inherits DesktopCanvas
 		    
 		  #else
 		    
-		    Dim D As New Date
+		    Dim D As New DateTime
 		    
 		    For i as integer = 0 to 6
-		      DayNames(D.DayOfWeek) = D.LongDate.NthField(" ", 1).Replace(",", "")
+		      DayNames(D.DayOfWeek) = D.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None).NthField(" ", 1).Replace(",", "")
 		      D.Day = D.Day + 1
 		    Next
 		    
 		    D.Day = 1
 		    D.Month = 1
 		    Dim MonthField As Integer
-		    If IsNumeric(D.LongDate.NthField(" ", 2)) then
+		    If IsNumeric(D.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None).NthField(" ", 2)) then
 		      MonthField = 3
 		    else
 		      MonthField = 2
 		    End If
 		    For i as Integer = 1 to 12
-		      MonthNames(i) = TitleCase(D.LongDate.NthField(" ", MonthField)).Replace(",", "")
+		      MonthNames(i) = D.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None).NthField(" ", MonthField)).Replace(",", "").Titlecase
 		      D.Month = D.Month + 1
 		    Next
 		    
@@ -8727,9 +8834,9 @@ Inherits DesktopCanvas
 		  End If
 		  
 		  If Percent > 0 then
-		    Return RGB((255-C.Red)*Percent + C.Red, (255-C.Green)*Percent+C.Green, (255-C.Blue)*Percent + C.Blue)
+		    Return Color.RGB((255-C.Red)*Percent + C.Red, (255-C.Green)*Percent+C.Green, (255-C.Blue)*Percent + C.Blue)
 		  else
-		    Return RGB((1+Percent) * C.Red, (1+Percent) * C.Green, (1+Percent) * C.Blue)
+		    Return Color.RGB((1+Percent) * C.Red, (1+Percent) * C.Green, (1+Percent) * C.Blue)
 		  End If
 		End Function
 	#tag EndMethod
@@ -8737,21 +8844,21 @@ Inherits DesktopCanvas
 	#tag Method, Flags = &h1021
 		Private Function ShiftColor2(c As Color, shiftValue As Integer) As Color
 		  
-		  Return RGB(c.Red + shiftValue, c.Green + shiftValue, c.Blue + shiftValue)
+		  Return Color.RGB(c.Red + shiftValue, c.Green + shiftValue, c.Blue + shiftValue)
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub SortEvents(FirstDate As Date, EndDate As Date, NoRedim As Boolean = False, OnePerDay As Boolean = False)
+		Protected Sub SortEvents(FirstDate As DateTime, EndDate As DateTime, NoRedim As Boolean = False, OnePerDay As Boolean = False)
 		  //Sorts all events
 		  
 		  Dim i, j As Integer
-		  Dim u As Integer = UBound(Events)
+		  Dim u As Integer = Events.LastIndex
 		  Dim E As CalendarEvent
 		  Dim RecurE() As CalendarEvent
 		  
 		  #if DebugBuild
-		    Dim ms As Double = Microseconds
+		    Dim ms As Double = System.Microseconds
 		  #endif
 		  
 		  If NoRedim = False then
@@ -8764,13 +8871,13 @@ Inherits DesktopCanvas
 		      If (E.StartDate >= FirstDate and E.StartDate < EndDate) or _
 		        ( E.StartDate < FirstDate and E.StartSeconds + E.Length >= FirstDate.TotalSeconds) then
 		        If CalendarEventFilter(E) then
-		          DisplayEvents.Append E
+		          DisplayEvents.Add E
 		          
 		          If E.Recurrence <> Nil then
 		            RecurE = CheckRecurringEvents(E, FirstDate, EndDate)
 		            If RecurE is Nil then Continue
-		            For j = 0 to UBound(RecurE)
-		              DisplayEvents.Append RecurE(j)
+		            For j = 0 to RecurE.LastIndex
+		              DisplayEvents.Add RecurE(j)
 		            Next
 		          End If
 		        End If
@@ -8779,8 +8886,8 @@ Inherits DesktopCanvas
 		        
 		        RecurE = CheckRecurringEvents(E, FirstDate, EndDate)
 		        If RecurE is Nil then Continue
-		        For j = 0 to UBound(RecurE)
-		          DisplayEvents.Append RecurE(j)
+		        For j = 0 to RecurE.LastIndex
+		          DisplayEvents.Add RecurE(j)
 		        Next
 		        
 		      End If
@@ -8793,53 +8900,53 @@ Inherits DesktopCanvas
 		      E = Events(i)
 		      If (E.StartDate >= FirstDate and E.StartDate < EndDate) or _
 		        E.StartDate < FirstDate and E.StartSeconds + E.Length >= FirstDate.TotalSeconds then
-		        DisplayEvents.Append E
+		        DisplayEvents.Add E
 		        
 		        If E.Recurrence <> Nil then
 		          RecurE = CheckRecurringEvents(E, FirstDate, EndDate)
 		          If RecurE = Nil then Continue
-		          For j = 0 to UBound(RecurE)
-		            DisplayEvents.Append RecurE(j)
+		          For j = 0 to RecurE.LastIndex
+		            DisplayEvents.Add RecurE(j)
 		          Next
 		        End If
 		        
 		      Elseif E.Recurrence <> Nil and E.StartDate.TotalSeconds <= EndDate.TotalSeconds then
 		        RecurE = CheckRecurringEvents(E, FirstDate, EndDate)
 		        If RecurE = Nil then Continue
-		        For j = 0 to UBound(RecurE)
-		          DisplayEvents.Append RecurE(j)
+		        For j = 0 to RecurE.LastIndex
+		          DisplayEvents.Add RecurE(j)
 		        Next
 		      End If
 		    Next
 		  End If
 		  
 		  
-		  u = UBound(DisplayEvents)
+		  u = DisplayEvents.LastIndex
 		  
 		  
 		  
 		  
-		  If UBound(DisplayEvents) > 1 then
+		  If DisplayEvents.LastIndex > 1 then
 		    
 		    CombSort(DisplayEvents)
 		    
-		  elseif UBound(DisplayEvents) = 1 then
+		  elseif DisplayEvents.LastIndex = 1 then
 		    //Insertion Sort
 		    Dim temp As CalendarEvent
 		    
 		    temp = DisplayEvents(0)
 		    If temp > DisplayEvents(1) then
-		      DisplayEvents.Append temp
-		      DisplayEvents.Remove(0)
+		      DisplayEvents.Add temp
+		      DisplayEvents.RemoveAt(0)
 		    End If
 		  End If
 		  
 		  If OnePerDay then
 		    For i = u downto 1
 		      If DisplayEvents(i).EndSeconds < DisplayEvents(i-1).EndSeconds then
-		        DisplayEvents.Remove(i)
+		        DisplayEvents.RemoveAt(i)
 		      elseif DisplayEvents(i).StartSeconds = DisplayEvents(i-1).StartSeconds then
-		        DisplayEvents.Remove(i)
+		        DisplayEvents.RemoveAt(i)
 		      End If
 		    Next
 		  End If
@@ -8847,7 +8954,7 @@ Inherits DesktopCanvas
 		  
 		  
 		  #if DebugBuild
-		    ms = (Microseconds - ms) / 1000
+		    ms = (System.Microseconds - ms) / 1000
 		    DrawInfo = str(ms)
 		  #endif
 		End Sub
@@ -8856,11 +8963,11 @@ Inherits DesktopCanvas
 	#tag Method, Flags = &h21
 		Private Function String2Color(str As String) As Color
 		  If str.Left(2) = "&c" then
-		    str = str.Mid(3)
+		    str = str.Middle(3)
 		  End If
 		  
 		  If str.Left(1) = "#" then
-		    str = str.Mid(2)
+		    str = str.Middle(2)
 		  End If
 		  
 		  Dim v As Variant = "&h" + str
@@ -8874,7 +8981,8 @@ Inherits DesktopCanvas
 		  
 		  If t is Nil then Return
 		  
-		  Dim D As New Date
+		  'Dim D As New Date
+		  Dim D As DateTime = DateTime.Now
 		  
 		  If HideScrollbar then
 		    ShowScrollBar = False
@@ -8895,7 +9003,8 @@ Inherits DesktopCanvas
 		  
 		  If mViewType = TypeMonth then
 		    If Today.Day <> D.Day then
-		      Today = New Date
+		      'Today = New Date
+		      Today = DateTime.Now
 		      'MethodProfiler.LogMsg("RefreshTimer")
 		      #if TargetDesktop
 		        Refresh(False)
@@ -8905,7 +9014,8 @@ Inherits DesktopCanvas
 		    End If
 		  elseif mViewType > TypeMonth then
 		    If Today.Minute <> D.Minute then
-		      Today = New Date
+		      'Today = New Date
+		      Today = DateTime.Now
 		      #if TargetDesktop
 		        Refresh(False)
 		      #elseif TargetWeb
@@ -8918,28 +9028,49 @@ Inherits DesktopCanvas
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function VDate2SQLDate(VDate As String) As Date
+		Private Function VDate2SQLDate(VDate As String) As DateTime
 		  
 		  
-		  Dim D As New Date
-		  Dim GMTOffset As Integer = D.GMTOffset
+		  Dim D As DateTime
+		  
 		  If VDate.Right(1) = "Z" then
-		    D.GMTOffset = 0
+		    D = New DateTime(val(VDate.Left(4)), _
+		    val(VDate.Middle(5, 2)), _
+		    val(VDate.Middle(7, 2)), _
+		    val(VDate.Middle(10, 2)), _
+		    val(VDate.Middle(12, 2)), _
+		    val(VDate.Middle(14, 2)), _
+		    0, _
+		    New Timezone(0))
+		  Else
+		    D = New DateTime(val(VDate.Left(4)), _
+		    val(VDate.Middle(5, 2)), _
+		    val(VDate.Middle(7, 2)), _
+		    val(VDate.Middle(10, 2)), _
+		    val(VDate.Middle(12, 2)), _
+		    val(VDate.Middle(14, 2)), _
+		    0, _
+		    Timezone.Current)
 		  End If
-		  
-		  D.Hour = 0
-		  D.Minute = 0
-		  D.Second = 0
-		  
-		  D.Year = val(Left(VDate, 4))
-		  D.Month = val(Mid(VDate, 5, 2))
-		  D.Day = val(Mid(VDate, 7, 2))
-		  
-		  D.Hour = val(Mid(VDate, 10, 2))
-		  D.Minute = val(Mid(VDate, 12, 2))
-		  D.Second = val(Mid(VDate, 14, 2))
-		  
-		  D.GMTOffset = GMTOffset
+		  '
+		  'Dim GMTOffset As Integer = D.GMTOffset
+		  'If VDate.Right(1) = "Z" then
+		  'D.GMTOffset = 0
+		  'End If
+		  '
+		  'D.Hour = 0
+		  'D.Minute = 0
+		  'D.Second = 0
+		  '
+		  'D.Year = val(Left(VDate, 4))
+		  'D.Month = val(Mid(VDate, 5, 2))
+		  'D.Day = val(Mid(VDate, 7, 2))
+		  '
+		  'D.Hour = val(Mid(VDate, 10, 2))
+		  'D.Minute = val(Mid(VDate, 12, 2))
+		  'D.Second = val(Mid(VDate, 14, 2))
+		  '
+		  'D.GMTOffset = GMTOffset
 		  
 		  Return D
 		End Function
@@ -8947,10 +9078,10 @@ Inherits DesktopCanvas
 
 	#tag Method, Flags = &h1
 		Protected Sub ViewChanged()
-		  Dim lastFirstDate, lastLastDate As Date
+		  Dim lastFirstDate, lastLastDate As DateTime
 		  
-		  lastFirstDate = New Date(mFirstDate)
-		  lastLastDate = New Date(mLastDate)
+		  lastFirstDate = New DateTime(mFirstDate)
+		  lastLastDate = New DateTime(mLastDate)
 		  
 		  
 		  mFirstDate = Nil
@@ -8984,11 +9115,11 @@ Inherits DesktopCanvas
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event ConstructContextualMenu(base As MenuItem, x As Integer, y As Integer, cEvent As CalendarEvent) As Boolean
+		Event ConstructContextualMenu(base As DesktopMenuItem, x As Integer, y As Integer, cEvent As CalendarEvent) As Boolean
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event DateSelected(D As Date)
+		Event DateSelected(D As DateTime)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -9024,7 +9155,7 @@ Inherits DesktopCanvas
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event NewEvent(StartDate As Date, EndDate As Date)
+		Event NewEvent(StartDate As DateTime, EndDate As DateTime)
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
@@ -9036,11 +9167,11 @@ Inherits DesktopCanvas
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event ShowMoreEvents(D As Date) As Boolean
+		Event ShowMoreEvents(D As DateTime) As Boolean
 	#tag EndHook
 
 	#tag Hook, Flags = &h0
-		Event ViewChange(StartDate As Date, EndDate As Date)
+		Event ViewChange(StartDate As DateTime, EndDate As DateTime)
 	#tag EndHook
 
 
@@ -9113,8 +9244,8 @@ Inherits DesktopCanvas
 		The window is about to open.
 		
 		==ShowHelptag==
-		Enables displaying a custom HelpTag.<br/>
-		If True is returned, the system HelpTag is completely bypassed.
+		Enables displaying a custom ToolTip.<br/>
+		If True is returned, the system ToolTip is completely bypassed.
 		
 		==ViewChange==
 		The current view has changed.
@@ -9214,10 +9345,10 @@ Inherits DesktopCanvas
 		
 		===Version 1.2.2 - Released 2012-09-06 ===
 		*New:
-		**ShowHelptag event. Enables using custom HelpTags or disabling the HelpTag by returning True
+		**ShowHelptag event. Enables using custom HelpTags or disabling the ToolTip by returning True
 		**CalendarEvent now has a Tag property
 		*Fix:
-		**HelpTag is now displayed in Week and Day view
+		**ToolTip is now displayed in Week and Day view
 		**Various demo window fixes
 		
 		===Version 1.2.1 - Released 2012-08-29 ===
@@ -9225,7 +9356,7 @@ Inherits DesktopCanvas
 		**Double-click on day in Month view changes to week view
 		**Scrollwheel / Trackpad can be disabled horizontally
 		**TextFont property to change the font of all text in the CalendarView
-		**Several TextSize properties in the Style structure.
+		**Several FontSize properties in the Style structure.
 		*Fix:
 		**Events not displaying in 1 day view
 		
@@ -9478,6 +9609,44 @@ Inherits DesktopCanvas
 		Protected DeletedIDs() As String
 	#tag EndProperty
 
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  If mDIDay = Nil Then
+			    mDIDay = New DateInterval(0,0,1)
+			  End If
+			  Return mDIDay
+			End Get
+		#tag EndGetter
+		DIDay As DateInterval
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  if mDIHour = Nil Then
+			    mDIHour = New DateInterval(0,0,0,1)
+			  end if
+			  Return mDIHour
+			End Get
+		#tag EndGetter
+		DIHour As DateInterval
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  
+			  If mDIMonth = Nil Then
+			    mDIMonth = New DateInterval(0,1,0)
+			  End If
+			  
+			  Return mDIMonth
+			End Get
+		#tag EndGetter
+		DIMonth As DateInterval
+	#tag EndComputedProperty
+
 	#tag Property, Flags = &h0
 		#tag Note
 			newinversion 1.2.1
@@ -9520,17 +9689,18 @@ Inherits DesktopCanvas
 			  End If
 			  
 			  If Value is Nil then
-			    value = New Date
+			    'Value = New Date
+			    Value = DateTime.Now
 			  End If
 			  
-			  mDisplayDate = New Date(value)
+			  mDisplayDate = New DateTime(value)
 			  
 			  ViewChanged
 			  
 			  Redisplay()
 			End Set
 		#tag EndSetter
-		DisplayDate As Date
+		DisplayDate As DateTime
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h1
@@ -9543,6 +9713,32 @@ Inherits DesktopCanvas
 		#tag EndNote
 		DisplayWeeknumber As Boolean
 	#tag EndProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  
+			  If mDIWeek = Nil Then
+			    mDIWeek = New DateInterval(0,0,7)
+			  End If
+			  Return mDIWeek
+			End Get
+		#tag EndGetter
+		DIWeek As DateInterval
+	#tag EndComputedProperty
+
+	#tag ComputedProperty, Flags = &h0
+		#tag Getter
+			Get
+			  
+			  If mDIYear = Nil Then
+			    mDIYear = New DateInterval(1,0,0)
+			  End If
+			  Return mDIYear
+			End Get
+		#tag EndGetter
+		DIYear As DateInterval
+	#tag EndComputedProperty
 
 	#tag Property, Flags = &h21
 		Private DragBack As Boolean
@@ -9616,30 +9812,33 @@ Inherits DesktopCanvas
 			    If DisplayDate is Nil then Return Nil
 			    
 			    If ViewType = TypeYear then
-			      mFirstDate = New Date(DisplayDate)
-			      mFirstDate.Day = 1
-			      mFirstDate.Month = 1
-			      mFirstDate.Hour = 0
-			      mFirstDate.Minute = 0
-			      mFirstDate.Second = 0
+			      mFirstDate = New DateTime(DisplayDate.Year,1,1)
+			      'mFirstDate.Day = 1
+			      'mFirstDate.Month = 1
+			      'mFirstDate.Hour = 0
+			      'mFirstDate.Minute = 0
+			      'mFirstDate.Second = 0
 			      
 			    ElseIf ViewType = TypeMonth or ViewType = TypePicker then
-			      mFirstDate = New Date
-			      If ViewType = TypeMonth then
-			        mFirstDate.TotalSeconds = DisplayDate.TotalSeconds
-			      else
-			        mFirstDate.TotalSeconds = DisplayDate.TotalSeconds
-			      End If
-			      mFirstDate.Day = 1
-			      mFirstDate.Hour = 0
-			      mFirstDate.Minute = 0
-			      mFirstDate.Second = 0
+			      'mFirstDate = New Date
+			      mFirstDate = New DateTime(DisplayDate.Year, DisplayDate.Month, 1, 0, 0, 0)
+			      'If ViewType = TypeMonth then
+			      'mFirstDate.TotalSeconds = DisplayDate.TotalSeconds
+			      'else
+			      'mFirstDate.TotalSeconds = DisplayDate.TotalSeconds
+			      'End If
+			      'mFirstDate.Day = 1
+			      'mFirstDate.Hour = 0
+			      'mFirstDate.Minute = 0
+			      'mFirstDate.Second = 0
 			      If AdaptWeeksPerMonth then
 			        
 			        If mFirstDate.DayOfWeek - FirstDayOfWeek < 0 then
-			          mFirstDate.Day = mFirstDate.Day - (mFirstDate.DayOfWeek - FirstDayOfWeek) - 7
+			          'mFirstDate.Day = mFirstDate.Day - (mFirstDate.DayOfWeek - FirstDayOfWeek) - 7
+			          mFirstDate = mFirstDate - New DateInterval(0,0,(mFirstDate.DayOfWeek - FirstDayOfWeek) + 7)
 			        else
-			          mFirstDate.Day = mFirstDate.Day - (mFirstDate.DayOfWeek - FirstDayOfWeek)
+			          'mFirstDate.Day = mFirstDate.Day - (mFirstDate.DayOfWeek - FirstDayOfWeek)
+			          mFirstDate = mFirstDate - New DateInterval(0,0,(mFirstDate.DayOfWeek - FirstDayOfWeek))
 			        End If
 			        
 			      else
@@ -9647,48 +9846,54 @@ Inherits DesktopCanvas
 			        WeeksPerMonth = 6
 			        
 			        If mFirstDate.DayOfWeek - FirstDayOfWeek <= 0 then
-			          mFirstDate.Day = mFirstDate.Day - (mFirstDate.DayOfWeek - FirstDayOfWeek) - 7
+			          'mFirstDate.Day = mFirstDate.Day - (mFirstDate.DayOfWeek - FirstDayOfWeek) - 7
+			          mFirstDate = mFirstDate - New DateInterval(0,0,(mFirstDate.DayOfWeek - FirstDayOfWeek) + 7)
 			        else
-			          mFirstDate.Day = mFirstDate.Day - (mFirstDate.DayOfWeek - FirstDayOfWeek)
+			          'mFirstDate.Day = mFirstDate.Day - (mFirstDate.DayOfWeek - FirstDayOfWeek)
+			          mFirstDate = mFirstDate - New DateInterval(0,0,(mFirstDate.DayOfWeek - FirstDayOfWeek))
 			        End If
 			      End If
 			      
 			    else
 			      
-			      mFirstDate = New Date
-			      mFirstDate.TotalSeconds = DisplayDate.TotalSeconds
-			      
+			      'mFirstDate = New Date
+			      'mFirstDate.TotalSeconds = DisplayDate.TotalSeconds
+			      mFirstDate = New DateTime(DisplayDate)
 			      
 			      If ViewType = TypeWeek then
 			        ViewDays = 7
 			        
 			        If mFirstDate.DayOfWeek - FirstDayOfWeek < 0 then
-			          mFirstDate.Day = mFirstDate.Day - (mFirstDate.DayOfWeek - FirstDayOfWeek) - 7
+			          'mFirstDate.Day = mFirstDate.Day - (mFirstDate.DayOfWeek - FirstDayOfWeek) - 7
+			          mFirstDate = mFirstDate - New DateInterval(0,0,(mFirstDate.DayOfWeek - FirstDayOfWeek) + 7)
 			        else
-			          mFirstDate.Day = mFirstDate.Day - (mFirstDate.DayOfWeek - FirstDayOfWeek)
+			          'mFirstDate.Day = mFirstDate.Day - (mFirstDate.DayOfWeek - FirstDayOfWeek)
+			          mFirstDate = mFirstDate - New DateInterval(0,0,(mFirstDate.DayOfWeek - FirstDayOfWeek))
 			        End If
 			        
 			      elseif ViewType = TypeDay then
 			        //nothing
 			      elseif ViewType = TypeOther then
 			        If ViewDays = 5 then
-			          mFirstDate.Day = mFirstDate.Day - mFirstDate.DayOfWeek+2
+			          'mFirstDate.Day = mFirstDate.Day - mFirstDate.DayOfWeek+2
+			          mFirstDate = mFirstDate - New DateInterval(0,0,mFirstDate.DayOfWeek-2)
 			        elseIf ViewDays > 2 then
-			          mFirstDate.Day = mFirstDate.Day - 1
+			          'mFirstDate.Day = mFirstDate.Day - 1
+			          mFirstDate = mFirstDate - New DateInterval(0,0,1)
 			        End If
 			      End If
 			      
-			      mFirstDate.Hour = 0
-			      mFirstDate.Minute = 0
-			      mFirstDate.Second = 0
-			      
+			      'mFirstDate.Hour = 0
+			      'mFirstDate.Minute = 0
+			      'mFirstDate.Second = 0
+			      mFirstDate = mFirstDate - New DateInterval(0,0,0,mFirstDate.Hour,mFirstDate.Minute,mFirstDate.Second)
 			    End If
 			  End If
 			  
-			  return New Date(mFirstDate)
+			  return New DateTime(mFirstDate)
 			End Get
 		#tag EndGetter
-		FirstDate As Date
+		FirstDate As DateTime
 	#tag EndComputedProperty
 
 	#tag ComputedProperty, Flags = &h0
@@ -9742,7 +9947,7 @@ Inherits DesktopCanvas
 	#tag Property, Flags = &h0
 		#tag Note
 			newinversion 1.2.0
-			Use this property to edit the format of the HelpTag.
+			Use this property to edit the format of the ToolTip.
 			
 			<table width="15;55">
 			Variable->Description
@@ -9803,64 +10008,75 @@ Inherits DesktopCanvas
 			    If DisplayDate is Nil then Return Nil
 			    
 			    If ViewType = TypeYear then
-			      mLastDate = New Date(DisplayDate)
-			      mLastDate.Month = 12
-			      mLastDate.Day = 31
-			      mLastDate.Hour = 0
-			      mLastDate.Minute = 0
-			      mLastDate.Second = 0
-			      mLastDate.Day = mLastDate.Day + 1
-			      mLastDate.Second = mLastDate.Second - 1
+			      mLastDate = New DateTime(DisplayDate.Year,12,31,23,59,59)
+			      'mLastDate.Month = 12
+			      'mLastDate.Day = 31
+			      'mLastDate.Hour = 0
+			      'mLastDate.Minute = 0
+			      'mLastDate.Second = 0
+			      'mLastDate.Day = mLastDate.Day + 1
+			      'mLastDate.Second = mLastDate.Second - 1
 			      
 			    elseIf ViewType = TypeMonth or ViewType = TypePicker then
 			      
 			      If AdaptWeeksPerMonth then
-			        If ViewType = TypeMonth then
-			          mLastDate = New Date(DisplayDate)
-			        else
-			          mLastDate = New Date(DisplayDate)
-			        End If
-			        mLastDate.Day = 1
-			        mLastDate.Month = mLastDate.Month + 1
-			        mLastDate.Day = mLastDate.Day - 1
-			        mLastDate.Hour = 0
-			        mLastDate.Minute  =0
-			        mLastDate.Second = 0
+			        'If ViewType = TypeMonth then
+			        'mLastDate = New DateTime(DisplayDate)
+			        'else
+			        'mLastDate = New DateTime(DisplayDate)
+			        'End If
+			        'mLastDate.Day = 1                       //2022-02-10 -> 2022-02-01
+			        'mLastDate.Month = mLastDate.Month + 1   //2022-03-01
+			        'mLastDate.Day = mLastDate.Day - 1       //2022-02-28
+			        'mLastDate.Hour = 0                      
+			        'mLastDate.Minute = 0
+			        'mLastDate.Second = 0
 			        
-			        WeeksPerMonth = Ceil((mLastDate.TotalSeconds - FirstDate.TotalSeconds + 86400) / 604800)
+			        mLastDate = DisplayDate - New DateInterval(0,0,DisplayDate.day-1) + New DateInterval(0, 1, 1)
+			        mLastDate = mLastDate - DIDay
 			        
-			        mLastDate.TotalSeconds = FirstDate.TotalSeconds
-			        mLastDate.Day = mLastDate.Day + WeeksPerMonth * 7
+			        WeeksPerMonth = Ceiling((mLastDate.TotalSeconds - FirstDate.TotalSeconds + 86400) / 604800)
+			        
+			        'mLastDate.TotalSeconds = FirstDate.TotalSeconds
+			        mLastDate = New DateTime(FirstDate)
+			        'mLastDate.Day = mLastDate.Day + WeeksPerMonth * 7
+			        mLastDate = mLastDate + New DateInterval(0,0,WeeksPerMonth * 7)
 			      else
 			        WeeksPerMonth = 6
-			        mLastDate = New Date( FirstDate)
-			        mLastDate.Day = mLastDate.Day + 42
-			        
+			        mLastDate = New DateTime( FirstDate)
+			        'mLastDate.Day = mLastDate.Day + 42
+			        mLastDate = mLastDate + New DateInterval(0,0,42)
 			        
 			      End If
-			      mLastDate.Second = mLastDate.Second - 1
-			      
+			      'mLastDate.Second = mLastDate.Second - 1
+			      mLastDate = mLastDate - New DateInterval(0,0,0,0,0,1)
 			    else
-			      mLastDate = New Date(FirstDate)
+			      mLastDate = New DateTime(FirstDate)
 			      
 			      If ViewType = TypeWeek then
-			        mLastDate.Day = mLastDate.Day + 6
+			        'mLastDate.Day = mLastDate.Day + 6
+			        mLastDate = mLastDate + New DateInterval(0,0,6)
 			      elseif ViewType = TypeDay then
 			        //nothing
 			      elseif ViewType = TypeOther then
 			        If ViewDays > 2 then
-			          mLastDate.Day = FirstDate.Day + ViewDays-1
+			          'mLastDate.Day = FirstDate.Day + ViewDays-1
+			          mLastDate = mLastDate + New DateInterval(0,0,ViewDays-1)
 			        else
-			          mLastDate.Day = mLastDate.Day + ViewDays-1
+			          'mLastDate.Day = mLastDate.Day + ViewDays-1
+			          mLastDate = mLastDate + New DateInterval(0,0,ViewDays-1)
 			        End If
 			      End If
 			      
-			      mLastDate.Hour = 0
-			      mLastDate.Minute = 0
-			      mLastDate.Second = 0
-			      mLastDate.Day = mLastDate.Day + 1
-			      mLastDate.Second = mLastDate.Second - 1
+			      'mLastDate.Hour = 0
+			      'mLastDate.Minute = 0
+			      'mLastDate.Second = 0
+			      'mLastDate.Day = mLastDate.Day + 1
+			      'mLastDate.Second = mLastDate.Second - 1
 			      
+			      mLastDate = mLastDate - New DateInterval(0,0,0,mLastDate.Hour,mLastDate.Minute,mLastDate.Second)
+			      mLastDate = mLastDate + DIDay
+			      mLastDate = mLastDate - New DateInterval(0,0,0,0,0,1)
 			      
 			    End If
 			  End If
@@ -9868,10 +10084,10 @@ Inherits DesktopCanvas
 			  
 			  
 			  
-			  return New Date(mLastDate)
+			  return New DateTime(mLastDate)
 			End Get
 		#tag EndGetter
-		LastDate As Date
+		LastDate As DateTime
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h1
@@ -9902,7 +10118,7 @@ Inherits DesktopCanvas
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected lastToday As Date
+		Protected lastToday As DateTime
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -9932,15 +10148,35 @@ Inherits DesktopCanvas
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mDisplayDate As Date
+		Private mDIDay As DateInterval
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mDisplayMonth As Date
+		Private mDIHour As DateInterval
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mFirstDate As Date
+		Private mDIMonth As DateInterval
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mDisplayDate As DateTime
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mDisplayMonth As DateTime
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mDIWeek As DateInterval
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mDIYear As DateInterval
+	#tag EndProperty
+
+	#tag Property, Flags = &h21
+		Private mFirstDate As DateTime
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -9982,7 +10218,7 @@ Inherits DesktopCanvas
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private mLastDate As Date
+		Private mLastDate As DateTime
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -10001,7 +10237,7 @@ Inherits DesktopCanvas
 			Month names from MonthNames(1)=January to MonthNames(12)=December.
 			
 			On Windows, the MonthNames are automatically retrieved.
-			On Macintosh and Linux, the CalendarView will try to retrieve the MonthNames using Date.LongDate.
+			On Macintosh and Linux, the CalendarView will try to retrieve the MonthNames using Date.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None).
 		#tag EndNote
 		MonthNames(12) As String
 	#tag EndProperty
@@ -10014,7 +10250,7 @@ Inherits DesktopCanvas
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected MoreEventsDate As Date
+		Protected MoreEventsDate As DateTime
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -10149,7 +10385,7 @@ Inherits DesktopCanvas
 			newinversion 1.1.0
 			Selection end date.
 		#tag EndNote
-		SelEnd As Date
+		SelEnd As DateTime
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -10157,7 +10393,7 @@ Inherits DesktopCanvas
 			newinversion 1.1.0
 			Selection start Date.
 		#tag EndNote
-		SelStart As Date
+		SelStart As DateTime
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
@@ -10186,7 +10422,7 @@ Inherits DesktopCanvas
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected Today As Date
+		Protected Today As DateTime
 	#tag EndProperty
 
 	#tag Property, Flags = &h0

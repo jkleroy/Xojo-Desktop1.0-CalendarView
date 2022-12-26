@@ -15,7 +15,7 @@ Protected Class CalendarYearPicker
 	#tag Method, Flags = &h0
 		Sub Draw(g As Graphics, owner As CalendarView)
 		  Dim x,y As Integer
-		  Dim DrawDate As Date
+		  Dim DrawDate As DateTime
 		  Dim i, idx As Integer
 		  Dim startYear As Integer
 		  Dim HeaderHeight As Integer = 39
@@ -25,7 +25,7 @@ Protected Class CalendarYearPicker
 		  Dim txt As String
 		  
 		  //Setting FirstDate
-		  DrawDate = New Date(owner.FirstDate)
+		  DrawDate = New DateTime(owner.FirstDate)
 		  startYear = (DrawDate.Year-100)\10*10
 		  
 		  //------------------
@@ -33,8 +33,8 @@ Protected Class CalendarYearPicker
 		  If owner.MyStyle.FillGradient then
 		    gradient(g, 0, g.Height, Owner.MyColors.PBackground, Owner.MyColors.PBackground2, True)
 		  else
-		    g.ForeColor = Owner.MyColors.PBackground
-		    g.FillRect(0, 0, g.Width, g.Height)
+		    g.DrawingColor = Owner.MyColors.PBackground
+		    g.FillRectangle(0, 0, g.Width, g.Height)
 		  End If
 		  
 		  //-----------------
@@ -43,11 +43,11 @@ Protected Class CalendarYearPicker
 		    Dim gh As Graphics = g.Clip(0, 0, g.Width, HeaderHeight)
 		    DrawBackground(gh, owner)
 		  else
-		    g.ForeColor = owner.MyColors.Header
+		    g.DrawingColor = owner.MyColors.Header
 		    If owner.StyleType = owner.StyleOutlook2013 then
-		      g.FillRect(0, 0, g.Width, 22)
+		      g.FillRectangle(0, 0, g.Width, 22)
 		    else
-		      g.FillRect(0, 0, g.Width, HeaderHeight)
+		      g.FillRectangle(0, 0, g.Width, HeaderHeight)
 		    End If
 		  End If
 		  
@@ -57,10 +57,10 @@ Protected Class CalendarYearPicker
 		  
 		  //------------------------
 		  //Drawing Month at the top
-		  g.ForeColor = owner.MyColors.Title
+		  g.DrawingColor = owner.MyColors.Title
 		  g.Bold = True
 		  txt = owner.MonthNames(DrawDate.Month) + " " + str(DrawDate.Year)
-		  g.DrawString(txt, (g.Width-g.StringWidth(txt))\2, (22-g.TextHeight)\2 + g.TextAscent)
+		  g.DrawText(txt, (g.Width-g.TextWidth(txt))\2, (22-g.TextHeight)\2 + g.FontAscent)
 		  
 		  
 		  //----------------------- Decades -----------------------//
@@ -68,19 +68,19 @@ Protected Class CalendarYearPicker
 		  //------------------
 		  //Setting up Decades
 		  y = 36
-		  g.textsize = owner.MyStyle.PTextSize
-		  g.ForeColor = Owner.MyColors.DayName
+		  g.FontSize = owner.MyStyle.PTextSize
+		  g.DrawingColor = Owner.MyColors.DayName
 		  txt = strDecades
-		  g.DrawString(txt, (g.Width-g.StringWidth(txt))\2, y)
+		  g.DrawText(txt, (g.Width-g.TextWidth(txt))\2, y)
 		  
 		  
-		  y = y + g.TextAscent
-		  g.textsize = owner.MyStyle.PTextSize
+		  y = y + g.FontAscent
+		  g.FontSize = owner.MyStyle.PTextSize
 		  g.Bold = Owner.MyStyle.PDayNumberbold
-		  g.ForeColor = owner.MyColors.PDayNumberActive
+		  g.DrawingColor = owner.MyColors.PDayNumberActive
 		  
-		  xAmount = min(12, g.Width/g.StringWidth(str(DrawDate.Year)))
-		  If xAmount*g.StringWidth(str(DrawDate.Year)) + (xAmount)*4 > g.Width then
+		  xAmount = min(12, g.Width/g.TextWidth(str(DrawDate.Year)))
+		  If xAmount*g.TextWidth(str(DrawDate.Year)) + (xAmount)*4 > g.Width then
 		    xAmount = xAmount-1
 		  End If
 		  
@@ -103,13 +103,13 @@ Protected Class CalendarYearPicker
 		  for i = 1 to 12
 		    
 		    If Floor(DrawDate.Year/10)*10 = idx then
-		      g.ForeColor = owner.MyColors.PSelected
-		      g.FillRect(xx, y-g.TextAscent+2, DeltaX, g.TextAscent)
-		      g.ForeColor = owner.MyColors.PDayNumberActive
+		      g.DrawingColor = owner.MyColors.PSelected
+		      g.FillRectangle(xx, y-g.FontAscent+2, DeltaX, g.FontAscent)
+		      g.DrawingColor = owner.MyColors.PDayNumberActive
 		    End If
 		    
 		    txt = str(idx)
-		    g.DrawString(txt, xx+(DeltaX - g.StringWidth(txt))/2, y)
+		    g.DrawText(txt, xx+(DeltaX - g.TextWidth(txt))/2, y)
 		    
 		    If i = 12 then //Exit if end of drawing to prevent going to next line
 		      Exit for i
@@ -124,7 +124,7 @@ Protected Class CalendarYearPicker
 		        x = (g.Width-DeltaX*(12-i))/2
 		      End If
 		      xx = x
-		      y = y + g.TextAscent
+		      y = y + g.FontAscent
 		    else
 		      xx = xx + DeltaX
 		    End If
@@ -139,22 +139,22 @@ Protected Class CalendarYearPicker
 		  x = 0
 		  y = y + g.TextHeight
 		  If owner.StyleType <> owner.StyleOutlook2013 then
-		    g.ForeColor = owner.MyColors.Header
-		    g.FillRect(0, y-g.TextAscent+2, g.Width, g.TextAscent)
+		    g.DrawingColor = owner.MyColors.Header
+		    g.FillRectangle(0, y-g.FontAscent+2, g.Width, g.FontAscent)
 		  End If
 		  
-		  g.ForeColor = Owner.MyColors.DayName
+		  g.DrawingColor = Owner.MyColors.DayName
 		  txt = strYears
 		  g.Bold = True
-		  g.DrawString(txt, (g.Width-g.StringWidth(txt))\2, y)
-		  y = y + g.TextAscent
+		  g.DrawText(txt, (g.Width-g.TextWidth(txt))\2, y)
+		  y = y + g.FontAscent
 		  
-		  g.textsize = owner.MyStyle.PTextSize
+		  g.FontSize = owner.MyStyle.PTextSize
 		  g.Bold = Owner.MyStyle.PDayNumberbold
-		  g.ForeColor = owner.MyColors.PDayNumberActive
+		  g.DrawingColor = owner.MyColors.PDayNumberActive
 		  
-		  xAmount = min(10, g.Width/g.StringWidth("0"))
-		  If xAmount*g.StringWidth("0") + (xAmount)*5 > g.Width then
+		  xAmount = min(10, g.Width/g.TextWidth("0"))
+		  If xAmount*g.TextWidth("0") + (xAmount)*5 > g.Width then
 		    xAmount = xAmount-1
 		  End If
 		  If xAmount < 10 and xAmount>5 then
@@ -178,16 +178,16 @@ Protected Class CalendarYearPicker
 		  //Drawing Years
 		  For i = 0 to 9
 		    txt = str(i)
-		    If right(str(DrawDate.Year), 1) = txt then
-		      g.ForeColor = owner.MyColors.PSelected
-		      g.FillRect(xx, y-g.TextAscent+2, DeltaX, g.TextAscent)
-		      g.ForeColor = owner.MyColors.PDayNumberActive
+		    If DrawDate.Year.ToString.Right(1) = txt then
+		      g.DrawingColor = owner.MyColors.PSelected
+		      g.FillRectangle(xx, y-g.FontAscent+2, DeltaX, g.FontAscent)
+		      g.DrawingColor = owner.MyColors.PDayNumberActive
 		    End If
 		    
-		    g.DrawString(txt, xx+(DeltaX - g.StringWidth(txt))/2, y)
+		    g.DrawText(txt, xx+(DeltaX - g.TextWidth(txt))/2, y)
 		    
 		    If (i+1) mod xAmount = 0 then
-		      y = y + g.textAscent
+		      y = y + g.FontAscent
 		      xx = x
 		      
 		    else
@@ -203,22 +203,22 @@ Protected Class CalendarYearPicker
 		  x = 0
 		  y = y + g.TextHeight
 		  If owner.StyleType <> owner.StyleOutlook2013 then
-		    g.ForeColor = owner.MyColors.Header
-		    g.FillRect(0, y-g.TextAscent+2, g.Width, g.TextAscent)
+		    g.DrawingColor = owner.MyColors.Header
+		    g.FillRectangle(0, y-g.FontAscent+2, g.Width, g.FontAscent)
 		  End If
 		  
 		  txt = strMonths
 		  g.Bold = True
-		  g.ForeColor = Owner.MyColors.DayName
-		  g.DrawString(txt, (g.Width-g.StringWidth(txt))\2, y)
-		  y = y + g.TextAscent
+		  g.DrawingColor = Owner.MyColors.DayName
+		  g.DrawText(txt, (g.Width-g.TextWidth(txt))\2, y)
+		  y = y + g.FontAscent
 		  
-		  g.textsize = owner.MyStyle.PTextSize
+		  g.FontSize = owner.MyStyle.PTextSize
 		  g.Bold = Owner.MyStyle.PDayNumberbold
-		  g.ForeColor = owner.MyColors.PDayNumberActive
+		  g.DrawingColor = owner.MyColors.PDayNumberActive
 		  
-		  xAmount = min(12, g.Width/g.StringWidth("12"))
-		  If xAmount*g.StringWidth("12") + (xAmount)*4 > g.Width then
+		  xAmount = min(12, g.Width/g.TextWidth("12"))
+		  If xAmount*g.TextWidth("12") + (xAmount)*4 > g.Width then
 		    xAmount = xAmount-1
 		  End If
 		  If xAmount < 12 then
@@ -248,15 +248,15 @@ Protected Class CalendarYearPicker
 		    txt = str(i)
 		    
 		    If DrawDate.Month = i then
-		      g.ForeColor = owner.MyColors.PSelected
-		      g.FillRect(xx, y-g.TextAscent+2, DeltaX, g.TextAscent)
-		      g.ForeColor = owner.MyColors.PDayNumberActive
+		      g.DrawingColor = owner.MyColors.PSelected
+		      g.FillRectangle(xx, y-g.FontAscent+2, DeltaX, g.FontAscent)
+		      g.DrawingColor = owner.MyColors.PDayNumberActive
 		    End If
 		    
-		    g.DrawString(txt, xx+(DeltaX - g.StringWidth(txt))/2, y)
+		    g.DrawText(txt, xx+(DeltaX - g.TextWidth(txt))/2, y)
 		    
 		    If i mod xAmount = 0 then
-		      y = y + g.textAscent
+		      y = y + g.FontAscent
 		      xx = x
 		      
 		    else
@@ -269,16 +269,16 @@ Protected Class CalendarYearPicker
 		  //--------------
 		  //Drawing Border
 		  If owner.Border then
-		    g.ForeColor = owner.MyColors.Border
+		    g.DrawingColor = owner.MyColors.Border
 		    If owner.TransparentBackground then
-		      g.DrawRect(0, HeaderHeight, g.Width, g.Height-HeaderHeight)
+		      g.DrawRectangle(0, HeaderHeight, g.Width, g.Height-HeaderHeight)
 		      'If owner.HiDPI then
-		      'g.DrawRect(1, HeaderHeight+1, g.Width-2, g.Height-HeaderHeight-2)
+		      'g.DrawRectangle(1, HeaderHeight+1, g.Width-2, g.Height-HeaderHeight-2)
 		      'End If
 		    else
-		      g.DrawRect(0, 0, g.Width, g.Height)
+		      g.DrawRectangle(0, 0, g.Width, g.Height)
 		      'If owner.HiDPI then
-		      'g.DrawRect(1, 1, g.Width-2, g.Height-2)
+		      'g.DrawRectangle(1, 1, g.Width-2, g.Height-2)
 		      'End If
 		    End If
 		  End If
@@ -289,16 +289,16 @@ Protected Class CalendarYearPicker
 	#tag Method, Flags = &h1
 		Protected Sub DrawBackground(g As Graphics, owner As CalendarView)
 		  'If HasBackcolor then
-		  'g.ForeColor = Backcolor
-		  'g.FillRect(0, 0, g.Width, g.Height)
+		  'g.DrawingColor = Backcolor
+		  'g.FillRectangle(0, 0, g.Width, g.Height)
 		  '
 		  'else
 		  
-		  g.ForeColor = GetWindowColor(owner)
-		  g.FillRect(0, 0, g.Width, g.Height)
+		  g.DrawingColor = GetWindowColor(owner)
+		  g.FillRectangle(0, 0, g.Width, g.Height)
 		  
-		  If owner.TrueWindow.Backdrop <> Nil then
-		    Dim p As Picture = owner.TrueWindow.Backdrop
+		  If owner.Window.Backdrop <> Nil then
+		    Dim p As Picture = owner.Window.Backdrop
 		    If owner.Left < p.Width and owner.Top < p.Height then
 		      g.DrawPicture p, 0, 0, g.Width, g.Height, owner.left, owner.top, g.Width, g.Height
 		    End If
@@ -310,8 +310,8 @@ Protected Class CalendarYearPicker
 	#tag Method, Flags = &h1
 		Protected Function GetWindowColor(owner As CalendarView) As Color
 		  #if RBVersion>2009 then
-		    If Owner.TrueWindow.HasBackColor then
-		      Return Owner.TrueWindow.BackColor
+		    If Owner.Window.HasBackgroundColor then
+		      Return Owner.Window.BackgroundColor
 		  #else
 		    If Owner.Window.HasBackColor then
 		      Return Owner.Window.BackColor
@@ -321,7 +321,7 @@ Protected Class CalendarYearPicker
 		      //A corriger?
 		      Return &cEDEDED
 		    #else
-		      Return FillColor()
+		      Return Color.FillColor()
 		    #endif
 		  End If
 		End Function
@@ -347,7 +347,7 @@ Protected Class CalendarYearPicker
 		    
 		    
 		    endratio = ((i-start)/length)
-		    g.ForeColor = RGB(EndColor.Red * endratio + StartColor.Red * ratio, EndColor.Green * endratio + StartColor.Green * ratio, EndColor.Blue * endratio + StartColor.Blue * ratio)
+		    g.DrawingColor = Color.RGB(EndColor.Red * endratio + StartColor.Red * ratio, EndColor.Green * endratio + StartColor.Green * ratio, EndColor.Blue * endratio + StartColor.Blue * ratio)
 		    
 		    // Draw the step
 		    If Vertical then

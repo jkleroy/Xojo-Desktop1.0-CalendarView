@@ -9,14 +9,14 @@ Inherits AKTask
 
 
 	#tag Method, Flags = &h0
-		Sub Constructor(TheItem As RectControl)
+		Sub Constructor(TheItem As DesktopUIControl)
 		  me.item = theitem
 		  me.newrect = theitem.contentrect
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(TheItem As RectControl, TheNewRect As Xojo.Rect, TheDuration As Double, EasingMethod As Integer = 0)
+		Sub Constructor(TheItem As DesktopUIControl, TheNewRect As Xojo.Rect, TheDuration As Double, EasingMethod As Integer = 0)
 		  me.item = theitem
 		  me.newrect = thenewrect
 		  me.duration = theduration
@@ -25,14 +25,14 @@ Inherits AKTask
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(TheItem As Window)
+		Sub Constructor(TheItem As DesktopWindow)
 		  me.item = theitem
-		  me.newrect = theitem.contentrect
+		  me.NewRect = TheItem.contentrect
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(TheItem As Window, TheNewRect As Xojo.Rect, TheDuration As Double, EasingMethod As Integer = 0)
+		Sub Constructor(TheItem As DesktopWindow, TheNewRect As Xojo.Rect, TheDuration As Double, EasingMethod As Integer = 0)
 		  me.item = theitem
 		  me.newrect = thenewrect
 		  me.duration = theduration
@@ -55,12 +55,12 @@ Inherits AKTask
 
 	#tag Method, Flags = &h0
 		Function GetCurrentRect() As Xojo.Rect
-		  if item isa rectcontrol then
-		    return rectcontrol(item).contentrect
-		  elseif item isa window then
-		    return window(item.objectvalue).contentrect
+		  if item isa DesktopUIControl then
+		    return DesktopUIControl(item).contentrect
+		  elseif item isa DesktopWindow then
+		    return DesktopWindow(item.objectvalue).contentrect
 		  else
-		    // Somehow, item has become something that is not a Window or RectControl
+		    // Somehow, item has become something that is not a Window or DesktopUIControl
 		    break
 		  end
 		End Function
@@ -91,8 +91,8 @@ Inherits AKTask
 		    change = new Xojo.Rect
 		    change.top = floor(AKEasing.GetEaseValue(me.easingmethod,me.runtime,start.top,delta.top,me.duration * 1000000))
 		    change.left = floor(AKEasing.GetEaseValue(me.easingmethod,me.runtime,start.left,delta.left,me.duration * 1000000))
-		    change.width = ceil(AKEasing.GetEaseValue(me.easingmethod,me.runtime,start.width,delta.width,me.duration * 1000000))
-		    change.height = ceil(AKEasing.GetEaseValue(me.easingmethod,me.runtime,start.height,delta.height,me.duration * 1000000))
+		    change.width = Ceiling(AKEasing.GetEaseValue(me.easingmethod,me.runtime,start.width,delta.width,me.duration * 1000000))
+		    change.height = Ceiling(AKEasing.GetEaseValue(me.easingmethod,me.runtime,start.height,delta.height,me.duration * 1000000))
 		    
 		    me.setrectnow change
 		  end
@@ -101,12 +101,12 @@ Inherits AKTask
 
 	#tag Method, Flags = &h0
 		Sub SetRectNow(NewRect As Xojo.Rect)
-		  if item isa rectcontrol then
-		    rectcontrol(item).contentrect = newrect
+		  if item isa DesktopUIControl then
+		    DesktopUIControl(item).contentrect = newrect
 		  elseif item isa window then
-		    window(item.objectvalue).contentrect = newrect
+		    DesktopWindow(item.objectvalue).contentrect = newrect
 		  else
-		    // Somehow, item has become something that is not a Window or RectControl
+		    // Somehow, item has become something that is not a Window or DesktopUIControl
 		    break
 		  end
 		End Sub

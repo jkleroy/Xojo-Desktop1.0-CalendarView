@@ -23,15 +23,15 @@ Inherits AKTask
 		    return
 		  end
 		  
-		  dim frameDuration as double = (duration * 1000000) / (ubound(frames) + 1)
+		  dim frameDuration as double = (duration * 1000000) / (frames.LastIndex + 1)
 		  
-		  if microseconds - pcurrentframestart >= frameduration then
-		    pcurrentframestart = microseconds
+		  if System.Microseconds - pcurrentframestart >= frameduration then
+		    pcurrentframestart = System.Microseconds
 		  else
 		    return
 		  end
 		  
-		  if currentframe >= ubound(frames) then
+		  if currentframe >= frames.LastIndex then
 		    if me.looping then
 		      currentframe = 0
 		    else

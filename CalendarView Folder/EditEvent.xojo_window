@@ -1111,7 +1111,7 @@ Begin DesktopWindow EditEvent
          Visible         =   True
          Width           =   250
       End
-      BeginSegmented SegmentedControl SegDays
+      BeginDesktopSegmentedButton DesktopSegmentedButton sgbDays
          Enabled         =   True
          Height          =   24
          Index           =   -2147483648
@@ -1122,17 +1122,18 @@ Begin DesktopWindow EditEvent
          LockLeft        =   True
          LockRight       =   False
          LockTop         =   True
-         MacControlStyle =   6
+         MacButtonStyle  =   0
          Scope           =   0
          Segments        =   "MO\n\nFalse\rTU\n\nFalse\rWE\n\nFalse\rTH\n\nFalse\rFR\n\nFalse\rSA\n\nFalse\rSU\n\nFalse"
-         SelectionType   =   1
-         TabIndex        =   16
+         SelectionStyle  =   0
+         TabIndex        =   24
          TabPanelIndex   =   0
-         TabStop         =   True
-         Top             =   82
+         TabStop         =   False
+         Tooltip         =   ""
+         Top             =   86
          Transparent     =   False
          Visible         =   True
-         Width           =   250
+         Width           =   226
       End
    End
    Begin DesktopLabel lblEndDate
@@ -1219,20 +1220,27 @@ End
 	#tag Event
 		Sub Opening()
 		  
-		  Colors.Append &c444444
-		  Colors.Append &c5484ED
-		  Colors.Append &cA4BDFC
-		  Colors.Append &c46D6DB
-		  Colors.Append &c7AE7BF
-		  Colors.Append &c51B749
-		  Colors.Append &cFBD75B
-		  Colors.Append &cFFB878
-		  Colors.Append &cFF887C
-		  Colors.Append &cDBADFF
-		  Colors.Append &cE1E1E1
-		  'Colors.Append &c99C8E9
+		  Colors.Add &c444444
+		  Colors.Add &c5484ED
+		  Colors.Add &cA4BDFC
+		  Colors.Add &c46D6DB
+		  Colors.Add &c7AE7BF
+		  Colors.Add &c51B749
+		  Colors.Add &cFBD75B
+		  Colors.Add &cFFB878
+		  Colors.Add &cFF887C
+		  Colors.Add &cDBADFF
+		  Colors.Add &cE1E1E1
+		  'Colors.Add &c99C8E9
 		  
 		  cnvColor.Refresh
+		  
+		  
+		  #if TargetWindows
+		    Self.HasBackgroundColor = True
+		    Self.BackgroundColor = Color.White
+		  #endif
+		  
 		End Sub
 	#tag EndEvent
 
@@ -1261,25 +1269,25 @@ End
 		    R.RepeatType = R.TypeWeekly
 		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.SelectedRowValue))
 		    
-		    If SegDays.Items(0).selected then
+		    If sgbDays.SegmentAt(0).selected then
 		      R.RepeatInterval = R.RepeatInterval + R.Interval8Monday
 		    End If
-		    If SegDays.Items(1).selected then
+		    If sgbDays.SegmentAt(1).selected then
 		      R.RepeatInterval = R.RepeatInterval + R.Interval8Tuesday
 		    End If
-		    If SegDays.Items(2).selected then
+		    If sgbDays.SegmentAt(2).selected then
 		      R.RepeatInterval = R.RepeatInterval + R.Interval8Wednesday
 		    End If
-		    If SegDays.Items(3).selected then
+		    If sgbDays.SegmentAt(3).selected then
 		      R.RepeatInterval = R.RepeatInterval + R.Interval8Thursday
 		    End If
-		    If SegDays.Items(4).selected then
+		    If sgbDays.SegmentAt(4).selected then
 		      R.RepeatInterval = R.RepeatInterval + R.Interval8Friday
 		    End If
-		    If SegDays.Items(5).selected then
+		    If sgbDays.SegmentAt(5).selected then
 		      R.RepeatInterval = R.RepeatInterval + R.Interval8Saturday
 		    End If
-		    If SegDays.Items(6).selected then
+		    If sgbDays.SegmentAt(6).selected then
 		      R.RepeatInterval = R.RepeatInterval + R.Interval8Sunday
 		    End If
 		    
@@ -1309,8 +1317,9 @@ End
 		    R.EndAmount = max(1, val(txtNb.Text))
 		    
 		  Elseif radioEnd(2).Value and RecurEndDate <> Nil then
-		    R.EndDate = New Date
-		    R.EndDate.SQLDate = RecurEndDate.SQLDate
+		    'R.EndDate = New Date
+		    'R.EndDate.SQLDate = RecurEndDate.SQLDate
+		    R.EndDate = New DateTime(RecurEndDate)
 		  End If
 		  
 		  
@@ -1387,31 +1396,31 @@ End
 		    Interval = R.RepeatInterval
 		    If Interval >= R.Interval8Saturday then
 		      Interval = Interval mod R.Interval8Saturday
-		      SegDays.Items(5).selected = True
+		      sgbDays.SegmentAt(5).selected = True
 		    End If
 		    If Interval >= R.Interval8Friday then
 		      Interval = Interval mod R.Interval8Friday
-		      SegDays.Items(4).selected = True
+		      sgbDays.SegmentAt(4).selected = True
 		    End If
 		    If Interval >= R.Interval8Thursday then
 		      Interval = Interval mod R.Interval8Thursday
-		      SegDays.Items(3).selected = True
+		      sgbDays.SegmentAt(3).selected = True
 		    End If
 		    If Interval >= R.Interval8Wednesday then
 		      Interval = Interval mod R.Interval8Wednesday
-		      SegDays.Items(2).selected = True
+		      sgbDays.SegmentAt(2).selected = True
 		    End If
 		    If Interval >= R.Interval8Tuesday then
 		      Interval = Interval mod R.Interval8Tuesday
-		      SegDays.Items(1).selected = True
+		      sgbDays.SegmentAt(1).selected = True
 		    End If
 		    If Interval >= R.Interval8Monday then
 		      Interval = Interval mod R.Interval8Monday
-		      SegDays.Items(0).selected = True
+		      sgbDays.SegmentAt(0).selected = True
 		    End If
 		    If Interval >= R.Interval8Sunday then
 		      Interval = Interval mod R.Interval8Sunday
-		      SegDays.Items(6).selected = True
+		      sgbDays.SegmentAt(6).selected = True
 		    End If
 		    
 		  Case R.TypeMonthly
@@ -1435,8 +1444,8 @@ End
 		    
 		  Elseif R.EndDate <> Nil then
 		    radioEnd(2).Value = True
-		    RecurEndDate = New Date(R.EndDate)
-		    lblEndDate.Text = RecurEndDate.LongDate
+		    RecurEndDate = New DateTime(R.EndDate)
+		    lblEndDate.Text = RecurEndDate.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None)
 		    
 		  Else
 		    radioEnd(0).Value = True
@@ -1457,12 +1466,12 @@ End
 		  
 		  
 		  If cEvent.StartDate.SQLDate = cEvent.EndDate.SQLDate then
-		    lblDateSelection.Text = cEvent.StartDate.LongDate
+		    lblDateSelection.Text = cEvent.StartDate.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None)
 		  else
-		    lblDateSelection.Text = cEvent.StartDate.AbbreviatedDate + " - " + cEvent.EndDate.AbbreviatedDate
+		    lblDateSelection.Text = cEvent.StartDate.ToString(DateTime.FormatStyles.Medium, DateTime.FormatStyles.None) + " - " + cEvent.EndDate.ToString(DateTime.FormatStyles.Medium, DateTime.FormatStyles.None)
 		    Canvas2.Enabled = False
 		  End If
-		  lblStartsOnSelection.Text = cEvent.StartDate.LongDate
+		  lblStartsOnSelection.Text = cEvent.StartDate.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None)
 		  
 		  Chk_AllDay.Value = cEvent.DayEvent
 		  
@@ -1483,7 +1492,7 @@ End
 		  
 		  //Event color
 		  SelectColor = -1
-		  For i as Integer = 0 to UBound(Colors)
+		  For i as Integer = 0 to Colors.LastIndex
 		    If Colors(i) = cEvent.EventColor then
 		      SelectColor = i
 		      Exit for i
@@ -1491,7 +1500,7 @@ End
 		  Next
 		  If SelectColor = -1 then
 		    Colors.Append cEvent.EventColor
-		    SelectColor = UBound(Colors)
+		    SelectColor = Colors.LastIndex
 		  End If
 		  
 		  //Recurrence
@@ -1515,19 +1524,24 @@ End
 		    else
 		      
 		      if Chk_AllDay.Value = False then
-		        cEvent.StartDate.Hour = val(Combo_Start.Text.NthField(":", 1))
-		        cEvent.StartDate.Minute = val(Combo_Start.Text.NthField(":", 2))
-		        cEvent.EndDate.Hour = val(Combo_End.Text.NthField(":", 1))
-		        cEvent.EndDate.Minute = val(Combo_End.Text.NthField(":", 2))
+		        'cEvent.StartDate.Hour = val(Combo_Start.Text.NthField(":", 1))
+		        'cEvent.StartDate.Minute = val(Combo_Start.Text.NthField(":", 2))
+		        cEvent.StartDate = cEvent.StartDate - New DateInterval(0,0,0,cEvent.StartDate.Hour,cEvent.StartDate.Minute) + New DateInterval(0,0,0,val(Combo_Start.Text.NthField(":", 1)),val(Combo_Start.Text.NthField(":", 2)))
+		        
+		        'cEvent.EndDate.Hour = val(Combo_End.Text.NthField(":", 1))
+		        'cEvent.EndDate.Minute = val(Combo_End.Text.NthField(":", 2))
+		        cEvent.EndDate = cEvent.EndDate - New DateInterval(0,0,0,cEvent.EndDate.Hour,cEvent.EndDate.Minute) + New DateInterval(0,0,0,val(Combo_End.Text.NthField(":", 1)),val(Combo_End.Text.NthField(":", 2)))
+		        
+		        
 		      End If
 		      
-		      Dim text As String = tfiTitle.Text
+		      Dim lText As String = tfiTitle.Text
 		      Dim location As String = tfiLocation.Text
 		      Dim Description As String = tarDescription.Text
 		      
 		      cEvent.Location = location
 		      cEvent.Description = Description
-		      cEvent.Title = text
+		      cEvent.Title = lText
 		      cEvent.EventColor = Colors(SelectColor)
 		      
 		      If Chk_Repeat.value then
@@ -1578,7 +1592,7 @@ End
 		    Dim abc As Integer
 		    abc = (StartDate.DayOfWeek+6) mod 7
 		  #endif
-		  SegDays.Items((StartDate.DayOfWeek+6) mod 7).Selected = True
+		  sgbDays.SegmentAt((StartDate.DayOfWeek+6) mod 7).Selected = True
 		  
 		  
 		  mOpen = True
@@ -1589,15 +1603,15 @@ End
 		    Return Nil
 		  else
 		    
-		    Dim text As String = tfiTitle.Text
+		    Dim lText As String = tfiTitle.Text
 		    If StartDate = EndDate then
 		      
-		      If IsNumeric(Text.left(2)) and IsNumeric(Text.Mid(4, 2)) then
-		        StartDate.Hour = val(Text.left(2))
-		        StartDate.Minute = val(Text.Mid(4, 2))
+		      If IsNumeric(lText.left(2)) and IsNumeric(lText.Middle(4, 2)) then
+		        StartDate.Hour = val(lText.left(2))
+		        StartDate.Minute = val(lText.Middle(4, 2))
 		        EndDate.SQLDateTime = StartDate.SQLDateTime
 		        EndDate.Hour = EndDate.Hour + 1
-		        Text = Text.mid(7)
+		        lText = lText.Middle(7)
 		      End If
 		    End If
 		    
@@ -1619,7 +1633,7 @@ End
 		    
 		    
 		    
-		    Dim C As New CalendarEvent(Text, StartDate, EndDate, Colors(SelectColor), location, Description)
+		    Dim C As New CalendarEvent(lText, StartDate, EndDate, Colors(SelectColor), location, Description)
 		    
 		    If Chk_Repeat.value then
 		      C.Recurrence = CreateRecurrence()
@@ -1633,7 +1647,7 @@ End
 
 	#tag Method, Flags = &h1
 		Protected Sub UpdateSummary()
-		  Dim text As String
+		  Dim lText As String
 		  
 		  Select case Popup_Repeat.RowTagAt(Popup_Repeat.SelectedRowIndex)
 		    
@@ -1641,81 +1655,81 @@ End
 		    
 		    If Popup_Interval.SelectedRowValue = "1" then
 		      
-		      Text = "Daily"
+		      lText = "Daily"
 		      
 		    Else
 		      
-		      Text = "Every " + Popup_Interval.SelectedRowValue + " days"
+		      lText = "Every " + Popup_Interval.SelectedRowValue + " days"
 		    End If
 		    
 		  Case "Weekday"
 		    
-		    Text = "Weekly on weekdays"
+		    lText = "Weekly on weekdays"
 		    
 		  Case "Weekly"
 		    
 		    Dim FoundDay As Boolean
 		    
 		    If Popup_Interval.SelectedRowValue = "1" then
-		      text = "Weekly on "
+		      lText = "Weekly on "
 		      
 		    Else
-		      text = "Every " + Popup_Interval.SelectedRowValue + " weeks on "
+		      lText = "Every " + Popup_Interval.SelectedRowValue + " weeks on "
 		    End If
 		    
-		    If SegDays.Items(0).Selected and SegDays.Items(1).Selected and SegDays.Items(2).Selected and _
-		      SegDays.Items(3).Selected and SegDays.Items(4).Selected and SegDays.Items(5).Selected and _
-		      SegDays.Items(6).Selected then
-		      text = text + "all days"
+		    If sgbDays.SegmentAt(0).Selected and sgbDays.SegmentAt(1).Selected and sgbDays.SegmentAt(2).Selected and _
+		      sgbDays.SegmentAt(3).Selected and sgbDays.SegmentAt(4).Selected and sgbDays.SegmentAt(5).Selected and _
+		      sgbDays.SegmentAt(6).Selected then
+		      lText = lText + "all days"
 		      
-		    Elseif SegDays.Items(0).Selected and SegDays.Items(1).Selected and SegDays.Items(2).Selected and _
-		      SegDays.Items(3).Selected and SegDays.Items(4).Selected then
+		    Elseif sgbDays.SegmentAt(0).Selected and sgbDays.SegmentAt(1).Selected and sgbDays.SegmentAt(2).Selected and _
+		      sgbDays.SegmentAt(3).Selected and sgbDays.SegmentAt(4).Selected then
 		      
-		      text = text + "weekdays"
+		      lText = lText + "weekdays"
 		      
-		    elseif not SegDays.Items(0).Selected and not SegDays.Items(1).Selected and not SegDays.Items(2).Selected and _
-		      not SegDays.Items(3).Selected and not SegDays.Items(4).Selected and SegDays.Items(5).Selected and _
-		      SegDays.Items(6).Selected then
+		    elseif not sgbDays.SegmentAt(0).Selected and not sgbDays.SegmentAt(1).Selected and not sgbDays.SegmentAt(2).Selected and _
+		      not sgbDays.SegmentAt(3).Selected and not sgbDays.SegmentAt(4).Selected and sgbDays.SegmentAt(5).Selected and _
+		      sgbDays.SegmentAt(6).Selected then
 		      
-		      text = text + "week-end days"
+		      lText = lText + "week-end days"
 		      
 		    Else
 		      
-		      If SegDays.Items(0).Selected then
-		        text = text + CalendarView.DayNames(2) + ", "
+		      If sgbDays.SegmentAt(0).Selected then
+		        lText = lText + CalendarView.DayNames(2) + ", "
 		        FoundDay = True
 		      End If
-		      If SegDays.Items(1).Selected then
-		        text = text + CalendarView.DayNames(3) + ", "
+		      If sgbDays.SegmentAt(1).Selected then
+		        lText = lText + CalendarView.DayNames(3) + ", "
 		        FoundDay = True
 		      End If
-		      If SegDays.Items(2).Selected then
-		        text = text + CalendarView.DayNames(4) + ", "
+		      If sgbDays.SegmentAt(2).Selected then
+		        lText = lText + CalendarView.DayNames(4) + ", "
 		        FoundDay = True
 		      End If
-		      If SegDays.Items(3).Selected then
-		        text = text + CalendarView.DayNames(5) + ", "
+		      If sgbDays.SegmentAt(3).Selected then
+		        lText = lText + CalendarView.DayNames(5) + ", "
 		        FoundDay = True
 		      End If
-		      If SegDays.Items(4).Selected then
-		        text = text + CalendarView.DayNames(6) + ", "
+		      If sgbDays.SegmentAt(4).Selected then
+		        lText = lText + CalendarView.DayNames(6) + ", "
 		        FoundDay = True
 		      End If
-		      If SegDays.Items(5).Selected then
-		        text = text + CalendarView.DayNames(7) + ", "
+		      If sgbDays.SegmentAt(5).Selected then
+		        lText = lText + CalendarView.DayNames(7) + ", "
 		        FoundDay = True
 		      End If
-		      If SegDays.Items(6).Selected then
-		        text = text + CalendarView.DayNames(1) + ", "
+		      If sgbDays.SegmentAt(6).Selected then
+		        lText = lText + CalendarView.DayNames(1) + ", "
 		        FoundDay = True
 		      End If
 		      
 		      If not FoundDay then
-		        text = text + CalendarView.DayNames(StartDate.DayOfWeek)
+		        lText = lText + CalendarView.DayNames(StartDate.DayOfWeek)
 		      End If
 		      
-		      If text.Right(2) = ", " then
-		        text = text.Left(text.len - 2)
+		      If lText.Right(2) = ", " then
+		        lText = lText.Left(lText.Length - 2)
 		      End If
 		      
 		    End If
@@ -1725,60 +1739,60 @@ End
 		  Case "Monthly"
 		    
 		    If Popup_Interval.SelectedRowValue = "1" then
-		      text = "Monthly on "
+		      lText = "Monthly on "
 		      
 		    Else
-		      text = "Every " + Popup_Interval.SelectedRowValue + " months on "
+		      lText = "Every " + Popup_Interval.SelectedRowValue + " months on "
 		    End If
 		    
-		    text = text + "day " + str(StartDate.Day)
+		    lText = lText + "day " + str(StartDate.Day)
 		    
 		  Case "Monthly Relative"
 		    
 		    If Popup_Interval.SelectedRowValue = "1" then
-		      text = "Monthly on "
+		      lText = "Monthly on "
 		      
 		    Else
-		      text = "Every " + Popup_Interval.SelectedRowValue + " months on "
+		      lText = "Every " + Popup_Interval.SelectedRowValue + " months on "
 		    End If
 		    
 		    Select Case GetRelativeDay(StartDate)
 		    Case CalendarRecurrence.RelativeFirst
-		      text = text + "the first " + CalendarView.DayNames(StartDate.DayOfWeek)
+		      lText = lText + "the first " + CalendarView.DayNames(StartDate.DayOfWeek)
 		    Case CalendarRecurrence.RelativeSecond
-		      text = text + "the second " + CalendarView.DayNames(StartDate.DayOfWeek)
+		      lText = lText + "the second " + CalendarView.DayNames(StartDate.DayOfWeek)
 		    Case CalendarRecurrence.RelativeThird
-		      text = text + "the third " + CalendarView.DayNames(StartDate.DayOfWeek)
+		      lText = lText + "the third " + CalendarView.DayNames(StartDate.DayOfWeek)
 		    Case CalendarRecurrence.RelativeFourth
-		      text = text + "the fourth " + CalendarView.DayNames(StartDate.DayOfWeek)
+		      lText = lText + "the fourth " + CalendarView.DayNames(StartDate.DayOfWeek)
 		    Case CalendarRecurrence.RelativeLast
-		      text = text + "the last " + CalendarView.DayNames(StartDate.DayOfWeek)
+		      lText = lText + "the last " + CalendarView.DayNames(StartDate.DayOfWeek)
 		    End Select
 		    
 		    
 		  Case "Yearly"
 		    
 		    If Popup_Interval.SelectedRowValue = "1" then
-		      text = "Annually on "
+		      lText = "Annually on "
 		      
 		    Else
-		      text = "Every " + Popup_Interval.SelectedRowValue + " years on "
+		      lText = "Every " + Popup_Interval.SelectedRowValue + " years on "
 		    End If
 		    
-		    text = text + Trim(StartDate.LongDate.Replace(str(StartDate.Year), ""))
-		    If text.Right(1) = "," then
-		      text = text.Left(text.len - 1)
+		    lText = lText + Trim(StartDate.ToString(DateTime.FormatStyles.Short, DateTime.FormatStyles.Short).Replace(str(StartDate.Year), ""))
+		    If lText.Right(1) = "," then
+		      lText = lText.Left(lText.Length - 1)
 		    End If
 		    
 		    
 		  End Select
 		  
 		  if radioEnd(1).Value then
-		    lbl_Summary.Text = text + ", " + txtNb.Text + " times"
+		    lbl_Summary.Text = lText + ", " + txtNb.Text + " times"
 		  Elseif radioEnd(2).Value and RecurEndDate <> Nil Then
-		    lbl_Summary.Text = text + ", " + RecurEndDate.ShortDate
+		    lbl_Summary.Text = lText + ", " + RecurEndDate.ToString(DateTime.FormatStyles.Short, DateTime.FormatStyles.None)
 		  Else
-		    lbl_Summary.Text = text
+		    lbl_Summary.Text = lText
 		  End If
 		  
 		End Sub
@@ -1794,7 +1808,7 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		EndDate As Date
+		EndDate As DateTime
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1819,7 +1833,7 @@ End
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
-		RecurEndDate As Date
+		RecurEndDate As DateTime
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1835,7 +1849,7 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		StartDate As Date
+		StartDate As DateTime
 	#tag EndProperty
 
 
@@ -2042,7 +2056,7 @@ End
 		    Hide
 		    Return
 		  elseif Val(Combo_End.Text) = Val(Combo_Start.Text) then
-		    If Val(Combo_End.Text.Mid(4)) > Val(Combo_Start.Text.Mid(4)) then
+		    If Val(Combo_End.Text.Middle(4)) > Val(Combo_Start.Text.Middle(4)) then
 		      Hide
 		      Return
 		    End If
@@ -2051,7 +2065,7 @@ End
 		  MsgBox("End Time cannot be smaller than start time")
 		  Combo_End.SetFocus
 		  Combo_End.SelectionStart = 0
-		  Combo_End.SelectionLength = Len(Combo_End.Text)
+		  Combo_End.SelectionLength = Combo_End.Text.Length
 		  
 		End Sub
 	#tag EndEvent
@@ -2062,16 +2076,16 @@ End
 		  #Pragma Unused Y
 		  
 		  Dim w As New DatePickerWindow
-		  Dim d As Date
+		  Dim d As DateTime
 		  
 		  If StartDate.SQLDate = EndDate.SQLDate then
 		    
 		    d = w.showmodal(self.left + me.Left, self.top + me.top + me.Height, me, StartDate)
 		    
 		    If d <> Nil then
-		      StartDate.SQLDate = d.SQLDate
-		      EndDate.SQLDate = d.SQLDate
-		      lblDateSelection.Text = StartDate.LongDate
+		      StartDate = d
+		      EndDate = d
+		      lblDateSelection.Text = StartDate.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None)
 		    End If
 		    
 		  else
@@ -2082,9 +2096,9 @@ End
 		      d = w.showmodal(self.left + me.Left, self.top + me.top + me.Height, me,  StartDate)
 		      
 		      If d <> Nil then
-		        StartDate.SQLDate = d.SQLDate
-		        If StartDate.SQLDate > EndDate.SQLDate then
-		          EndDate.TotalSeconds = StartDate.TotalSeconds + diff
+		        StartDate = d
+		        If StartDate > EndDate then
+		          EndDate = StartDate + new DateInterval(0,0,0,0,0,diff)
 		        End If
 		      End If
 		      
@@ -2093,15 +2107,15 @@ End
 		      d = w.showmodal(self.left + me.Left, self.top + me.top + me.Height, me, EndDate)
 		      
 		      If d <> Nil then
-		        EndDate.SQLDate = d.SQLDate
-		        If StartDate.SQLDate > EndDate.SQLDate then
-		          StartDate.TotalSeconds = EndDate.TotalSeconds - diff
+		        EndDate = d
+		        If StartDate.TotalSeconds > EndDate.TotalSeconds then
+		          StartDate = EndDate - new DateInterval(0,0,0,0,0,diff)
 		        End If
 		      End If
 		      
 		    End If
 		    
-		    lblDateSelection.Text = StartDate.AbbreviatedDate + " - " + EndDate.AbbreviatedDate
+		    lblDateSelection.Text = StartDate.ToString(DateTime.FormatStyles.Short, DateTime.FormatStyles.None) + " - " + EndDate.ToString(DateTime.FormatStyles.Short, DateTime.FormatStyles.None)
 		    
 		  End If
 		  
@@ -2128,17 +2142,17 @@ End
 		  
 		  Dim x, i As Integer
 		  
-		  For i = 0 to UBound(Colors)
+		  For i = 0 to Colors.LastIndex
 		    
-		    g.ForeColor = Colors(i)
+		    g.DrawingColor = Colors(i)
 		    
-		    g.FillRect(x, 0, me.Height,me.Height)
+		    g.FillRectangle(x, 0, me.Height,me.Height)
 		    
 		    If i = SelectColor then
-		      g.ForeColor = FrameColor
-		      g.DrawRect(x+1, 1, me.Height-2, me.Height-2)
-		      g.ForeColor = &cFFFFFF
-		      g.DrawRect(x+2, 2, me.Height-4, me.Height-4)
+		      g.DrawingColor = FrameColor
+		      g.DrawRectangle(x+1, 1, me.Height-2, me.Height-2)
+		      g.DrawingColor = &cFFFFFF
+		      g.DrawRectangle(x+2, 2, me.Height-4, me.Height-4)
 		    End If
 		    
 		    x = x + me.Height + 3
@@ -2159,7 +2173,7 @@ End
 		    End If
 		    xx = xx + 3 + me.Height
 		    
-		    If xx > (me.Height + 3) * UBound(Colors) then
+		    If xx > (me.Height + 3) * Colors.LastIndex then
 		      exit for i
 		    End If
 		  Next
@@ -2203,16 +2217,16 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub FocusLost()
-		  If IsNumeric(me.Text.Left(2)) and IsNumeric(me.Text.Mid(4)) and me.Text.Mid(3, 1) = ":" then
+		  If IsNumeric(me.Text.Left(2)) and IsNumeric(me.Text.Middle(4)) and me.Text.Middle(3, 1) = ":" then
 		    //nothing
 		    
 		  else
 		    Dim hours As Integer
 		    Dim minutes As Integer
 		    
-		    If len(me.Text) = 4 and val(me.Text)<=2359 and val(me.Text.mid(3, 2))<60 then
+		    If len(me.Text) = 4 and val(me.Text)<=2359 and val(me.Text.Middle(3, 2))<60 then
 		      hours = val(me.Text.left(2))
-		      minutes = val(me.Text.mid(3,2))
+		      minutes = val(me.Text.Middle(3,2))
 		    else
 		      
 		      hours = min(23, val(me.Text))
@@ -2226,7 +2240,7 @@ End
 		  
 		  Combo_End.RemoveAllRows
 		  Dim start As Integer
-		  If val(me.Text.Mid(4))>0 then
+		  If val(me.Text.Middle(4))>0 then
 		    start = val(me.Text)*2+2
 		  else
 		    start = val(me.Text)*2+1
@@ -2266,7 +2280,7 @@ End
 		  
 		  Combo_End.RemoveAllRows
 		  Dim start As Integer
-		  If val(me.Text.Mid(4))>0 then
+		  If val(me.Text.Middle(4))>0 then
 		    start = val(me.Text)*2+2
 		  else
 		    start = val(me.Text)*2+1
@@ -2293,7 +2307,7 @@ End
 		  
 		  Combo_End.RemoveAllRows
 		  Dim start As Integer
-		  If val(me.Text.Mid(4))>0 then
+		  If val(me.Text.Middle(4))>0 then
 		    start = val(me.Text)*2+2
 		  else
 		    start = val(me.Text)*2+1
@@ -2315,10 +2329,13 @@ End
 		  
 		  
 		  if mOpen then
-		    StartDate.Hour = val(Combo_Start.Text.NthField(":", 1))
-		    StartDate.Minute = val(Combo_Start.Text.NthField(":", 2))
-		    EndDate.Hour = val(Combo_End.Text.NthField(":", 1))
-		    EndDate.Minute = val(Combo_End.Text.NthField(":", 2))
+		    Var lNewHour As Double = val(Combo_Start.Text.NthField(":", 1))
+		    Var lNewMin As Double = val(Combo_Start.Text.NthField(":", 2))
+		    StartDate = StartDate - new DateInterval(0,0,0,StartDate.Hour,StartDate.Minute) + new DateInterval(0,0,0,lNewHour,lNewMin)
+		    lNewHour = val(Combo_End.Text.NthField(":", 1))
+		    lNewMin = val(Combo_End.Text.NthField(":", 2))
+		    EndDate = EndDate - new DateInterval(0,0,0,EndDate.Hour,EndDate.Minute) + new DateInterval(0,0,0,lNewHour,lNewMin)
+		    
 		    If owner <> Nil then
 		      owner.Redisplay
 		    End If
@@ -2354,16 +2371,16 @@ End
 	#tag EndEvent
 	#tag Event
 		Sub FocusLost()
-		  If IsNumeric(me.Text.Left(2)) and IsNumeric(me.Text.Mid(4)) and me.Text.Mid(3, 1) = ":" then
+		  If IsNumeric(me.Text.Left(2)) and IsNumeric(me.Text.Middle(4)) and me.Text.Middle(3, 1) = ":" then
 		    //nothing
 		    
 		  else
 		    Dim hours As Integer
 		    Dim minutes As Integer
 		    
-		    If len(me.Text) = 4 and val(me.Text)<=2359 and val(me.Text.mid(3, 2))<60 then
+		    If len(me.Text) = 4 and val(me.Text)<=2359 and val(me.Text.Middle(3, 2))<60 then
 		      hours = val(me.Text.left(2))
-		      minutes = val(me.Text.mid(3,2))
+		      minutes = val(me.Text.Middle(3,2))
 		    else
 		      
 		      hours = min(23, val(me.Text))
@@ -2378,10 +2395,13 @@ End
 		Sub SelectionChanged(item As DesktopMenuItem)
 		  
 		  if mOpen then
-		    StartDate.Hour = val(Combo_Start.Text.NthField(":", 1))
-		    StartDate.Minute = val(Combo_Start.Text.NthField(":", 2))
-		    EndDate.Hour = val(Combo_End.Text.NthField(":", 1))
-		    EndDate.Minute = val(Combo_End.Text.NthField(":", 2))
+		    Var lNewHour As Double = val(Combo_Start.Text.NthField(":", 1))
+		    Var lNewMin As Double = val(Combo_Start.Text.NthField(":", 2))
+		    StartDate = StartDate - new DateInterval(0,0,0,StartDate.Hour,StartDate.Minute) + new DateInterval(0,0,0,lNewHour,lNewMin)
+		    lNewHour = val(Combo_End.Text.NthField(":", 1))
+		    lNewMin = val(Combo_End.Text.NthField(":", 2))
+		    EndDate = EndDate - new DateInterval(0,0,0,EndDate.Hour,EndDate.Minute) + new DateInterval(0,0,0,lNewHour,lNewMin)
+		    
 		    If owner <> Nil then
 		      owner.Redisplay
 		    End If
@@ -2441,7 +2461,7 @@ End
 		  Case "Daily"
 		    
 		    lblRepeatOn.Visible = False
-		    SegDays.Visible = False
+		    sgbDays.Visible = False
 		    
 		    lblRepeatInterval.Visible = True
 		    Popup_Interval.Visible = True
@@ -2452,7 +2472,7 @@ End
 		  Case "Weekday"
 		    
 		    lblRepeatOn.Visible = False
-		    SegDays.Visible = False
+		    sgbDays.Visible = False
 		    
 		    lblRepeatInterval.Visible = False
 		    Popup_Interval.Visible = False
@@ -2461,7 +2481,7 @@ End
 		  Case "Weekly"
 		    
 		    lblRepeatOn.Visible = True
-		    SegDays.Visible = True
+		    sgbDays.Visible = True
 		    
 		    lblRepeatInterval.Visible = True
 		    Popup_Interval.Visible = True
@@ -2472,7 +2492,7 @@ End
 		  Case "Monthly"
 		    
 		    lblRepeatOn.Visible = True
-		    SegDays.Visible = False
+		    sgbDays.Visible = False
 		    
 		    lblRepeatInterval.Visible = True
 		    Popup_Interval.Visible = True
@@ -2483,7 +2503,7 @@ End
 		  Case "Monthly Relative"
 		    
 		    lblRepeatOn.Visible = True
-		    SegDays.Visible = False
+		    sgbDays.Visible = False
 		    
 		    lblRepeatInterval.Visible = True
 		    Popup_Interval.Visible = True
@@ -2494,7 +2514,7 @@ End
 		  Case "Yearly"
 		    
 		    lblRepeatOn.Visible = False
-		    SegDays.Visible = False
+		    sgbDays.Visible = False
 		    
 		    lblRepeatInterval.Visible = True
 		    Popup_Interval.Visible = True
@@ -2554,25 +2574,25 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events SegDays
+#tag Events sgbDays
 	#tag Event
-		Sub Action(itemIndex as integer)
-		  #Pragma Unused itemIndex
-		  
-		  UpdateSummary()
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub Open()
+		Sub Opening()
 		  If CalendarView.DayNames(1) = "" then Return
 		  
 		  For i as Integer = 0 to 6
 		    
-		    me.Items(i).Title = Uppercase(CalendarView.DayNames((i+1) mod 7 + 1).Left(2))
+		    me.SegmentAt(i).Title = CalendarView.DayNames((i+1) mod 7 + 1).Left(2).Uppercase
 		    
 		  Next
 		  
 		  
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Pressed(segmentIndex As Integer)
+		  #Pragma Unused segmentIndex
+		  
+		  UpdateSummary()
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -2583,16 +2603,16 @@ End
 		  #Pragma Unused Y
 		  
 		  Dim w As New DatePickerWindow
-		  Dim d As Date
+		  Dim d As DateTime
 		  If RecurEndDate is Nil then
-		    RecurEndDate = New Date
+		    RecurEndDate = DateTime.Now
 		  End If
 		  
 		  d = w.showmodal(self.left + me.Left, self.top + me.top + me.Height, me, RecurEndDate)
 		  
 		  If d <> Nil then
 		    RecurEndDate = d
-		    me.Text = d.LongDate
+		    me.Text = d.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None)
 		    UpdateSummary()
 		  End If
 		  
@@ -2755,8 +2775,8 @@ End
 		Visible=true
 		Group="Background"
 		InitialValue="&hFFFFFF"
-		Type="Color"
-		EditorType="Color"
+		Type="ColorGroup"
+		EditorType="ColorGroup"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Name"
@@ -2867,7 +2887,7 @@ End
 		Visible=true
 		Group="Appearance"
 		InitialValue=""
-		Type="MenuBar"
+		Type="DesktopMenuBar"
 		EditorType=""
 	#tag EndViewProperty
 	#tag ViewProperty

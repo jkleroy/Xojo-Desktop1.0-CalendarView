@@ -117,6 +117,13 @@ End
 		    Const WS_CAPTION = &h00C00000
 		    ChangeWindowStyle( self, WS_CAPTION, false )
 		  #endif
+		  
+		  
+		  #if TargetWindows
+		    Self.HasBackgroundColor = True
+		    Self.BackgroundColor = Color.White
+		  #endif
+		  
 		End Sub
 	#tag EndEvent
 
@@ -163,14 +170,14 @@ End
 		    
 		    Const GWL_STYLE = -16
 		    
-		    Declare Function GetWindowLong Lib "user32" Alias "GetWindowLongA" (hwnd As Integer,  _
+		    Declare Function GetWindowLong Lib "user32" Alias "GetWindowLongA" (hwnd As Ptr,  _
 		    nIndex As Integer) As Integer
-		    Declare Function SetWindowLong Lib "user32" Alias "SetWindowLongA" (hwnd As Integer, _
+		    Declare Function SetWindowLong Lib "user32" Alias "SetWindowLongA" (hwnd As Ptr, _
 		    nIndex As Integer, dwNewLong As Integer) As Integer
-		    Declare Function SetWindowPos Lib "user32" (hwnd as Integer, hWndInstertAfter as Integer, _
+		    Declare Function SetWindowPos Lib "user32" (hwnd as Ptr, hWndInstertAfter as Integer, _
 		    x as Integer, y as Integer, cx as Integer, cy as Integer, flags as Integer) as Integer
 		    
-		    oldFlags = GetWindowLong(w.WinHWND, GWL_STYLE)
+		    oldFlags = GetWindowLong(w.Handle, GWL_STYLE)
 		    
 		    if not set then
 		      newFlags = BitwiseAnd( oldFlags, Bitwise.OnesComplement( flag ) )
@@ -179,8 +186,8 @@ End
 		    end
 		    
 		    
-		    styleFlags = SetWindowLong( w.WinHWND, GWL_STYLE, newFlags )
-		    styleFlags = SetWindowPos( w.WinHWND, 0, 0, 0, 0, 0, SWP_NOMOVE +_
+		    styleFlags = SetWindowLong( w.Handle, GWL_STYLE, newFlags )
+		    styleFlags = SetWindowPos( w.Handle, 0, 0, 0, 0, 0, SWP_NOMOVE +_
 		    SWP_NOSIZE + SWP_NOZORDER + SWP_FRAMECHANGED )
 		    
 		  #else
@@ -278,7 +285,7 @@ End
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub DateSelected(D As Date)
+		Sub DateSelected(D As DateTime)
 		  SelectedDate = new Date(d)
 		  
 		  Hide()
@@ -404,8 +411,8 @@ End
 		Visible=true
 		Group="Background"
 		InitialValue="&hFFFFFF"
-		Type="Color"
-		EditorType="Color"
+		Type="ColorGroup"
+		EditorType="ColorGroup"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="ImplicitInstance"
@@ -524,7 +531,7 @@ End
 		Visible=true
 		Group="Appearance"
 		InitialValue=""
-		Type="MenuBar"
+		Type="DesktopMenuBar"
 		EditorType=""
 	#tag EndViewProperty
 #tag EndViewBehavior

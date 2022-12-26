@@ -94,13 +94,13 @@ Protected Class AKTask
 
 	#tag Method, Flags = &h0
 		Function RunTime() As Double
-		  return microseconds - me.pstarttime
+		  return System.Microseconds - me.pstarttime
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Start()
-		  pStartTime = microseconds
+		  pStartTime = System.Microseconds
 		  Started
 		End Sub
 	#tag EndMethod

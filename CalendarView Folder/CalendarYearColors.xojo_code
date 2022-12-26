@@ -4,27 +4,27 @@ Protected Class CalendarYearColors
 		Sub AppendColor(C As Color, Unique As Boolean = True)
 		  If Unique then
 		    
-		    For i as Integer = 0 to UBound(EventColor)
+		    For i as Integer = 0 to EventColor.LastIndex
 		      If EventColor(i) = C then
 		        Return
 		      End If
 		    Next
 		  End If
 		  
-		  EventColor.Append C
+		  EventColor.Add C
 		  
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Sub Constructor(C As Color)
-		  EventColor.Append C
+		  EventColor.Add C
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
 		Function Count() As Integer
-		  Return UBound(EventColor) + 1
+		  Return EventColor.LastIndex + 1
 		  
 		End Function
 	#tag EndMethod
