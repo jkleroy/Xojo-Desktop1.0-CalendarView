@@ -1556,7 +1556,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ShowModal(StartDate As Date, EndDate As Date, Owner As CalendarView) As CalendarEvent
+		Function ShowModal(StartDate As DateTime, EndDate As DateTime, Owner As CalendarView) As CalendarEvent
 		  //This is used to create an event
 		  
 		  self.StartDate = StartDate
@@ -1567,8 +1567,8 @@ End
 		  ResizeWindow = True
 		  
 		  If StartDate.SQLDate = EndDate.SQLDate then
-		    lblDateSelection.Text = StartDate.LongDate
-		    lblStartsOnSelection.Text = StartDate.LongDate
+		    lblDateSelection.Text = StartDate.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None)
+		    lblStartsOnSelection.Text = StartDate.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None)
 		    
 		    If StartDate.Hour <> 0 or EndDate.Hour <> 0 then
 		      Combo_Start.Text = Format(StartDate.Hour, "0#") + ":" + Format(StartDate.Minute, "0#")
@@ -1579,7 +1579,7 @@ End
 		      Combo_End.Text = "00:00"
 		    End If
 		  else
-		    lblDateSelection.Text = StartDate.AbbreviatedDate + " - " + EndDate.AbbreviatedDate
+		    lblDateSelection.Text = StartDate.ToString(DateTime.FormatStyles.Medium, DateTime.FormatStyles.None) + " - " + EndDate.ToString(DateTime.FormatStyles.Medium, DateTime.FormatStyles.None)
 		    Chk_AllDay.Value = true
 		    Chk_AllDay.Enabled = False
 		  End If
@@ -1607,24 +1607,30 @@ End
 		    If StartDate = EndDate then
 		      
 		      If IsNumeric(lText.left(2)) and IsNumeric(lText.Middle(4, 2)) then
-		        StartDate.Hour = val(lText.left(2))
-		        StartDate.Minute = val(lText.Middle(4, 2))
-		        EndDate.SQLDateTime = StartDate.SQLDateTime
-		        EndDate.Hour = EndDate.Hour + 1
+		        'StartDate.Hour = val(lText.left(2))
+		        'StartDate.Minute = val(lText.Middle(4, 2))
+		        StartDate = StartDate - New DateInterval(0,0,0,StartDate.Hour, StartDate.Minute) + New DateInterval(0,0,0,val(lText.left(2)),val(lText.Middle(4, 2)))
+		        'EndDate.SQLDateTime = StartDate.SQLDateTime
+		        'EndDate.Hour = EndDate.Hour + 1
+		        EndDate = StartDate - New DateInterval(0,0,0,StartDate.Hour, StartDate.Minute) + New DateInterval(0,0,0,1)
 		        lText = lText.Middle(7)
 		      End If
 		    End If
 		    
 		    If StartDate.SQLDate = EndDate.SQLDate and Chk_AllDay.Value then
-		      StartDate.Hour = 0
-		      StartDate.Minute = 0
-		      StartDate.Second = 0
-		      EndDate.TotalSeconds = StartDate.TotalSeconds
+		      'StartDate.Hour = 0
+		      'StartDate.Minute = 0
+		      'StartDate.Second = 0
+		      'EndDate.SecondsFrom1970 = StartDate.SecondsFrom1970
+		      StartDate = StartDate - New DateInterval(0,0,0,StartDate.Hour,StartDate.Minute,startdate.Second)
+		      EndDate = New DateTime(StartDate)
 		    elseif Chk_AllDay.Value = False then
-		      StartDate.Hour = val(Combo_Start.Text.NthField(":", 1))
-		      StartDate.Minute = val(Combo_Start.Text.NthField(":", 2))
-		      EndDate.Hour = val(Combo_End.Text.NthField(":", 1))
-		      EndDate.Minute = val(Combo_End.Text.NthField(":", 2))
+		      'StartDate.Hour = val(Combo_Start.Text.NthField(":", 1))
+		      'StartDate.Minute = val(Combo_Start.Text.NthField(":", 2))
+		      StartDate = StartDate - New DateInterval(0,0,0,StartDate.Hour, StartDate.Minute) + New DateInterval(0,0,0,val(Combo_Start.Text.NthField(":", 1)),val(Combo_Start.Text.NthField(":", 2)))
+		      'EndDate.Hour = val(Combo_End.Text.NthField(":", 1))
+		      'EndDate.Minute = val(Combo_End.Text.NthField(":", 2))
+		      EndDate = EndDate - New DateInterval(0,0,0,EndDate.Hour, EndDate.Minute) + New DateInterval(0,0,0,val(Combo_End.Text.NthField(":", 1)),val(Combo_End.Text.NthField(":", 2)))
 		    End If
 		    
 		    
@@ -2090,7 +2096,7 @@ End
 		    
 		  else
 		    
-		    Dim diff As Double = EndDate.TotalSeconds - StartDate.TotalSeconds
+		    Dim diff As Double = EndDate.SecondsFrom1970 - StartDate.SecondsFrom1970
 		    If X < me.Width\2 then
 		      
 		      d = w.showmodal(self.left + me.Left, self.top + me.top + me.Height, me,  StartDate)
@@ -2108,7 +2114,7 @@ End
 		      
 		      If d <> Nil then
 		        EndDate = d
-		        If StartDate.TotalSeconds > EndDate.TotalSeconds then
+		        If StartDate.SecondsFrom1970 > EndDate.SecondsFrom1970 then
 		          StartDate = EndDate - new DateInterval(0,0,0,0,0,diff)
 		        End If
 		      End If

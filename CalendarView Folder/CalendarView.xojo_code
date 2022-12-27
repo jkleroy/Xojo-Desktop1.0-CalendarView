@@ -841,14 +841,14 @@ Inherits DesktopCanvas
 		  
 		  Recurrence = cEvent.Recurrence
 		  
-		  If Recurrence.EndDate <> Nil and Recurrence.EndDate.TotalSeconds < FirstDate.TotalSeconds then _
+		  If Recurrence.EndDate <> Nil and Recurrence.EndDate.SecondsFrom1970 < FirstDate.SecondsFrom1970 then _
 		  Return Nil
 		  
 		  If Recurrence.EndAmount >0 then
 		    limit = True
 		  End If
 		  
-		  If FirstDate.TotalSeconds > cEvent.StartDate.TotalSeconds then
+		  If FirstDate.SecondsFrom1970 > cEvent.StartDate.SecondsFrom1970 then
 		    DisplayDate = New DateTime(FirstDate)
 		  Else
 		    DisplayDate = New DateTime(cEvent.StartDate) + DIDay
@@ -857,7 +857,7 @@ Inherits DesktopCanvas
 		  
 		  
 		  
-		  While DisplayDate.TotalSeconds < EndDate.TotalSeconds
+		  While DisplayDate.SecondsFrom1970 < EndDate.SecondsFrom1970
 		    
 		    If Recurrence.CreateRecurrence(DisplayDate, cEvent, ExitLoop) then
 		      E = cEvent.Clone
@@ -1554,10 +1554,10 @@ Inherits DesktopCanvas
 		      
 		      
 		      If E.Length = 0 then
-		        y = (E.StartSeconds - FirstDate.TotalSeconds) / 86400
+		        y = (E.StartSeconds - FirstDate.SecondsFrom1970) / 86400
 		        amount(y) = amount(y) + 1
 		      elseif E.StartTime + E.Length >= 86400 then
-		        y = max(0, (E.StartSeconds - FirstDate.TotalSeconds) / 86400)
+		        y = max(0, (E.StartSeconds - FirstDate.SecondsFrom1970) / 86400)
 		        amount(y) = amount(y) + 1
 		        
 		        RemainTime = E.Length - (86400-E.StartTime)
@@ -2586,11 +2586,11 @@ Inherits DesktopCanvas
 		      If (DrawDate.SQLDate = E.StartDate.SQLDate) or (i=1 and DrawDate > E.StartDate) then
 		        
 		        If okToDraw then
-		          'If j<u and DisplayEvents(j+1).Day = E.Day and DrawPos.Remain((E.StartSeconds - FirstDate.TotalSeconds) / 86400) <2 then
-		          If j < u and DisplayEvents(j+1).StartDate.SQLDate <= E.EndDate.SQLDate and DrawPos.Remain(max(0, (DisplayEvents(j+1).StartSeconds - FirstDate.TotalSeconds) / 86400)) < 1 then
+		          'If j<u and DisplayEvents(j+1).Day = E.Day and DrawPos.Remain((E.StartSeconds - FirstDate.SecondsFrom1970) / 86400) <2 then
+		          If j < u and DisplayEvents(j+1).StartDate.SQLDate <= E.EndDate.SQLDate and DrawPos.Remain(max(0, (DisplayEvents(j+1).StartSeconds - FirstDate.SecondsFrom1970) / 86400)) < 1 then
 		            okToDraw = False
 		          else
-		            v = DrawPos.Remain(max(0, (E.StartSeconds - FirstDate.TotalSeconds) / 86400))
+		            v = DrawPos.Remain(max(0, (E.StartSeconds - FirstDate.SecondsFrom1970) / 86400))
 		            If v < 1 and DrawPos.Hidden(i) > 0 then
 		              okToDraw = False
 		            elseif v < 0 then
@@ -2601,7 +2601,7 @@ Inherits DesktopCanvas
 		          End If
 		        End If
 		        
-		        yy = DrawPos.Search(max(0, (E.StartSeconds - FirstDate.TotalSeconds) / 86400), E.Length/86400) * (MyStyle.MEventHeight+1)
+		        yy = DrawPos.Search(max(0, (E.StartSeconds - FirstDate.SecondsFrom1970) / 86400), E.Length/86400) * (MyStyle.MEventHeight+1)
 		        
 		        If not okToDraw then
 		          DrawPos.AddHidden(i, E.Length/86400)
@@ -2615,11 +2615,11 @@ Inherits DesktopCanvas
 		        End If
 		        
 		        E.Visible = True
-		        'yy = DrawPos.Search(max(0, (E.StartSeconds - FirstDate.TotalSeconds) / 86400), E.Length/86400) * (MyStyle.MEventHeight+1)
+		        'yy = DrawPos.Search(max(0, (E.StartSeconds - FirstDate.SecondsFrom1970) / 86400), E.Length/86400) * (MyStyle.MEventHeight+1)
 		        
 		        //Event is a whole day event
 		        If E.StartDate.Hour = 0 and E.StartDate.Minute = 0 and E.Length mod 86400 = 0 or E.Length > 86400 then
-		          RealLength = Floor(E.Length / 86400) + 1 - max(0, (FirstDate.TotalSeconds - E.StartSeconds) / 86400)
+		          RealLength = Floor(E.Length / 86400) + 1 - max(0, (FirstDate.SecondsFrom1970 - E.StartSeconds) / 86400)
 		          
 		          //Only events that start at 0:00 and length mod 86400=0 have to be set as DayEvents
 		          If E.StartDate.Hour = 0 and E.StartDate.Minute = 0 and E.Length mod 86400 = 0 then
@@ -2744,7 +2744,7 @@ Inherits DesktopCanvas
 		        
 		      elseIf E.Visible = False then //Event doesn't start on that day but we make sure it's space is locked+
 		        If E.StartDate.SQLDate < DrawDate.SQLDate and E.EndDate.SQLDate >= DrawDate.SQLDate then
-		          Call DrawPos.LockLast((E.StartSeconds - FirstDate.TotalSeconds) / 86400, E.Length / 86400)
+		          Call DrawPos.LockLast((E.StartSeconds - FirstDate.SecondsFrom1970) / 86400, E.Length / 86400)
 		          'DrawPos.AddHidden(i, E.Length / 86400)
 		        End If
 		        
@@ -2757,8 +2757,8 @@ Inherits DesktopCanvas
 		    If DrawPos.Hidden(i) > 0 then
 		      gg.FontSize = MyStyle.MEventTextSize
 		      gg.DrawingColor = &c0000FF
-		      yy = DrawPos.LockLast((DrawDate.TotalSeconds - FirstDate.TotalSeconds) / 86400, 0) * (MyStyle.MEventHeight+1)
-		      'yy = DrawPos.Search(max(0, (E.StartSeconds - FirstDate.TotalSeconds) / 86400), E.Length/86400) * (MyStyle.MEventHeight+1)
+		      yy = DrawPos.LockLast((DrawDate.SecondsFrom1970 - FirstDate.SecondsFrom1970) / 86400, 0) * (MyStyle.MEventHeight+1)
+		      'yy = DrawPos.Search(max(0, (E.StartSeconds - FirstDate.SecondsFrom1970) / 86400), E.Length/86400) * (MyStyle.MEventHeight+1)
 		      If MoreEventsDate <> Nil and MoreEventsDate.SQLDate = DrawDate.SQLDate then
 		        gg.Underline = True
 		      End If
@@ -2851,11 +2851,11 @@ Inherits DesktopCanvas
 		        If (DrawDate.SQLDate = E.StartDate.SQLDate) or (i=1 and DrawDate > E.StartDate) then
 		          
 		          If okToDraw then
-		            'If j<u and DisplayEvents(j+1).Day = E.Day and DrawPos.Remain((E.StartSeconds - FirstDate.TotalSeconds) / 86400) <2 then
-		            If j < u and DisplayEvents(j+1).StartSeconds <= E.EndSeconds and DrawPos.Remain(max(0, (DisplayEvents(j+1).StartSeconds - FirstDate.TotalSeconds) / 86400)) < 1 then
+		            'If j<u and DisplayEvents(j+1).Day = E.Day and DrawPos.Remain((E.StartSeconds - FirstDate.SecondsFrom1970) / 86400) <2 then
+		            If j < u and DisplayEvents(j+1).StartSeconds <= E.EndSeconds and DrawPos.Remain(max(0, (DisplayEvents(j+1).StartSeconds - FirstDate.SecondsFrom1970) / 86400)) < 1 then
 		              okToDraw = False
 		            else
-		              v = DrawPos.Remain(max(0, (E.StartSeconds - FirstDate.TotalSeconds) / 86400))
+		              v = DrawPos.Remain(max(0, (E.StartSeconds - FirstDate.SecondsFrom1970) / 86400))
 		              If v < 1 and DrawPos.Hidden(i) > 0 then
 		                okToDraw = False
 		              elseif v < 0 then
@@ -2875,11 +2875,11 @@ Inherits DesktopCanvas
 		          End If
 		          
 		          E.Visible = True
-		          yy = DrawPos.Search(max(0, (E.StartSeconds - FirstDate.TotalSeconds) / 86400), E.Length/86400) * (MyStyle.MEventHeight+1)
+		          yy = DrawPos.Search(max(0, (E.StartSeconds - FirstDate.SecondsFrom1970) / 86400), E.Length/86400) * (MyStyle.MEventHeight+1)
 		          
 		          //Event is a whole day event
 		          If E.StartDate.Hour = 0 and E.StartDate.Minute = 0 and E.Length mod 86400 = 0 or E.Length > 86400 then
-		            RealLength = Floor(E.Length / 86400) + 1 - max(0, (FirstDate.TotalSeconds - E.StartSeconds) / 86400)
+		            RealLength = Floor(E.Length / 86400) + 1 - max(0, (FirstDate.SecondsFrom1970 - E.StartSeconds) / 86400)
 		            
 		            //Only events that start at 0:00 and length mod 86400=0 have to be set as DayEvents
 		            If E.StartDate.Hour = 0 and E.StartDate.Minute = 0 and E.Length mod 86400 = 0 then
@@ -3096,7 +3096,7 @@ Inherits DesktopCanvas
 		          
 		        elseIf E.Visible = False then //Event doesn't start on that day but we make sure it's space is locked+
 		          If E.StartDate.SQLDate < DrawDate.SQLDate and E.EndDate.SQLDate >= DrawDate.SQLDate then
-		            Call DrawPos.LockLast((E.StartSeconds - FirstDate.TotalSeconds) / 86400, E.Length / 86400)
+		            Call DrawPos.LockLast((E.StartSeconds - FirstDate.SecondsFrom1970) / 86400, E.Length / 86400)
 		            'DrawPos.AddHidden(i, E.Length / 86400)
 		          End If
 		          
@@ -3109,7 +3109,7 @@ Inherits DesktopCanvas
 		      If DrawPos.Hidden(i) > 0 then
 		        gg.FontSize = MyStyle.MEventTextSize
 		        gg.DrawingColor = &c0000FF
-		        yy = DrawPos.LockLast((DrawDate.TotalSeconds - FirstDate.TotalSeconds) / 86400, 0)+1
+		        yy = DrawPos.LockLast((DrawDate.SecondsFrom1970 - FirstDate.SecondsFrom1970) / 86400, 0)+1
 		        gg.DrawText("+" + str(DrawPos.Hidden(i)), x+MyStyle.MTextOffset, y + yy*(MyStyle.MEventHeight))
 		      End If
 		      
@@ -3200,7 +3200,7 @@ Inherits DesktopCanvas
 		      If E.DayEvent then
 		        E.DayEvent = False
 		      End If
-		      Call DrawAmountHour.Search(max(0, (E.StartSeconds - FirstDate.TotalSeconds)\(3600/Precision)), (E.EndSeconds-E.StartSeconds)\(3600/Precision)-1)
+		      Call DrawAmountHour.Search(max(0, (E.StartSeconds - FirstDate.SecondsFrom1970)\(3600/Precision)), (E.EndSeconds-E.StartSeconds)\(3600/Precision)-1)
 		    End If
 		  Next
 		  
@@ -3244,10 +3244,10 @@ Inherits DesktopCanvas
 		        y = HeaderHeight +1
 		        
 		        If j < u and DisplayEvents(j+1).StartSeconds <= E.EndSeconds and DisplayEvents(j+1).DayEvent _
-		          and DrawPosDay.Remain(max(0, (DisplayEvents(j+1).StartSeconds - FirstDate.TotalSeconds) / 86400)) < 1 then
+		          and DrawPosDay.Remain(max(0, (DisplayEvents(j+1).StartSeconds - FirstDate.SecondsFrom1970) / 86400)) < 1 then
 		          okToDraw = False
 		        else
-		          v = DrawPosDay.Remain(max(0, (E.StartSeconds - FirstDate.TotalSeconds) / 86400))
+		          v = DrawPosDay.Remain(max(0, (E.StartSeconds - FirstDate.SecondsFrom1970) / 86400))
 		          If v < 1 and DrawPosDay.Hidden(i) > 0 then
 		            okToDraw = False
 		          elseif v < 0 then
@@ -3264,15 +3264,15 @@ Inherits DesktopCanvas
 		        If okToDraw then
 		          
 		          If E.StartDate < DrawDate then
-		            w = max(1, min(Floor(E.EndDate.TotalSeconds - DrawDate.TotalSeconds) / 86400, ViewDays))
+		            w = max(1, min(Floor(E.EndDate.SecondsFrom1970 - DrawDate.SecondsFrom1970) / 86400, ViewDays))
 		          else
-		            w = max(1, min(ViewDays - (E.StartDate.TotalSeconds-FirstDate.TotalSeconds)/86400, E.Length/86400+1))
+		            w = max(1, min(ViewDays - (E.StartDate.SecondsFrom1970-FirstDate.SecondsFrom1970)/86400, E.Length/86400+1))
 		          End If
 		          
-		          yy = DrawPosDay.Search(max(0,(E.StartSeconds - FirstDate.TotalSeconds) / 86400), w-1) * MyStyle.WEventHeight
+		          yy = DrawPosDay.Search(max(0,(E.StartSeconds - FirstDate.SecondsFrom1970) / 86400), w-1) * MyStyle.WEventHeight
 		          
 		          //Seems this has no use
-		          'w = max(0, Ceiling((E.EndDate.TotalSeconds - LastDate.TotalSeconds)/86400))
+		          'w = max(0, Ceiling((E.EndDate.SecondsFrom1970 - LastDate.SecondsFrom1970)/86400))
 		          
 		        else
 		          DrawPosDay.AddHidden(i, E.Length/86400)
@@ -3290,7 +3290,7 @@ Inherits DesktopCanvas
 		        End If
 		        
 		        If E.StartDate < DrawDate then
-		          Dim nbDays As Integer = Ceiling((DrawDate.TotalSeconds - E.StartSeconds)/86400)
+		          Dim nbDays As Integer = Ceiling((DrawDate.SecondsFrom1970 - E.StartSeconds)/86400)
 		          
 		          y = y - HourHeight*24*nbDays
 		        End If
@@ -3304,9 +3304,9 @@ Inherits DesktopCanvas
 		        
 		        WholeDay = False
 		        
-		        maxAmount = 10-DrawAmountHour.Remain((E.StartSeconds-FirstDate.TotalSeconds)\(3600/Precision), E.Length\(3600/Precision))
+		        maxAmount = 10-DrawAmountHour.Remain((E.StartSeconds-FirstDate.SecondsFrom1970)\(3600/Precision), E.Length\(3600/Precision))
 		        
-		        xx = DrawPosHour.Search((E.StartSeconds-FirstDate.TotalSeconds)\(3600/Precision), E.Length\(3600/Precision)-1) * DayWidth/maxAmount
+		        xx = DrawPosHour.Search((E.StartSeconds-FirstDate.SecondsFrom1970)\(3600/Precision), E.Length\(3600/Precision)-1) * DayWidth/maxAmount
 		        
 		        If E.StartDate<DrawDate then
 		          xx = E.DrawX-(X-DayWidth)
@@ -3482,7 +3482,7 @@ Inherits DesktopCanvas
 		    If DrawPosDay.Hidden(i) > 0 and DayEventsHeight <> 0 then
 		      gDay.FontSize = MyStyle.WHeaderTextSize
 		      gDay.DrawingColor = &c0000FF
-		      yy = DrawPosDay.LockLast((DrawDate.TotalSeconds - FirstDate.TotalSeconds) / 86400, 0)
+		      yy = DrawPosDay.LockLast((DrawDate.SecondsFrom1970 - FirstDate.SecondsFrom1970) / 86400, 0)
 		      If yy*(MyStyle.WEventHeight) + gDay.TextHeight < DayEventsHeight then
 		        gDay.DrawText("+" + str(DrawPosDay.Hidden(i)), x+MyStyle.MTextOffset, yy*(MyStyle.WEventHeight) + gDay.TextHeight)
 		      End If
@@ -3575,7 +3575,7 @@ Inherits DesktopCanvas
 		        If E.DayEvent then
 		          E.DayEvent = False
 		        End If
-		        Call DrawAmountHour.Search(max(0, (E.StartSeconds - FirstDate.TotalSeconds)\(3600/Precision)), (E.EndSeconds-E.StartSeconds)\(3600/Precision)-1)
+		        Call DrawAmountHour.Search(max(0, (E.StartSeconds - FirstDate.SecondsFrom1970)\(3600/Precision)), (E.EndSeconds-E.StartSeconds)\(3600/Precision)-1)
 		      End If
 		    Next
 		    
@@ -3619,10 +3619,10 @@ Inherits DesktopCanvas
 		          y = HeaderHeight +1
 		          
 		          If j < u and DisplayEvents(j+1).StartSeconds <= E.EndSeconds and DisplayEvents(j+1).DayEvent _
-		            and DrawPosDay.Remain(max(0, (DisplayEvents(j+1).StartSeconds - FirstDate.TotalSeconds) / 86400)) < 1 then
+		            and DrawPosDay.Remain(max(0, (DisplayEvents(j+1).StartSeconds - FirstDate.SecondsFrom1970) / 86400)) < 1 then
 		            okToDraw = False
 		          else
-		            v = DrawPosDay.Remain(max(0, (E.StartSeconds - FirstDate.TotalSeconds) / 86400))
+		            v = DrawPosDay.Remain(max(0, (E.StartSeconds - FirstDate.SecondsFrom1970) / 86400))
 		            If v < 1 and DrawPosDay.Hidden(i) > 0 then
 		              okToDraw = False
 		            elseif v < 0 then
@@ -3639,18 +3639,18 @@ Inherits DesktopCanvas
 		          If okToDraw then
 		            
 		            If E.StartDate < DrawDate then
-		              w = max(1, min(Floor(E.EndDate.TotalSeconds - DrawDate.TotalSeconds) / 86400, ViewDays))
+		              w = max(1, min(Floor(E.EndDate.SecondsFrom1970 - DrawDate.SecondsFrom1970) / 86400, ViewDays))
 		            else
-		              w = max(1, min(ViewDays - (E.StartDate.TotalSeconds-FirstDate.TotalSeconds)/86400, E.Length/86400+1))
+		              w = max(1, min(ViewDays - (E.StartDate.SecondsFrom1970-FirstDate.SecondsFrom1970)/86400, E.Length/86400+1))
 		            End If
 		            If not HasBuffer then
 		              p = New Picture(DayWidth * w + 1, MyStyle.WEventHeight, 32)
 		            End If
 		            
-		            yy = DrawPosDay.Search(max(0,(E.StartSeconds - FirstDate.TotalSeconds) / 86400), w-1) * MyStyle.WEventHeight
+		            yy = DrawPosDay.Search(max(0,(E.StartSeconds - FirstDate.SecondsFrom1970) / 86400), w-1) * MyStyle.WEventHeight
 		            
 		            //Seems this has no use
-		            'w = max(0, Ceiling((E.EndDate.TotalSeconds - LastDate.TotalSeconds)/86400))
+		            'w = max(0, Ceiling((E.EndDate.SecondsFrom1970 - LastDate.SecondsFrom1970)/86400))
 		            
 		          else
 		            DrawPosDay.AddHidden(i, E.Length/86400)
@@ -3668,7 +3668,7 @@ Inherits DesktopCanvas
 		          End If
 		          
 		          If E.StartDate < DrawDate then
-		            Dim nbDays As Integer = Ceiling((DrawDate.TotalSeconds - E.StartSeconds)/86400)
+		            Dim nbDays As Integer = Ceiling((DrawDate.SecondsFrom1970 - E.StartSeconds)/86400)
 		            
 		            y = y - HourHeight*24*nbDays
 		          End If
@@ -3682,9 +3682,9 @@ Inherits DesktopCanvas
 		          
 		          WholeDay = False
 		          
-		          maxAmount = 10-DrawAmountHour.Remain((E.StartSeconds-FirstDate.TotalSeconds)\(3600/Precision), E.Length\(3600/Precision))
+		          maxAmount = 10-DrawAmountHour.Remain((E.StartSeconds-FirstDate.SecondsFrom1970)\(3600/Precision), E.Length\(3600/Precision))
 		          
-		          xx = DrawPosHour.Search((E.StartSeconds-FirstDate.TotalSeconds)\(3600/Precision), E.Length\(3600/Precision)-1) * DayWidth/maxAmount
+		          xx = DrawPosHour.Search((E.StartSeconds-FirstDate.SecondsFrom1970)\(3600/Precision), E.Length\(3600/Precision)-1) * DayWidth/maxAmount
 		          
 		          If E.StartDate<DrawDate then
 		            xx = E.DrawX-(X-DayWidth)
@@ -4047,7 +4047,7 @@ Inherits DesktopCanvas
 		      If DrawPosDay.Hidden(i) > 0 and DayEventsHeight <> 0 then
 		        gDay.FontSize = MyStyle.WHeaderTextSize
 		        gDay.DrawingColor = &c0000FF
-		        yy = DrawPosDay.LockLast((DrawDate.TotalSeconds - FirstDate.TotalSeconds) / 86400, 0)
+		        yy = DrawPosDay.LockLast((DrawDate.SecondsFrom1970 - FirstDate.SecondsFrom1970) / 86400, 0)
 		        gDay.DrawText("+" + str(DrawPosDay.Hidden(i)), x+MyStyle.MTextOffset, yy*(MyStyle.WEventHeight) + gDay.TextHeight)
 		      End If
 		      
@@ -4443,8 +4443,8 @@ Inherits DesktopCanvas
 		  Dim EventList() As CalendarEvent
 		  For i = 0 to u
 		    If DisplayEvents(i).StartDate.SQLDate = d.SQLDate or _
-		      (DisplayEvents(i).StartDate.TotalSeconds <= d.TotalSeconds and _
-		      DisplayEvents(i).EndDate.TotalSeconds >= d.TotalSeconds) then
+		      (DisplayEvents(i).StartDate.SecondsFrom1970 <= d.SecondsFrom1970 and _
+		      DisplayEvents(i).EndDate.SecondsFrom1970 >= d.SecondsFrom1970) then
 		      EventList.Add DisplayEvents(i)
 		    End If
 		  Next
@@ -5317,7 +5317,7 @@ Inherits DesktopCanvas
 		  else
 		    gc.DrawingColor = &cFF7F6E
 		    
-		    If Today.TotalSeconds >= FirstDate.TotalSeconds and Today.TotalSeconds <= LastDate.TotalSeconds then
+		    If Today.SecondsFrom1970 >= FirstDate.SecondsFrom1970 and Today.SecondsFrom1970 <= LastDate.SecondsFrom1970 then
 		      If mHiDPI then
 		        gc.DrawingColor = ShiftColor(gc.DrawingColor, 20)
 		        gc.FillRectangle(TimeWidth + (Today.Day-FirstDate.Day) * DayWidth, y, Ceiling(DayWidth)-1, 4)
@@ -5489,7 +5489,7 @@ Inherits DesktopCanvas
 		  Line.Add "END:VCALENDAR"
 		  
 		  
-		  Return Line.Join(EndOfLine)
+		  Return String.FromArray(Line,EndOfLine)
 		End Function
 	#tag EndMethod
 
@@ -6014,14 +6014,14 @@ Inherits DesktopCanvas
 		    If DragEvent = DragResize then
 		      'tmpDate.SQLDate = LastMouseOver.StartDate.SQLDate
 		      
-		      If LastMouseOver.StartSeconds <= tmpDate.TotalSeconds  then
+		      If LastMouseOver.StartSeconds <= tmpDate.SecondsFrom1970  then
 		        
 		        If LastMouseOver.StartDate.Hour = tmpDate.Hour and LastMouseOver.StartDate.Minute = tmpDate.Minute then
 		          'LastMouseOver.EndDate.Hour = LastMouseOver.StartDate.Hour
 		          'LastMouseOver.EndDate.Minute = LastMouseOver.StartDate.Minute + 15
 		          LastMouseOver.EndDate = LastMouseOver.EndDate - New DateInterval(0,0,LastMouseOver.EndDate.Hour,LastMouseOver.EndDate.Minute) + New DateInterval(0,0,0,LastMouseOver.StartDate.Hour,LastMouseOver.StartDate.Minute+15)
 		        else
-		          'LastMouseOver.EndDate.TotalSeconds = tmpDate.TotalSeconds
+		          'LastMouseOver.EndDate.SecondsFrom1970 = tmpDate.SecondsFrom1970
 		          LastMouseOver.EndDate = New DateTime(tmpDate)
 		          'LastMouseOver.EndDate.Hour = tmpDate.Hour
 		          'LastMouseOver.EndDate.Minute = tmpDate.Minute
@@ -6046,8 +6046,8 @@ Inherits DesktopCanvas
 		        LastMouseOver.SetLength(Length)
 		      else
 		        'LastMouseOver.StartDate = New DateTime(tmpDate)
-		        'LastMouseOver.StartDate.TotalSeconds = Max(tmpDate.TotalSeconds - tmpDate.Hour * 3600 - tmpDate.Minute * 60, tmpDate.TotalSeconds - DragOffset)
-		        LastMouseOver.StartDate = New DateTime(Max(tmpDate.TotalSeconds - tmpDate.Hour * 3600 - tmpDate.Minute * 60, tmpDate.TotalSeconds - DragOffset), TimeZone.Current)
+		        'LastMouseOver.StartDate.SecondsFrom1970 = Max(tmpDate.SecondsFrom1970 - tmpDate.Hour * 3600 - tmpDate.Minute * 60, tmpDate.SecondsFrom1970 - DragOffset)
+		        LastMouseOver.StartDate = New DateTime(Max(tmpDate.SecondsFrom1970 - tmpDate.Hour * 3600 - tmpDate.Minute * 60, tmpDate.SecondsFrom1970 - DragOffset), TimeZone.Current)
 		        LastMouseOver.SetLength(Length)
 		      End If
 		      
@@ -6228,7 +6228,7 @@ Inherits DesktopCanvas
 		            
 		          else
 		            DragEvent = DragMove
-		            DragOffset = DateForXY(X, Y).TotalSeconds - LastMouseOver.StartSeconds
+		            DragOffset = DateForXY(X, Y).SecondsFrom1970 - LastMouseOver.StartSeconds
 		            MouseCursor = System.Cursors.ArrowAllDirections
 		            If not DayEventClicked then
 		              LastMouseOver.MouseOver = True
@@ -6484,14 +6484,14 @@ Inherits DesktopCanvas
 		    If SelEnd <> Nil then
 		      
 		      #if TargetWeb
-		        If SelStart.TotalSeconds = SelEnd.TotalSeconds Then
-		          SelEnd.TotalSeconds = SelEnd.TotalSeconds + 3600
+		        If SelStart.SecondsFrom1970 = SelEnd.SecondsFrom1970 Then
+		          SelEnd.SecondsFrom1970 = SelEnd.SecondsFrom1970 + 3600
 		        End If
 		      #endif
 		      
 		      
 		      //Preventing Length = 0 events
-		      If SelStart.TotalSeconds <> SelEnd.TotalSeconds or DayEventClicked then
+		      If SelStart.SecondsFrom1970 <> SelEnd.SecondsFrom1970 or DayEventClicked then
 		        NewEvent(SelStart, SelEnd)
 		      End If
 		      
@@ -6552,7 +6552,7 @@ Inherits DesktopCanvas
 		  
 		  
 		  //We check if we need to create a new buffer
-		  If Buffer is Nil or Width * Height <> lastSize or FullRefresh  or lastToday.TotalSeconds <> Today.TotalSeconds  then
+		  If Buffer is Nil or Width * Height <> lastSize or FullRefresh  or lastToday.SecondsFrom1970 <> Today.SecondsFrom1970  then
 		    
 		    Dim gg As Graphics
 		    
@@ -7275,7 +7275,7 @@ Inherits DesktopCanvas
 		    Chars(i) = lText
 		  Next
 		  
-		  Return Chars.Join("")
+		  Return string.FromArray(Chars,"")
 		  
 		End Function
 	#tag EndMethod
@@ -7867,7 +7867,7 @@ Inherits DesktopCanvas
 		  If FromBeginning then
 		    LastSearchResult=Nil
 		    dFirst = New DateTime(1, TimeZone.Current)
-		    'dFirst.TotalSeconds = 1
+		    'dFirst.SecondsFrom1970 = 1
 		    EventsSorted = False
 		  elseif LastSearchResult <> Nil then
 		    dFirst = new DateTime(LastSearchResult.StartDate)
@@ -7956,12 +7956,12 @@ Inherits DesktopCanvas
 		          
 		          E = DisplayEvents(j)
 		          
-		          If DrawDate.TotalSeconds+86399 < DisplayEvents(j).StartSeconds Then
+		          If DrawDate.SecondsFrom1970+86399 < DisplayEvents(j).StartSeconds Then
 		            If amount = 0 Then
 		              idx = j
 		            End If
 		            Exit For j
-		          Elseif DrawDate.TotalSeconds <= DisplayEvents(j).EndSeconds Then
+		          Elseif DrawDate.SecondsFrom1970 <= DisplayEvents(j).EndSeconds Then
 		            amount = amount + 1
 		          End If
 		          
@@ -7996,12 +7996,12 @@ Inherits DesktopCanvas
 		      
 		      For j = Idx To U
 		        
-		        If DrawDate.TotalSeconds+86399 < DisplayEvents(j).StartSeconds Then
+		        If DrawDate.SecondsFrom1970+86399 < DisplayEvents(j).StartSeconds Then
 		          If YearMultipleEvents = False then
 		            Idx = j
 		          End If
 		          Exit For j
-		        Elseif DrawDate.TotalSeconds <= DisplayEvents(j).EndSeconds Then
+		        Elseif DrawDate.SecondsFrom1970 <= DisplayEvents(j).EndSeconds Then
 		          If DayColor(i) is Nil then
 		            DayColor(i) = New CalendarYearColors(DisplayEvents(j).EventColor)
 		          else
@@ -8869,7 +8869,7 @@ Inherits DesktopCanvas
 		    For i = 0 to u
 		      E = Events(i)
 		      If (E.StartDate >= FirstDate and E.StartDate < EndDate) or _
-		        ( E.StartDate < FirstDate and E.StartSeconds + E.Length >= FirstDate.TotalSeconds) then
+		        ( E.StartDate < FirstDate and E.StartSeconds + E.Length >= FirstDate.SecondsFrom1970) then
 		        If CalendarEventFilter(E) then
 		          DisplayEvents.Add E
 		          
@@ -8899,7 +8899,7 @@ Inherits DesktopCanvas
 		    For i = 0 to u
 		      E = Events(i)
 		      If (E.StartDate >= FirstDate and E.StartDate < EndDate) or _
-		        E.StartDate < FirstDate and E.StartSeconds + E.Length >= FirstDate.TotalSeconds then
+		        E.StartDate < FirstDate and E.StartSeconds + E.Length >= FirstDate.SecondsFrom1970 then
 		        DisplayEvents.Add E
 		        
 		        If E.Recurrence <> Nil then
@@ -8910,7 +8910,7 @@ Inherits DesktopCanvas
 		          Next
 		        End If
 		        
-		      Elseif E.Recurrence <> Nil and E.StartDate.TotalSeconds <= EndDate.TotalSeconds then
+		      Elseif E.Recurrence <> Nil and E.StartDate.SecondsFrom1970 <= EndDate.SecondsFrom1970 then
 		        RecurE = CheckRecurringEvents(E, FirstDate, EndDate)
 		        If RecurE = Nil then Continue
 		        For j = 0 to RecurE.LastIndex
@@ -9080,14 +9080,17 @@ Inherits DesktopCanvas
 		Protected Sub ViewChanged()
 		  Dim lastFirstDate, lastLastDate As DateTime
 		  
-		  lastFirstDate = New DateTime(mFirstDate)
-		  lastLastDate = New DateTime(mLastDate)
-		  
+		  If FirstDate <> Nil Then
+		    lastFirstDate = New DateTime(FirstDate)
+		  End If
+		  If LastDate <> NIl Then
+		    lastLastDate = New DateTime(LastDate)
+		  End If
 		  
 		  mFirstDate = Nil
 		  mLastDate = Nil
 		  
-		  If LastDate <> Nil and FirstDate <> Nil and (lastFirstDate.TotalSeconds <> FirstDate.TotalSeconds or lastLastDate.TotalSeconds <> LastDate.TotalSeconds) then
+		  If LastDate <> Nil and FirstDate <> Nil and (lastFirstDate.SecondsFrom1970 <> FirstDate.SecondsFrom1970 or lastLastDate.SecondsFrom1970 <> LastDate.SecondsFrom1970) then
 		    
 		    If ViewType = TypeYear then
 		      Redim DayColor(366)
@@ -9823,9 +9826,9 @@ Inherits DesktopCanvas
 			      'mFirstDate = New Date
 			      mFirstDate = New DateTime(DisplayDate.Year, DisplayDate.Month, 1, 0, 0, 0)
 			      'If ViewType = TypeMonth then
-			      'mFirstDate.TotalSeconds = DisplayDate.TotalSeconds
+			      'mFirstDate.SecondsFrom1970 = DisplayDate.SecondsFrom1970
 			      'else
-			      'mFirstDate.TotalSeconds = DisplayDate.TotalSeconds
+			      'mFirstDate.SecondsFrom1970 = DisplayDate.SecondsFrom1970
 			      'End If
 			      'mFirstDate.Day = 1
 			      'mFirstDate.Hour = 0
@@ -9857,7 +9860,7 @@ Inherits DesktopCanvas
 			    else
 			      
 			      'mFirstDate = New Date
-			      'mFirstDate.TotalSeconds = DisplayDate.TotalSeconds
+			      'mFirstDate.SecondsFrom1970 = DisplayDate.SecondsFrom1970
 			      mFirstDate = New DateTime(DisplayDate)
 			      
 			      If ViewType = TypeWeek then
@@ -10028,16 +10031,16 @@ Inherits DesktopCanvas
 			        'mLastDate.Day = 1                       //2022-02-10 -> 2022-02-01
 			        'mLastDate.Month = mLastDate.Month + 1   //2022-03-01
 			        'mLastDate.Day = mLastDate.Day - 1       //2022-02-28
-			        'mLastDate.Hour = 0                      
+			        'mLastDate.Hour = 0
 			        'mLastDate.Minute = 0
 			        'mLastDate.Second = 0
 			        
 			        mLastDate = DisplayDate - New DateInterval(0,0,DisplayDate.day-1) + New DateInterval(0, 1, 1)
 			        mLastDate = mLastDate - DIDay
 			        
-			        WeeksPerMonth = Ceiling((mLastDate.TotalSeconds - FirstDate.TotalSeconds + 86400) / 604800)
+			        WeeksPerMonth = Ceiling((mLastDate.SecondsFrom1970 - FirstDate.SecondsFrom1970 + 86400) / 604800)
 			        
-			        'mLastDate.TotalSeconds = FirstDate.TotalSeconds
+			        'mLastDate.SecondsFrom1970 = FirstDate.SecondsFrom1970
 			        mLastDate = New DateTime(FirstDate)
 			        'mLastDate.Day = mLastDate.Day + WeeksPerMonth * 7
 			        mLastDate = mLastDate + New DateInterval(0,0,WeeksPerMonth * 7)

@@ -13,7 +13,7 @@ Protected Class CalendarRecurrence
 		  Case TypeDaily
 		    
 		    //Adding the amount of Days including the Interval
-		    //EndAmountDate.TotalSeconds = EndAmountDate.TotalSeconds + 3600*24*(EndAmount-1)*Repeat_Recurrence_Factor
+		    //EndAmountDate.SecondsFrom1970 = EndAmountDate.SecondsFrom1970 + 3600*24*(EndAmount-1)*Repeat_Recurrence_Factor
 		    EndAmountDate = cEvent.StartDate + New DateInterval(0,0,EndAmount*Repeat_Recurrence_Factor)
 		    
 		  Case TypeWeekDay
@@ -38,7 +38,7 @@ Protected Class CalendarRecurrence
 		    tmpDate = tmpDate + New DateInterval(0,0,1)
 		    
 		    If tmpDate.WeekOfYear <> weekNbr and Repeat_Recurrence_Factor > 1 then
-		      //tmpDate.TotalSeconds = tmpDate.TotalSeconds + 3600*24*7*Repeat_Recurrence_Factor
+		      //tmpDate.SecondsFrom1970 = tmpDate.SecondsFrom1970 + 3600*24*7*Repeat_Recurrence_Factor
 		      tmpDate = tmpDate + New DateInterval(0,0,7*Repeat_Recurrence_Factor)
 		      weekNbr = tmpDate.WeekOfYear
 		    End If
@@ -97,7 +97,7 @@ Protected Class CalendarRecurrence
 		      
 		      
 		      If tmpDate.WeekOfYear <> weekNbr and Repeat_Recurrence_Factor > 1 then
-		        //tmpDate.TotalSeconds = tmpDate.TotalSeconds + 3600*24*7*(Repeat_Recurrence_Factor-1)
+		        //tmpDate.SecondsFrom1970 = tmpDate.SecondsFrom1970 + 3600*24*7*(Repeat_Recurrence_Factor-1)
 		        tmpDate = tmpDate + New DateInterval(0,0,7*Repeat_Recurrence_Factor)
 		        weekNbr = tmpDate.WeekOfYear
 		      End If
@@ -341,7 +341,7 @@ Protected Class CalendarRecurrence
 		      ExitLoop = True
 		      Return False
 		    Elseif DisplayDate.SQLDate = EndDate.SQLDate and _
-		      DisplayDate.TotalSeconds + cEvent.StartDate.Hour*3600 + cEvent.StartDate.Minute*60 + cEvent.StartDate.Second > EndDate.TotalSeconds then
+		      DisplayDate.SecondsFrom1970 + cEvent.StartDate.Hour*3600 + cEvent.StartDate.Minute*60 + cEvent.StartDate.Second > EndDate.SecondsFrom1970 then
 		      ExitLoop = True
 		      Return False
 		    End If
@@ -358,7 +358,7 @@ Protected Class CalendarRecurrence
 		    End If
 		  End If
 		  
-		  If lastOK <> Nil and lastOK.TotalSeconds > DisplayDate.TotalSeconds then
+		  If lastOK <> Nil and lastOK.SecondsFrom1970 > DisplayDate.SecondsFrom1970 then
 		    lastOK = Nil
 		  End If
 		  
@@ -374,7 +374,7 @@ Protected Class CalendarRecurrence
 		  Case TypeDaily
 		    If Repeat_Recurrence_Factor = 1 then Return True
 		    
-		    While tmpDate.TotalSeconds < DisplayDate.TotalSeconds
+		    While tmpDate.SecondsFrom1970 < DisplayDate.SecondsFrom1970
 		      //tmpDate.Day = tmpDate.Day + Repeat_Recurrence_Factor
 		      tmpDate = tmpDate + New DateInterval(0,0,Repeat_Recurrence_Factor)
 		    Wend
@@ -451,7 +451,7 @@ Protected Class CalendarRecurrence
 		      tmpDate = tmpDate + New DateInterval(0,0,1)
 		      // a corriger
 		      If tmpDate.WeekOfYear <> weekNbr and Repeat_Recurrence_Factor > 1 then
-		        //tmpDate.TotalSeconds = tmpDate.TotalSeconds + 3600*24*7*(Repeat_Recurrence_Factor-1)
+		        //tmpDate.SecondsFrom1970 = tmpDate.SecondsFrom1970 + 3600*24*7*(Repeat_Recurrence_Factor-1)
 		        tmpDate = tmpDate + New DateInterval(0,0,7*(Repeat_Recurrence_Factor-1))
 		        weekNbr = tmpDate.WeekOfYear
 		      End If
@@ -644,7 +644,7 @@ Protected Class CalendarRecurrence
 		      ByDay(ByDay.LastIndex-i) = tmp
 		    Next
 		    
-		    txt.Add "BYDAY=" + ByDay.Join(",")
+		    txt.Add "BYDAY=" + string.FromArray(ByDay,",")
 		    
 		    
 		  Case TypeMonthly
@@ -702,7 +702,7 @@ Protected Class CalendarRecurrence
 		    txt.Add "COUNT=" + str(EndAmount)
 		  End If
 		  
-		  Return txt.Join(";")
+		  Return string.FromArray(txt,";")
 		End Function
 	#tag EndMethod
 

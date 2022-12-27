@@ -24,10 +24,10 @@ Protected Class CalendarEvent
 		Sub Constructor(Title As String, StartDate As DateTime, EndDate As DateTime = Nil, EventColor As Color = &c4986E7, Location As String = "", Description As String = "", ID As String = "", Editable As Boolean = False, Tag As Variant = Nil, Recurrence As CalendarRecurrence = Nil)
 		  self.Title = Title
 		  self.StartDate = New DateTime(StartDate)
-		  //self.StartDate.TotalSeconds = StartDate.TotalSeconds
+		  //self.StartDate.SecondsFrom1970 = StartDate.SecondsFrom1970
 		  If EndDate <> Nil then
 		    self.EndDate = New DateTime(EndDate)
-		    //self.EndDate.TotalSeconds = EndDate.TotalSeconds
+		    //self.EndDate.SecondsFrom1970 = EndDate.SecondsFrom1970
 		  else
 		    self.EndDate = New DateTime(StartDate)
 		    If StartDate.Hour <> 0 or StartDate.Minute <> 0 or StartDate.Second <> 0 then
@@ -62,7 +62,7 @@ Protected Class CalendarEvent
 		  
 		  Data.Add "</td>"
 		  
-		  Return Data.Join(EndOfLine.UNIX)
+		  Return String.FromArray(Data,EndOfLine.UNIX)
 		End Function
 	#tag EndMethod
 
@@ -172,7 +172,7 @@ Protected Class CalendarEvent
 		  //</source>
 		  
 		  'EndDate = New Date(StartDate)
-		  'EndDate.TotalSeconds = EndDate.TotalSeconds + Value
+		  'EndDate.SecondsFrom1970 = EndDate.SecondsFrom1970 + Value
 		  
 		  EndDate = StartDate + New DateInterval(0,0,0,0,0,Value)
 		End Sub
@@ -272,11 +272,11 @@ Protected Class CalendarEvent
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Note
-			Returns the EndDate.TotalSeconds.
+			Returns the EndDate.SecondsFrom1970.
 		#tag EndNote
 		#tag Getter
 			Get
-			  return EndDate.TotalSeconds
+			  return EndDate.SecondsFrom1970
 			End Get
 		#tag EndGetter
 		EndSeconds As Double
@@ -322,10 +322,10 @@ Protected Class CalendarEvent
 			  If StartDate is Nil then Return -1
 			  If EndDate is Nil then
 			    EndDate = New DateTime(StartDate)
-			    'EndDate.TotalSeconds = StartDate.TotalSeconds
+			    'EndDate.SecondsFrom1970 = StartDate.SecondsFrom1970
 			  End If
 			  
-			  return EndDate.TotalSeconds - StartDate.TotalSeconds
+			  return EndDate.SecondsFrom1970 - StartDate.SecondsFrom1970
 			End Get
 		#tag EndGetter
 		Length As Double
@@ -368,11 +368,11 @@ Protected Class CalendarEvent
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Note
-			Returns the StartDate.TotalSeconds
+			Returns the StartDate.SecondsFrom1970
 		#tag EndNote
 		#tag Getter
 			Get
-			  return StartDate.TotalSeconds
+			  return StartDate.SecondsFrom1970
 			End Get
 		#tag EndGetter
 		StartSeconds As Double
