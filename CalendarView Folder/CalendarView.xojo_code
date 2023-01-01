@@ -6739,7 +6739,7 @@ Inherits DesktopCanvas
 		Protected Function HiDPI() As Integer
 		  #If TargetCocoa Then
 		    Try
-		      Soft Declare Function BackingScaleFactor Lib "AppKit" Selector "backingScaleFactor" (target As Integer) As Double
+		      Soft Declare Function BackingScaleFactor Lib "AppKit" Selector "backingScaleFactor" (target As Ptr) As Double
 		      Return BackingScaleFactor(Self.Window.Handle)
 		    Catch e As ObjCException
 		      Return 1
@@ -8799,15 +8799,17 @@ Inherits DesktopCanvas
 		    
 		  #else
 		    
-		    Dim D As New DateTime
+		    Dim D As DateTime = DateTime.Now
 		    
 		    For i as integer = 0 to 6
 		      DayNames(D.DayOfWeek) = D.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None).NthField(" ", 1).Replace(",", "")
-		      D.Day = D.Day + 1
+		      D = D + DIDay
+		      'D.Day = D.Day + 1
 		    Next
 		    
-		    D.Day = 1
-		    D.Month = 1
+		    D = D - New DateInterval(0,d.Month-1,d.Day-1)
+		    'D.Day = 1
+		    'D.Month = 1
 		    Dim MonthField As Integer
 		    If IsNumeric(D.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None).NthField(" ", 2)) then
 		      MonthField = 3
@@ -8815,8 +8817,9 @@ Inherits DesktopCanvas
 		      MonthField = 2
 		    End If
 		    For i as Integer = 1 to 12
-		      MonthNames(i) = D.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None).NthField(" ", MonthField)).Replace(",", "").Titlecase
-		      D.Month = D.Month + 1
+		      MonthNames(i) = D.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None).NthField(" ", MonthField).Replace(",", "").Titlecase
+		      D = D + DIMonth 
+		      'D.Month = D.Month + 1
 		    Next
 		    
 		    FirstDayOfWeek = 1 //Sunday

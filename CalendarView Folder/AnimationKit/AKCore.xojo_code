@@ -119,10 +119,10 @@ Protected Module AKCore
 		      Content.Dimensions.Width = NewRect.Width
 		      Content.Dimensions.Height = NewRect.Height
 		      
-		      Declare Function GetFrame Lib "Cocoa.framework" Selector "frameRectForContentRect:" (Target As Integer, Content As NSRect) As NSRect
+		      Declare Function GetFrame Lib "Cocoa.framework" Selector "frameRectForContentRect:" (Target As Ptr, Content As NSRect) As NSRect
 		      Dim Frame As NSRect = GetFrame(Item.Handle,Content)
 		      
-		      Declare Sub SetFrame Lib "Cocoa.framework" Selector "setFrame:display:" (Target As Integer, Frame As NSRect, Display As Boolean)
+		      Declare Sub SetFrame Lib "Cocoa.framework" Selector "setFrame:display:" (Target As Ptr, Frame As NSRect, Display As Boolean)
 		      SetFrame(Item.Handle,Frame,True)
 		    End If
 		  #else

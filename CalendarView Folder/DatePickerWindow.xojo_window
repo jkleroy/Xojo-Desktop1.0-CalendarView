@@ -25,6 +25,7 @@ Begin DesktopWindow DatePickerWindow
    Visible         =   True
    Width           =   207
    Begin Timer Timer1
+      Enabled         =   True
       Index           =   -2147483648
       InitialParent   =   ""
       LockedInPosition=   False
@@ -144,11 +145,11 @@ End
 		  // You'll still have to manually call the ChildWindow.Show method to 'activate' the ChildWindow.
 		  
 		  #if TargetCocoa then
-		    declare sub addChildWindow lib "Cocoa" selector "addChildWindow:ordered:" (WindowRef As Integer, ChildWindowRef as Integer, OrderingMode as Integer)
+		    declare sub addChildWindow lib "Cocoa" selector "addChildWindow:ordered:" (WindowRef As Ptr, ChildWindowRef as Ptr, OrderingMode as Integer)
 		    
 		    addChildWindow wParent.Handle, wChild.Handle, 1
 		  #else
-		    #pragma Unused wParent
+		    #Pragma Unused wParent
 		    #pragma Unused wChild
 		  #endif
 		End Sub
