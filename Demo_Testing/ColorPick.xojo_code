@@ -1,20 +1,20 @@
 #tag Class
 Protected Class ColorPick
-Inherits Canvas
+Inherits DesktopCanvas
 	#tag Event
-		Sub Activate()
+		Sub Activated()
 		  //
 		End Sub
 	#tag EndEvent
 
 	#tag Event
-		Sub Close()
+		Sub Closing()
 		  //
 		End Sub
 	#tag EndEvent
 
 	#tag Event
-		Function ConstructContextualMenu(base as MenuItem, x as Integer, y as Integer) As Boolean
+		Function ConstructContextualMenu(base As DesktopMenuItem, x As Integer, y As Integer) As Boolean
 		  #pragma Unused base
 		  #pragma Unused x
 		  #pragma Unused y
@@ -22,40 +22,40 @@ Inherits Canvas
 	#tag EndEvent
 
 	#tag Event
-		Function ContextualMenuAction(hitItem as MenuItem) As Boolean
-		  #pragma Unused hitItem
+		Function ContextualMenuItemSelected(selectedItem As DesktopMenuItem) As Boolean
+		  #pragma Unused selectedItem
 		End Function
 	#tag EndEvent
 
 	#tag Event
-		Sub Deactivate()
+		Sub Deactivated()
 		  //
 		End Sub
 	#tag EndEvent
 
 	#tag Event
-		Sub DoubleClick(X As Integer, Y As Integer)
+		Sub DoublePressed(x As Integer, y As Integer)
 		  #pragma Unused X
 		  #pragma Unused Y
 		End Sub
 	#tag EndEvent
 
 	#tag Event
-		Function DragEnter(obj As DragItem, action As Integer) As Boolean
+		Function DragEnter(obj As DragItem, action As DragItem.Types) As Boolean
 		  #pragma Unused obj
 		  #pragma Unused action
 		End Function
 	#tag EndEvent
 
 	#tag Event
-		Sub DragExit(obj As DragItem, action As Integer)
+		Sub DragExit(obj As DragItem, action As DragItem.Types)
 		  #pragma Unused obj
 		  #pragma Unused action
 		End Sub
 	#tag EndEvent
 
 	#tag Event
-		Function DragOver(x As Integer, y As Integer, obj As DragItem, action As Integer) As Boolean
+		Function DragOver(x As Integer, y As Integer, obj As DragItem, action As DragItem.Types) As Boolean
 		  #pragma Unused x
 		  #pragma Unused y
 		  #pragma Unused obj
@@ -64,44 +64,44 @@ Inherits Canvas
 	#tag EndEvent
 
 	#tag Event
-		Sub DropObject(obj As DragItem, action As Integer)
+		Sub DropObject(obj As DragItem, action As DragItem.Types)
 		  #pragma Unused obj
 		  #pragma Unused action
 		End Sub
 	#tag EndEvent
 
 	#tag Event
-		Sub EnableMenuItems()
+		Sub FocusLost()
 		  //
 		End Sub
 	#tag EndEvent
 
 	#tag Event
-		Sub GotFocus()
+		Sub FocusReceived()
 		  //
 		End Sub
 	#tag EndEvent
 
 	#tag Event
-		Function KeyDown(Key As String) As Boolean
+		Function KeyDown(key As String) As Boolean
 		  #pragma Unused Key
 		End Function
 	#tag EndEvent
 
 	#tag Event
-		Sub KeyUp(Key As String)
+		Sub KeyUp(key As String)
 		  #pragma Unused Key
 		End Sub
 	#tag EndEvent
 
 	#tag Event
-		Sub LostFocus()
+		Sub MenuBarSelected()
 		  //
 		End Sub
 	#tag EndEvent
 
 	#tag Event
-		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		Function MouseDown(x As Integer, y As Integer) As Boolean
 		  #pragma Unused X
 		  #pragma Unused Y
 		  
@@ -128,7 +128,7 @@ Inherits Canvas
 	#tag EndEvent
 
 	#tag Event
-		Sub MouseDrag(X As Integer, Y As Integer)
+		Sub MouseDrag(x As Integer, y As Integer)
 		  #pragma Unused X
 		  #pragma Unused Y
 		End Sub
@@ -147,21 +147,21 @@ Inherits Canvas
 	#tag EndEvent
 
 	#tag Event
-		Sub MouseMove(X As Integer, Y As Integer)
+		Sub MouseMove(x As Integer, y As Integer)
 		  #pragma Unused X
 		  #pragma Unused Y
 		End Sub
 	#tag EndEvent
 
 	#tag Event
-		Sub MouseUp(X As Integer, Y As Integer)
+		Sub MouseUp(x As Integer, y As Integer)
 		  #pragma Unused X
 		  #pragma Unused Y
 		End Sub
 	#tag EndEvent
 
 	#tag Event
-		Function MouseWheel(X As Integer, Y As Integer, deltaX as Integer, deltaY as Integer) As Boolean
+		Function MouseWheel(x As Integer, y As Integer, deltaX As Integer, deltaY As Integer) As Boolean
 		  #pragma Unused X
 		  #pragma Unused Y
 		  #pragma Unused deltaX
@@ -170,7 +170,7 @@ Inherits Canvas
 	#tag EndEvent
 
 	#tag Event
-		Sub Paint(g As Graphics, areas() As REALbasic.Rect)
+		Sub Paint(g As Graphics, areas() As Rect)
 		  #Pragma Unused areas
 		  
 		  If Checkbox and me.Value = False then
@@ -294,14 +294,6 @@ Inherits Canvas
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty
-			Name="DoubleBuffer"
-			Visible=true
-			Group="Behavior"
-			InitialValue="False"
-			Type="Boolean"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
 			Name="TabStop"
 			Visible=true
 			Group="Position"
@@ -411,14 +403,6 @@ Inherits Canvas
 			Group="Position"
 			InitialValue="0"
 			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="InitialParent"
-			Visible=false
-			Group="Comportement"
-			InitialValue=""
-			Type="String"
 			EditorType=""
 		#tag EndViewProperty
 		#tag ViewProperty

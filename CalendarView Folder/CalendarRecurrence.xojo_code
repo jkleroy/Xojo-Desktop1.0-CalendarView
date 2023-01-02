@@ -4,7 +4,7 @@ Protected Class CalendarRecurrence
 		Protected Sub CalcEndAmountDate(cEvent As CalendarEvent)
 		  
 		  If EndAmount = 0 then Return
-		  EndAmountDate = New Date(cEvent.StartDate)
+		  //EndAmountDate = New DateTime(cEvent.StartDate)
 		  
 		  Dim idx As Integer = 1
 		  
@@ -13,15 +13,14 @@ Protected Class CalendarRecurrence
 		  Case TypeDaily
 		    
 		    //Adding the amount of Days including the Interval
-		    EndAmountDate.TotalSeconds = EndAmountDate.TotalSeconds + 3600*24*(EndAmount-1)*Repeat_Recurrence_Factor
+		    //EndAmountDate.SecondsFrom1970 = EndAmountDate.SecondsFrom1970 + 3600*24*(EndAmount-1)*Repeat_Recurrence_Factor
+		    EndAmountDate = cEvent.StartDate + New DateInterval(0,0,EndAmount*Repeat_Recurrence_Factor)
 		    
 		  Case TypeWeekDay
-		    Dim tmpDate As New Date(EndAmountDate)
-		    
-		    
+		    Dim tmpDate As New DateTime(cEvent.StartDate)
 		    
 		    While idx < EndAmount
-		      tmpDate.Day = tmpDate.Day + 1
+		      tmpDate = tmpDate + new DateInterval(0,0,1)
 		      If tmpDate.DayOfWeek > 1 and tmpDate.DayOfWeek < 7 then
 		        idx = idx + 1
 		      End If
@@ -32,14 +31,15 @@ Protected Class CalendarRecurrence
 		    
 		  Case TypeWeekly
 		    
-		    Dim tmpDate As New Date(EndAmountDate)
-		    Dim weekNbr As Integer = EndAmountDate.WeekOfYear
+		    Dim tmpDate As New DateTime(cEvent.StartDate)
+		    Dim weekNbr As Integer = cEvent.StartDate.WeekOfYear
 		    Dim Interval As Integer
 		    
-		    tmpDate.Day = tmpDate.Day + 1
+		    tmpDate = tmpDate + New DateInterval(0,0,1)
 		    
 		    If tmpDate.WeekOfYear <> weekNbr and Repeat_Recurrence_Factor > 1 then
-		      tmpDate.TotalSeconds = tmpDate.TotalSeconds + 3600*24*7*Repeat_Recurrence_Factor
+		      //tmpDate.SecondsFrom1970 = tmpDate.SecondsFrom1970 + 3600*24*7*Repeat_Recurrence_Factor
+		      tmpDate = tmpDate + New DateInterval(0,0,7*Repeat_Recurrence_Factor)
 		      weekNbr = tmpDate.WeekOfYear
 		    End If
 		    
@@ -93,11 +93,12 @@ Protected Class CalendarRecurrence
 		        End If
 		      End If
 		      
-		      tmpDate.Day = tmpDate.Day + 1
+		      tmpDate = tmpDate + New DateInterval(0,0,1)
 		      
 		      
 		      If tmpDate.WeekOfYear <> weekNbr and Repeat_Recurrence_Factor > 1 then
-		        tmpDate.TotalSeconds = tmpDate.TotalSeconds + 3600*24*7*(Repeat_Recurrence_Factor-1)
+		        //tmpDate.SecondsFrom1970 = tmpDate.SecondsFrom1970 + 3600*24*7*(Repeat_Recurrence_Factor-1)
+		        tmpDate = tmpDate + New DateInterval(0,0,7*Repeat_Recurrence_Factor)
 		        weekNbr = tmpDate.WeekOfYear
 		      End If
 		    Wend
@@ -107,25 +108,26 @@ Protected Class CalendarRecurrence
 		    
 		  Case TypeMonthly
 		    
-		    Dim tmpDate As New Date(EndAmountDate)
+		    Dim tmpDate As New DateTime(cEvent.StartDate)
 		    
 		    While idx < EndAmount
-		      tmpDate.Day = 1
-		      tmpDate.Month = tmpDate.Month + Repeat_Recurrence_Factor
-		      tmpDate.Day = EndAmountDate.Day
-		      If tmpDate.Day = EndAmountDate.Day then
-		        idx = idx + 1
-		      End If
+		      //tmpDate.Day = 1
+		      //tmpDate.Month = tmpDate.Month + Repeat_Recurrence_Factor
+		      tmpDate = tmpDate + New DateInterval(0,Repeat_Recurrence_Factor)
+		      //tmpDate.Day = EndAmountDate.Day
+		      //If tmpDate.Day = EndAmountDate.Day then
+		      idx = idx + 1
+		      //End If
 		    Wend
 		    
 		    EndAmountDate = tmpDate
 		    
 		  Case TypeMonthlyRelative
 		    
-		    Dim tmpDate As New Date(EndAmountDate)
+		    Dim tmpDate As New DateTime(cEvent.StartDate)
 		    Dim Relative As Integer
 		    Dim CurrMonth As Integer
-		    Dim CalcDate As Date
+		    Dim CalcDate As DateTime
 		    
 		    //Prevent a crash
 		    If RepeatInterval = 0 then
@@ -133,8 +135,10 @@ Protected Class CalendarRecurrence
 		    End If
 		    
 		    While idx < EndAmount
-		      tmpDate.Day = 1
-		      tmpDate.Month = tmpDate.Month + Repeat_Recurrence_Factor
+		      //tmpDate.Day = 1
+		      tmpDate = tmpDate - New DateInterval(0,0,tmpDate.Day-1) + New DateInterval(0,Repeat_Recurrence_Factor) 
+		      //tmpDate.Month = tmpDate.Month + Repeat_Recurrence_Factor
+		      //tmpDate.Month = tmpDate.Month + Repeat_Recurrence_Factor
 		      CurrMonth = tmpDate.Month
 		      Relative = 0
 		      
@@ -157,8 +161,8 @@ Protected Class CalendarRecurrence
 		            idx = idx + 1
 		            Exit While
 		          Elseif Repeat_Relative_Interval = RelativeLast and Relative = RelativeFourth then
-		            CalcDate = New Date(tmpDate)
-		            CalcDate.Day = CalcDate.Day+7
+		            CalcDate = tmpDate + New DateInterval(0,0,7)
+		            //CalcDate.Day = CalcDate.Day+7
 		            If CalcDate.Month <> tmpDate.Month then
 		              //tmpDate is the last of the month
 		              idx = idx + 1
@@ -180,7 +184,8 @@ Protected Class CalendarRecurrence
 		          'End If
 		        End If
 		        
-		        tmpDate.Day = tmpDate.Day + 1
+		        //tmpDate.Day = tmpDate.Day + 1
+		        tmpDate = tmpDate + new DateInterval(0,0,1)
 		      Wend
 		      
 		      
@@ -191,20 +196,25 @@ Protected Class CalendarRecurrence
 		    
 		    
 		  Case TypeYearly
-		    Dim tmpDate As New Date(EndAmountDate)
+		    Dim tmpDate As New DateTime(cEvent.StartDate)
 		    
 		    While idx < EndAmount
-		      tmpDate.Day = 1
-		      tmpDate.Year = tmpDate.Year + Repeat_Recurrence_Factor
-		      tmpDate.Month = EndAmountDate.Month
-		      tmpDate.Day = EndAmountDate.Day
+		      'tmpDate.Day = 1
+		      'tmpDate.Year = tmpDate.Year + Repeat_Recurrence_Factor
+		      'tmpDate.Month = EndAmountDate.Month
+		      'tmpDate.Day = EndAmountDate.Day
+		      tmpDate = tmpDate - New DateInterval(0,0,tmpDate.Day-1)
+		      tmpDate = tmpDate + New DateInterval(Repeat_Recurrence_Factor)
+		      tmpDate = tmpDate + New DateInterval(0,EndAmountDate.Month - tmpDate.Month)
+		      tmpDate = tmpDate + New DateInterval(0,0,EndAmountDate.Day - tmpDate.Day)
+		      
 		      If tmpDate.Day = EndAmountDate.Day then
 		        idx = idx + 1
 		      End If
 		    Wend
 		    
 		    EndAmountDate = tmpDate
-		     
+		    
 		  End Select
 		  
 		  
@@ -220,7 +230,7 @@ Protected Class CalendarRecurrence
 
 	#tag Method, Flags = &h0
 		Sub Constructor(ICS As String)
-		  If ICS.InStr("byday=byday")>0 then
+		  If ICS.IndexOf("byday=byday")>0 then
 		    ICS = ICS.ReplaceAll("byday=byday", "byday")
 		  End If
 		  
@@ -239,7 +249,7 @@ Protected Class CalendarRecurrence
 		    
 		  Case "WEEKLY"
 		    
-		    If ICS.InStr("FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR")>0 and Interval = 1 then
+		    If ICS.IndexOf("FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR")>0 and Interval = 1 then
 		      RepeatType = TypeWeekDay
 		      
 		    Else
@@ -248,25 +258,25 @@ Protected Class CalendarRecurrence
 		      
 		      //Each day
 		      If ByDay <> "" then
-		        If ByDay.InStr("MO")>0 then
+		        If ByDay.IndexOf("MO")>0 then
 		          RepeatInterval = RepeatInterval + Interval8Monday
 		        End If
-		        If ByDay.InStr("TU")>0 then
+		        If ByDay.IndexOf("TU")>0 then
 		          RepeatInterval = RepeatInterval + Interval8Tuesday
 		        End If
-		        If ByDay.InStr("WE")>0 then
+		        If ByDay.IndexOf("WE")>0 then
 		          RepeatInterval = RepeatInterval + Interval8Wednesday
 		        End If
-		        If ByDay.InStr("TH")>0 then
+		        If ByDay.IndexOf("TH")>0 then
 		          RepeatInterval = RepeatInterval + Interval8Thursday
 		        End If
-		        If ByDay.InStr("FR")>0 then
+		        If ByDay.IndexOf("FR")>0 then
 		          RepeatInterval = RepeatInterval + Interval8Friday
 		        End If
-		        If ByDay.InStr("SA")>0 then
+		        If ByDay.IndexOf("SA")>0 then
 		          RepeatInterval = RepeatInterval + Interval8Saturday
 		        End If
-		        If ByDay.InStr("SU")>0 then
+		        If ByDay.IndexOf("SU")>0 then
 		          RepeatInterval = RepeatInterval + Interval8Sunday
 		        End If
 		      Else
@@ -311,10 +321,10 @@ Protected Class CalendarRecurrence
 		    
 		  End Select
 		  
-		  If ICS.InStr("UNTIL")>0 then
-		    EndDate = New Date(VDate2SQLDate(ICS.NthField("UNTIL=", 2).NthField(";", 1)))
+		  If ICS.IndexOf("UNTIL")>0 then
+		    EndDate = New DateTime(VDate2SQLDate(ICS.NthField("UNTIL=", 2).NthField(";", 1)))
 		    
-		  Elseif ICS.InStr("COUNT")>0 then
+		  Elseif ICS.IndexOf("COUNT")>0 then
 		    EndAmount = val(ICS.NthField("COUNT=", 2).NthField(";", 1))
 		  End If
 		  
@@ -323,7 +333,7 @@ Protected Class CalendarRecurrence
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function CreateRecurrence(DisplayDate As Date, cEvent As CalendarEvent, ByRef ExitLoop As Boolean) As Boolean
+		Function CreateRecurrence(DisplayDate As DateTime, cEvent As CalendarEvent, ByRef ExitLoop As Boolean) As Boolean
 		  
 		  //End Date
 		  If EndDate <> Nil then
@@ -331,7 +341,7 @@ Protected Class CalendarRecurrence
 		      ExitLoop = True
 		      Return False
 		    Elseif DisplayDate.SQLDate = EndDate.SQLDate and _
-		      DisplayDate.TotalSeconds + cEvent.StartDate.Hour*3600 + cEvent.StartDate.Minute*60 + cEvent.StartDate.Second > EndDate.TotalSeconds then
+		      DisplayDate.SecondsFrom1970 + cEvent.StartDate.Hour*3600 + cEvent.StartDate.Minute*60 + cEvent.StartDate.Second > EndDate.SecondsFrom1970 then
 		      ExitLoop = True
 		      Return False
 		    End If
@@ -348,15 +358,15 @@ Protected Class CalendarRecurrence
 		    End If
 		  End If
 		  
-		  If lastOK <> Nil and lastOK.TotalSeconds > DisplayDate.TotalSeconds then
+		  If lastOK <> Nil and lastOK.SecondsFrom1970 > DisplayDate.SecondsFrom1970 then
 		    lastOK = Nil
 		  End If
 		  
-		  Dim tmpDate As Date
+		  Dim tmpDate As DateTime
 		  If lastOK is Nil then
-		    tmpDate = New Date(cEvent.StartDate)
+		    tmpDate = New DateTime(cEvent.StartDate)
 		  Else
-		    tmpDate = New Date(lastOK)
+		    tmpDate = New DateTime(lastOK)
 		  End If
 		  
 		  Select Case RepeatType
@@ -364,12 +374,13 @@ Protected Class CalendarRecurrence
 		  Case TypeDaily
 		    If Repeat_Recurrence_Factor = 1 then Return True
 		    
-		    While tmpDate.TotalSeconds < DisplayDate.TotalSeconds
-		      tmpDate.Day = tmpDate.Day + Repeat_Recurrence_Factor
+		    While tmpDate.SecondsFrom1970 < DisplayDate.SecondsFrom1970
+		      //tmpDate.Day = tmpDate.Day + Repeat_Recurrence_Factor
+		      tmpDate = tmpDate + New DateInterval(0,0,Repeat_Recurrence_Factor)
 		    Wend
 		    
 		    If tmpDate.Day = DisplayDate.Day then
-		      lastOK = new Date(DisplayDate)
+		      lastOK = new DateTime(DisplayDate)
 		      Return True
 		    End If
 		    
@@ -436,34 +447,38 @@ Protected Class CalendarRecurrence
 		    If Repeat_Recurrence_Factor = 1 then Return True
 		    
 		    While tmpDate.SQLDate < DisplayDate.SQLDate
-		      tmpDate.Day = tmpDate.Day + 1
-		       // a corriger
+		      //tmpDate.Day = tmpDate.Day + 1
+		      tmpDate = tmpDate + New DateInterval(0,0,1)
+		      // a corriger
 		      If tmpDate.WeekOfYear <> weekNbr and Repeat_Recurrence_Factor > 1 then
-		        tmpDate.TotalSeconds = tmpDate.TotalSeconds + 3600*24*7*(Repeat_Recurrence_Factor-1)
+		        //tmpDate.SecondsFrom1970 = tmpDate.SecondsFrom1970 + 3600*24*7*(Repeat_Recurrence_Factor-1)
+		        tmpDate = tmpDate + New DateInterval(0,0,7*(Repeat_Recurrence_Factor-1))
 		        weekNbr = tmpDate.WeekOfYear
 		      End If
 		    Wend
 		    
 		    If tmpDate.WeekOfYear = DisplayDate.WeekOfYear then
-		      lastOK = new Date(DisplayDate)
+		      lastOK = new DateTime(DisplayDate)
 		      Return True
 		    End If
 		    
 		  Case TypeMonthly
 		    
 		    If Repeat_Recurrence_Factor = 1 and DisplayDate.Day = tmpDate.Day then
-		      lastOK = New Date(DisplayDate)
+		      lastOK = New DateTime(DisplayDate)
 		      Return True
 		    End If
 		    
 		    While tmpDate.SQLDate < DisplayDate.SQLDate
-		      tmpDate.Day = 1
-		      tmpDate.Month = tmpDate.Month + Repeat_Recurrence_Factor
-		      tmpDate.Day = cEvent.StartDate.Day
+		      'tmpDate.Day = 1
+		      'tmpDate.Month = tmpDate.Month + Repeat_Recurrence_Factor
+		      'tmpDate.Day = cEvent.StartDate.Day
+		      tmpDate = tmpDate + New DateInterval(0,Repeat_Recurrence_Factor)
+		      
 		    Wend
 		    
 		    If tmpDate.SQLDate = DisplayDate.SQLDate and tmpDate.Day = cEvent.StartDate.Day then
-		      lastOK = new Date(DisplayDate)
+		      lastOK = new DateTime(DisplayDate)
 		      Return True
 		    End If
 		    
@@ -474,7 +489,7 @@ Protected Class CalendarRecurrence
 		      Dim CurrMonth As Integer
 		      CurrMonth = tmpDate.Month
 		    #endif
-		    Dim CalcDate As Date
+		    Dim CalcDate As DateTime
 		    
 		    //Prevent a crash
 		    If RepeatInterval = 0 then
@@ -483,7 +498,8 @@ Protected Class CalendarRecurrence
 		    
 		    If DisplayDate.DayOfWeek <> RepeatInterval then Return False
 		    
-		    tmpDate.Day = 1
+		    //tmpDate.Day = 1
+		    tmpDate = New DateTime(tmpDate.Year, tmpDate.Month, 1, tmpDate.Hour, tmpDate.Minute)
 		    
 		    While tmpDate.SQLDate <= DisplayDate.SQLDate
 		      
@@ -504,54 +520,58 @@ Protected Class CalendarRecurrence
 		          
 		          If Repeat_Relative_Interval = Relative then
 		            If tmpDate.SQLDate = DisplayDate.SQLDate then
-		              lastOK = New Date(tmpDate)
+		              lastOK = New DateTime(tmpDate)
 		              Return True
 		            Else
 		              Return False
 		            End If
 		            
 		          Elseif Repeat_Relative_Interval = RelativeLast and Relative = RelativeFourth then
-		            CalcDate = New Date(tmpDate)
-		            CalcDate.Day = CalcDate.Day+7
+		            CalcDate = New DateTime(tmpDate)
+		            CalcDate = CalcDate + New DateInterval(0,0,7)
 		            If CalcDate.Month <> tmpDate.Month then
 		              //tmpDate is the last of the month
-		              lastOK = New Date(tmpDate)
+		              lastOK = New DateTime(tmpDate)
 		              Return True
 		            End If
 		          End If
 		        End If
 		        
-		        tmpDate.Day = tmpDate.Day + 1
+		        //tmpDate.Day = tmpDate.Day + 1
+		        tmpDate = tmpDate + New DateInterval(0,0,1)
 		        
 		      Elseif tmpDate.Month <> DisplayDate.Month or tmpDate.Year < DisplayDate.Year then
 		        
 		        If tmpDate.Month <> DisplayDate.Month and tmpDate.Year < DisplayDate.Year then
 		          While tmpDate.Month <> DisplayDate.Month and tmpDate.Year < DisplayDate.Year
-		            tmpDate.Day = 1
-		            tmpDate.Month = tmpDate.Month + Repeat_Recurrence_Factor
+		            //tmpDate.Day = 1
+		            //tmpDate.Month = tmpDate.Month + Repeat_Recurrence_Factor
+		            tmpDate = New DateTime(tmpDate.Year, tmpDate.Month + Repeat_Recurrence_Factor, 1, tmpDate.Hour, tmpDate.Minute)
 		          Wend
 		        Else
-		          tmpDate.Day = 1
-		          tmpDate.Month = tmpDate.Month + Repeat_Recurrence_Factor
+		          //tmpDate.Day = 1
+		          //tmpDate.Month = tmpDate.Month + Repeat_Recurrence_Factor
+		          tmpDate = New DateTime(tmpDate.Year, tmpDate.Month + Repeat_Recurrence_Factor, 1, tmpDate.Hour, tmpDate.Minute)
 		        End If
 		        
 		      else
-		        tmpDate.Day = tmpDate.Day + 1
-		        
+		        //tmpDate.Day = tmpDate.Day + 1
+		        tmpDate = tmpDate + New DateInterval(0,0,1)
 		      End If
 		    Wend
 		    
 		  Case TypeYearly
 		    
 		    While tmpDate.SQLDate < DisplayDate.SQLDate
-		      tmpDate.Day = 1
-		      tmpDate.Year = tmpDate.Year + Repeat_Recurrence_Factor
-		      tmpDate.Month = cEvent.StartDate.Month
-		      tmpDate.Day = cEvent.StartDate.Day
+		      'tmpDate.Day = 1
+		      'tmpDate.Year = tmpDate.Year + Repeat_Recurrence_Factor
+		      'tmpDate.Month = cEvent.StartDate.Month
+		      'tmpDate.Day = cEvent.StartDate.Day
+		      tmpDate = New DateTime(tmpDate.Year + Repeat_Recurrence_Factor, cEvent.StartDate.Month, cEvent.StartDate.Day, tmpDate.Hour, tmpDate.Minute)
 		    Wend
 		    
 		    If tmpDate.SQLDate = DisplayDate.SQLDate and tmpDate.Day = cEvent.StartDate.Day then
-		      lastOK = new Date(DisplayDate)
+		      lastOK = new DateTime(DisplayDate)
 		      Return True
 		    End If
 		    
@@ -568,21 +588,21 @@ Protected Class CalendarRecurrence
 		    
 		  Case TypeDaily
 		    
-		    txt.Append "FREQ=DAILY"
+		    txt.Add "FREQ=DAILY"
 		    If Repeat_Recurrence_Factor > 1 then
-		      txt.Append "INTERVAL=" + str(Repeat_Recurrence_Factor)
+		      txt.Add "INTERVAL=" + str(Repeat_Recurrence_Factor)
 		    End If
 		    
 		  Case TypeWeekDay
 		    
-		    txt.Append "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+		    txt.Add "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR"
 		    
 		  Case TypeWeekly
 		    
-		    txt.Append "FREQ=WEEKLY"
+		    txt.Add "FREQ=WEEKLY"
 		    
 		    If Repeat_Recurrence_Factor > 1 then
-		      txt.Append "INTERVAL=" + str(Repeat_Recurrence_Factor)
+		      txt.Add "INTERVAL=" + str(Repeat_Recurrence_Factor)
 		    End If
 		    
 		    Dim Interval As Integer
@@ -590,56 +610,56 @@ Protected Class CalendarRecurrence
 		    Interval = RepeatInterval
 		    If Interval >= Interval8Saturday then
 		      Interval = Interval mod Interval8Saturday
-		      ByDay.Append "SA"
+		      ByDay.Add "SA"
 		    End If
 		    If Interval >= Interval8Friday then
 		      Interval = Interval mod Interval8Friday
-		      ByDay.Append "FR"
+		      ByDay.Add "FR"
 		    End If
 		    If Interval >= Interval8Thursday then
 		      Interval = Interval mod Interval8Thursday
-		      ByDay.Append "TH"
+		      ByDay.Add "TH"
 		    End If
 		    If Interval >= Interval8Wednesday then
 		      Interval = Interval mod Interval8Wednesday
-		      ByDay.Append "WE"
+		      ByDay.Add "WE"
 		    End If
 		    If Interval >= Interval8Tuesday then
 		      Interval = Interval mod Interval8Tuesday
-		      ByDay.Append "TU"
+		      ByDay.Add "TU"
 		    End If
 		    If Interval >= Interval8Monday then
 		      Interval = Interval mod Interval8Monday
-		      ByDay.Append "MO"
+		      ByDay.Add "MO"
 		    End If
 		    If Interval >= Interval8Sunday then
 		      Interval = Interval mod Interval8Sunday
-		      ByDay.Insert(0, "SU")
+		      ByDay.AddAt(0, "SU")
 		    End If
 		    
 		    Dim tmp As String
-		    For i as Integer = 0 to UBound(ByDay)/2
+		    For i as Integer = 0 to ByDay.LastIndex/2
 		      tmp = ByDay(i)
-		      ByDay(i) = ByDay(ByDay.Ubound-i)
-		      ByDay(ByDay.Ubound-i) = tmp
+		      ByDay(i) = ByDay(ByDay.LastIndex-i)
+		      ByDay(ByDay.LastIndex-i) = tmp
 		    Next
 		    
-		    txt.Append "BYDAY=" + Join(ByDay, ",")
+		    txt.Add "BYDAY=" + string.FromArray(ByDay,",")
 		    
 		    
 		  Case TypeMonthly
 		    
-		    txt.Append "FREQ=MONTHLY"
+		    txt.Add "FREQ=MONTHLY"
 		    If Repeat_Recurrence_Factor > 1 then
-		      txt.Append "INTERVAL=" + str(Repeat_Recurrence_Factor)
+		      txt.Add "INTERVAL=" + str(Repeat_Recurrence_Factor)
 		    End If
-		    txt.Append "BYMONTHDAY=" + str(cEvent.StartDate.Day)
+		    txt.Add "BYMONTHDAY=" + str(cEvent.StartDate.Day)
 		    
 		  Case TypeMonthlyRelative
 		    
-		    txt.Append "FREQ=MONTHLY"
+		    txt.Add "FREQ=MONTHLY"
 		    If Repeat_Recurrence_Factor > 1 then
-		      txt.Append "INTERVAL=" + str(Repeat_Recurrence_Factor)
+		      txt.Add "INTERVAL=" + str(Repeat_Recurrence_Factor)
 		    End If
 		    
 		    Dim tmp As String
@@ -658,13 +678,13 @@ Protected Class CalendarRecurrence
 		    
 		    tmp = tmp + Days(cEvent.StartDate.DayOfWeek)
 		    
-		    txt.Append tmp
+		    txt.Add tmp
 		    
 		  Case TypeYearly
 		    
-		    txt.Append "FREQ=YEARLY"
+		    txt.Add "FREQ=YEARLY"
 		    If Repeat_Recurrence_Factor > 1 then
-		      txt.Append "INTERVAL=" + str(Repeat_Recurrence_Factor)
+		      txt.Add "INTERVAL=" + str(Repeat_Recurrence_Factor)
 		    End If
 		    
 		  End Select
@@ -673,42 +693,63 @@ Protected Class CalendarRecurrence
 		  If EndDate <> Nil then
 		    Dim Time As String
 		    Time = EndDate.SQLDateTime.ReplaceAll("-", "").Replace(" ", "T").ReplaceAll(":", "")
-		    If EndDate.GMTOffset = 0 then
+		    If EndDate.Timezone.SecondsFromGMT = 0 then
 		      Time = Time + "Z"
 		    End If
-		    txt.Append "UNTIL=" + Time
+		    txt.Add "UNTIL=" + Time
 		    
 		  Elseif EndAmount > 0 then
-		    txt.Append "COUNT=" + str(EndAmount)
+		    txt.Add "COUNT=" + str(EndAmount)
 		  End If
 		  
-		  Return Join(txt, ";")
+		  Return string.FromArray(txt,";")
 		End Function
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Function VDate2SQLDate(VDate As String) As Date
+		Private Function VDate2SQLDate(VDate As String) As DateTime
 		  
 		  
-		  Dim D As New Date
-		  Dim GMTOffset As Integer = D.GMTOffset
+		  Dim D As DateTime
+		  
 		  If VDate.Right(1) = "Z" then
-		    D.GMTOffset = 0
+		    D = New DateTime(val(VDate.Left(4)), _
+		    val(VDate.Middle(5, 2)), _
+		    val(VDate.Middle(7, 2)), _
+		    val(VDate.Middle(10, 2)), _
+		    val(VDate.Middle(12, 2)), _
+		    val(VDate.Middle(14, 2)), _
+		    0, _
+		    New Timezone(0))
+		  Else
+		    D = New DateTime(val(VDate.Left(4)), _
+		    val(VDate.Middle(5, 2)), _
+		    val(VDate.Middle(7, 2)), _
+		    val(VDate.Middle(10, 2)), _
+		    val(VDate.Middle(12, 2)), _
+		    val(VDate.Middle(14, 2)), _
+		    0, _
+		    Timezone.Current)
 		  End If
 		  
-		  D.Hour = 0
-		  D.Minute = 0
-		  D.Second = 0
-		  
-		  D.Year = val(Left(VDate, 4))
-		  D.Month = val(Mid(VDate, 5, 2))
-		  D.Day = val(Mid(VDate, 7, 2))
-		  
-		  D.Hour = val(Mid(VDate, 10, 2))
-		  D.Minute = val(Mid(VDate, 12, 2))
-		  D.Second = val(Mid(VDate, 14, 2))
-		  
-		  D.GMTOffset = GMTOffset
+		  'Dim GMTOffset As Integer = D.GMTOffset
+		  'If VDate.Right(1) = "Z" then
+		  'D.GMTOffset = 0
+		  'End If
+		  '
+		  'D.Hour = 0
+		  'D.Minute = 0
+		  'D.Second = 0
+		  '
+		  'D.Year = val(Left(VDate, 4))
+		  'D.Month = val(Mid(VDate, 5, 2))
+		  'D.Day = val(Mid(VDate, 7, 2))
+		  '
+		  'D.Hour = val(Mid(VDate, 10, 2))
+		  'D.Minute = val(Mid(VDate, 12, 2))
+		  'D.Second = val(Mid(VDate, 14, 2))
+		  '
+		  'D.GMTOffset = GMTOffset
 		  
 		  Return D
 		End Function
@@ -720,11 +761,11 @@ Protected Class CalendarRecurrence
 	#tag EndProperty
 
 	#tag Property, Flags = &h1
-		Protected EndAmountDate As Date
+		Protected EndAmountDate As DateTime
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		EndDate As Date
+		EndDate As DateTime
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -736,7 +777,7 @@ Protected Class CalendarRecurrence
 			Used by CreateRecurrence to keep the last Date where the event was displayed.
 			This speeds up the calculation by 99%
 		#tag EndNote
-		Private lastOK As Date
+		Private lastOK As DateTime
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
@@ -753,9 +794,8 @@ Protected Class CalendarRecurrence
 
 	#tag Property, Flags = &h0
 		#tag Note
-			Number of weeks or months between the scheduled execution of a job. 
+			Number of weeks or months between the scheduled execution of a job.
 			Repeat_Recurrence_Factor is used only if RepeatType is 8, 16, or 32.
-			
 		#tag EndNote
 		Repeat_Recurrence_Factor As Integer
 	#tag EndProperty

@@ -16,7 +16,7 @@ Protected Module AKCore
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Animate(Extends Item As RectControl, ToRect As REALbasic.Rect, Duration As Double, EasingMethod As Integer = 0)
+		Sub Animate(Extends Item As DesktopUIControl, ToRect As Xojo.Rect, Duration As Double, EasingMethod As Integer = 0)
 		  dim task as akmovetask
 		  task = item.newmovetask
 		  task.duration = duration
@@ -28,7 +28,7 @@ Protected Module AKCore
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Animate(Extends Item As Window, ToRect As REALbasic.Rect, Duration As Double, EasingMethod As Integer = 0)
+		Sub Animate(Extends Item As DesktopWindow, ToRect As Xojo.Rect, Duration As Double, EasingMethod As Integer = 0)
 		  dim task as akmovetask
 		  task = item.newmovetask
 		  task.duration = duration
@@ -42,9 +42,9 @@ Protected Module AKCore
 	#tag Method, Flags = &h0
 		Sub Cancel(Extends Task As AKTask)
 		  dim i as integer
-		  for i = ubound(tasks) downto 0
+		  for i = tasks.LastIndex downto 0
 		    if tasks(i) = task then
-		      tasks.remove i
+		      tasks.RemoveAt i
 		    end
 		  next
 		End Sub
@@ -64,8 +64,8 @@ Protected Module AKCore
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ContentRect(Extends Item As RectControl) As REALbasic.Rect
-		  dim r as new REALbasic.Rect
+		Function ContentRect(Extends Item As DesktopUIControl) As Xojo.Rect
+		  dim r as new Xojo.Rect
 		  r.left = item.left
 		  r.top = item.top
 		  r.width = item.width
@@ -75,7 +75,7 @@ Protected Module AKCore
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ContentRect(Extends Item As RectControl, Assigns NewRect As REALbasic.Rect)
+		Sub ContentRect(Extends Item As DesktopUIControl, Assigns NewRect As Xojo.Rect)
 		  item.left = newrect.left
 		  item.top = newrect.top
 		  item.width = newrect.width
@@ -84,8 +84,8 @@ Protected Module AKCore
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ContentRect(Extends Item As Window) As REALbasic.Rect
-		  dim r as new REALbasic.Rect
+		Function ContentRect(Extends Item As DesktopWindow) As Xojo.Rect
+		  dim r as new Xojo.Rect
 		  r.left = item.left
 		  r.top = item.top
 		  r.width = item.width
@@ -95,7 +95,7 @@ Protected Module AKCore
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub ContentRect(Extends Item As Window, Assigns NewRect As REALbasic.Rect)
+		Sub ContentRect(Extends Item As DesktopWindow, Assigns NewRect As Xojo.Rect)
 		  #if TargetCocoa
 		    If Item IsA ContainerControl Then
 		      if item.left <> newrect.left then
@@ -119,10 +119,10 @@ Protected Module AKCore
 		      Content.Dimensions.Width = NewRect.Width
 		      Content.Dimensions.Height = NewRect.Height
 		      
-		      Declare Function GetFrame Lib "Cocoa.framework" Selector "frameRectForContentRect:" (Target As Integer, Content As NSRect) As NSRect
+		      Declare Function GetFrame Lib "Cocoa.framework" Selector "frameRectForContentRect:" (Target As Ptr, Content As NSRect) As NSRect
 		      Dim Frame As NSRect = GetFrame(Item.Handle,Content)
 		      
-		      Declare Sub SetFrame Lib "Cocoa.framework" Selector "setFrame:display:" (Target As Integer, Frame As NSRect, Display As Boolean)
+		      Declare Sub SetFrame Lib "Cocoa.framework" Selector "setFrame:display:" (Target As Ptr, Frame As NSRect, Display As Boolean)
 		      SetFrame(Item.Handle,Frame,True)
 		    End If
 		  #else
@@ -157,7 +157,7 @@ Protected Module AKCore
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function NewMoveTask(Extends Item As RectControl) As akmovetask
+		Function NewMoveTask(Extends Item As DesktopUIControl) As akmovetask
 		  dim task as akmovetask
 		  task = new akmovetask(item)
 		  return task
@@ -165,7 +165,7 @@ Protected Module AKCore
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function NewMoveTask(Extends Item As Window) As akmovetask
+		Function NewMoveTask(Extends Item As DesktopWindow) As akmovetask
 		  dim task as akmovetask
 		  task = new akmovetask(item)
 		  return task
@@ -178,11 +178,11 @@ Protected Module AKCore
 		  
 		  p = new picture(width,height,32)
 		  
-		  p.mask.graphics.drawpicture source.mask,0,0,width,height,x,y,width,height
-		  source.mask.graphics.forecolor = &c000000
-		  source.mask.graphics.fillrect x,y,width,height
+		  p.CopyMask.graphics.drawpicture source.CopyMask,0,0,width,height,x,y,width,height
+		  source.CopyMask.graphics.DrawingColor = &c000000
+		  source.CopyMask.graphics.FillRectangle x,y,width,height
 		  p.graphics.drawpicture source,0,0,width,height,x,y,width,height
-		  source.mask.graphics.drawpicture p.mask,x,y
+		  source.CopyMask.graphics.drawpicture p.CopyMask,x,y
 		  
 		  return p
 		End Function
@@ -192,8 +192,8 @@ Protected Module AKCore
 		Protected Function ReverseFrames(Frames() As Picture) As Picture()
 		  dim results() as picture
 		  dim i as integer
-		  for i = ubound(frames) downto 0
-		    results.append frames(i)
+		  for i = frames.LastIndex downto 0
+		    results.Add frames(i)
 		  next
 		  return results
 		End Function
@@ -207,7 +207,7 @@ Protected Module AKCore
 		  
 		  dim i as integer
 		  if task.item <> nil then
-		    for i = 0 to ubound(tasks)
+		    for i = 0 to tasks.LastIndex
 		      if tasks(i).item = task.item then
 		        // we already have this one to work on
 		        if tasks(i).conflictresolutionaction = aktask.resolveappend then
@@ -222,7 +222,7 @@ Protected Module AKCore
 		  end if
 		  
 		  // the task in question does not already exist, so add it
-		  tasks.append task
+		  tasks.add task
 		End Sub
 	#tag EndMethod
 
@@ -233,7 +233,7 @@ Protected Module AKCore
 		  
 		  for x = 0 to value.width - width step width
 		    for y = 0 to value.height - height step height
-		      results.append picturepart(value,x,y,width,height)
+		      results.Add picturepart(value,x,y,width,height)
 		    next
 		  next
 		  
@@ -246,14 +246,14 @@ Protected Module AKCore
 		  if animtimer = nil then
 		    animtimer = new AKTimer
 		    animtimer.period = 10
-		    animtimer.mode = timer.modemultiple
+		    animtimer.RunMode = timer.RunModes.Multiple
 		  end
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
 		Protected Sub Stop()
-		  animtimer.mode = timer.modeoff
+		  animtimer.RunMode = timer.RunModes.Off
 		  animtimer = nil
 		End Sub
 	#tag EndMethod

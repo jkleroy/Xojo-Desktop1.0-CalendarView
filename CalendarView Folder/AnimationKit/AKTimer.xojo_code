@@ -7,25 +7,25 @@ Inherits Timer
 		  dim task as aktask
 		  
 		  // do the animation
-		  for i = 0 to ubound(AKCore.tasks)
+		  for i = 0 to AKCore.tasks.LastIndex
 		    task = AKCore.tasks(i)
 		    if not task.hasstarted then
 		      task.start
 		    end
 		    
-		    if microseconds - task.lastframetime >= AKCore.frameperiod then
+		    if System.Microseconds - task.lastframetime >= AKCore.frameperiod then
 		      task.perform
-		      task.lastframetime = microseconds
+		      task.lastframetime = System.Microseconds
 		    end
 		  next
 		  
 		  // cleanup
-		  for i = ubound(AKCore.tasks) downto 0
+		  for i = AKCore.tasks.LastIndex downto 0
 		    task = AKCore.tasks(i)
 		    if task.hascompleted then
 		      // animation is completed, make sure it's final position is set
 		      task.perform(true)
-		      AKCore.tasks.remove i
+		      AKCore.tasks.RemoveAt i
 		      
 		      if task.nexttask <> nil then
 		        task.nexttask.run
@@ -36,7 +36,7 @@ Inherits Timer
 		    end
 		  next
 		  
-		  if ubound(AKCore.tasks) = -1 then
+		  if AKCore.tasks.LastIndex = -1 then
 		    AKCore.stop
 		  end
 		End Sub
@@ -44,30 +44,6 @@ Inherits Timer
 
 
 	#tag ViewBehavior
-		#tag ViewProperty
-			Name="Left"
-			Visible=true
-			Group="Position"
-			InitialValue="0"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Top"
-			Visible=true
-			Group="Position"
-			InitialValue="0"
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="Enabled"
-			Visible=false
-			Group="Behavior"
-			InitialValue="True"
-			Type="Boolean"
-			EditorType=""
-		#tag EndViewProperty
 		#tag ViewProperty
 			Name="RunMode"
 			Visible=true

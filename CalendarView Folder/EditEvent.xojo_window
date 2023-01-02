@@ -1,36 +1,32 @@
-#tag Window
-Begin Window EditEvent
-   BackColor       =   &cFFFFFF00
+#tag DesktopWindow
+Begin DesktopWindow EditEvent
    Backdrop        =   0
-   BalloonHelp     =   ""
-   CloseButton     =   True
+   BackgroundColor =   &cFFFFFF00
    Composite       =   False
-   Frame           =   8
+   DefaultLocation =   0
    FullScreen      =   False
-   FullScreenButton=   False
-   HasBackColor    =   False
+   HasBackgroundColor=   False
+   HasCloseButton  =   True
+   HasFullScreenButton=   False
+   HasMaximizeButton=   False
+   HasMinimizeButton=   False
    Height          =   357
    ImplicitInstance=   True
-   LiveResize      =   True
    MacProcID       =   0
-   MaxHeight       =   32000
-   MaximizeButton  =   False
-   MaxWidth        =   32000
+   MaximumHeight   =   32000
+   MaximumWidth    =   32000
    MenuBar         =   0
    MenuBarVisible  =   True
-   MinHeight       =   64
-   MinimizeButton  =   False
-   MinWidth        =   64
-   Placement       =   0
+   MinimumHeight   =   64
+   MinimumWidth    =   64
    Resizeable      =   False
    Title           =   "New Event"
+   Type            =   8
    Visible         =   True
    Width           =   375
-   Begin Label Label3
+   Begin DesktopLabel lblDate
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -51,21 +47,19 @@ Begin Window EditEvent
       TabIndex        =   0
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "#klocalDate"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   14
       Transparent     =   False
       Underline       =   False
-      Value           =   "Date :"
       Visible         =   True
       Width           =   63
    End
-   Begin Label Label2
+   Begin DesktopLabel lblTitle
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -86,25 +80,23 @@ Begin Window EditEvent
       TabIndex        =   1
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "#klocalTitle"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   141
       Transparent     =   False
       Underline       =   False
-      Value           =   "#klocalTitle"
       Visible         =   True
       Width           =   63
    End
-   Begin TextField TextField1
+   Begin DesktopTextField tfiTitle
       AllowAutoDeactivate=   True
       AllowFocusRing  =   True
       AllowSpellChecking=   False
       AllowTabs       =   False
       BackgroundColor =   &cFFFFFF00
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -128,6 +120,7 @@ Begin Window EditEvent
       TabIndex        =   0
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   ""
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
@@ -135,15 +128,14 @@ Begin Window EditEvent
       Transparent     =   False
       Underline       =   False
       ValidationMask  =   ""
-      Value           =   ""
       Visible         =   True
       Width           =   243
    End
-   Begin PushButton PushButton1
+   Begin DesktopButton btnOK
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
-      Caption         =   "OK"
+      Caption         =   "#kLocalOK"
       Default         =   False
       Enabled         =   True
       FontName        =   "System"
@@ -171,11 +163,9 @@ Begin Window EditEvent
       Visible         =   True
       Width           =   80
    End
-   Begin Label Label1
+   Begin DesktopLabel lblDateSelection
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -196,25 +186,23 @@ Begin Window EditEvent
       TabIndex        =   4
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "..."
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   14
       Transparent     =   False
       Underline       =   False
-      Value           =   "..."
       Visible         =   True
       Width           =   243
    End
-   Begin Canvas Canvas1
+   Begin DesktopCanvas cnvColor
       AllowAutoDeactivate=   True
       AllowFocus      =   False
       AllowFocusRing  =   True
       AllowTabs       =   False
       Backdrop        =   0
-      DoubleBuffer    =   False
       Enabled         =   True
-      EraseBackground =   True
       Height          =   20
       Index           =   -2147483648
       InitialParent   =   ""
@@ -234,15 +222,13 @@ Begin Window EditEvent
       Visible         =   True
       Width           =   335
    End
-   Begin TextField TextField2
+   Begin DesktopTextField tfiLocation
       AllowAutoDeactivate=   True
       AllowFocusRing  =   True
       AllowSpellChecking=   False
       AllowTabs       =   False
       BackgroundColor =   &cFFFFFF00
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -266,6 +252,7 @@ Begin Window EditEvent
       TabIndex        =   1
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   ""
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
@@ -273,15 +260,12 @@ Begin Window EditEvent
       Transparent     =   False
       Underline       =   False
       ValidationMask  =   ""
-      Value           =   ""
       Visible         =   True
       Width           =   243
    End
-   Begin Label Label4
+   Begin DesktopLabel lblLocation
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -302,21 +286,19 @@ Begin Window EditEvent
       TabIndex        =   7
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "#klocalLocation"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   175
       Transparent     =   False
       Underline       =   False
-      Value           =   "#klocalLocation"
       Visible         =   True
       Width           =   63
    End
-   Begin Label Label5
+   Begin DesktopLabel lblDescription
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -337,17 +319,17 @@ Begin Window EditEvent
       TabIndex        =   8
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "#klocalDescription"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   207
       Transparent     =   False
       Underline       =   False
-      Value           =   "#klocalDescription"
       Visible         =   True
       Width           =   86
    End
-   Begin TextArea TextArea1
+   Begin DesktopTextArea tarDescription
       AllowAutoDeactivate=   True
       AllowFocusRing  =   True
       AllowSpellChecking=   True
@@ -355,8 +337,6 @@ Begin Window EditEvent
       AllowTabs       =   False
       BackgroundColor =   &cFFFFFF00
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -384,6 +364,7 @@ Begin Window EditEvent
       TabIndex        =   2
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   ""
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
@@ -392,11 +373,10 @@ Begin Window EditEvent
       Underline       =   False
       UnicodeMode     =   0
       ValidationMask  =   ""
-      Value           =   ""
       Visible         =   True
       Width           =   243
    End
-   Begin PushButton DeleteButton
+   Begin DesktopButton DeleteButton
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
@@ -428,15 +408,13 @@ Begin Window EditEvent
       Visible         =   False
       Width           =   80
    End
-   Begin Canvas Canvas2
+   Begin DesktopCanvas Canvas2
       AllowAutoDeactivate=   True
       AllowFocus      =   False
       AllowFocusRing  =   True
       AllowTabs       =   False
       Backdrop        =   0
-      DoubleBuffer    =   False
       Enabled         =   True
-      EraseBackground =   True
       Height          =   90
       Index           =   -2147483648
       InitialParent   =   ""
@@ -455,13 +433,11 @@ Begin Window EditEvent
       Transparent     =   True
       Visible         =   True
       Width           =   335
-      Begin ComboBox Combo_Start
+      Begin DesktopComboBox Combo_Start
          AllowAutoComplete=   False
          AllowAutoDeactivate=   True
          AllowFocusRing  =   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -490,11 +466,9 @@ Begin Window EditEvent
          Visible         =   True
          Width           =   95
       End
-      Begin Label Lbl_To
+      Begin DesktopLabel Lbl_To
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -515,23 +489,21 @@ Begin Window EditEvent
          TabIndex        =   2
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "#klocalTo"
          TextAlignment   =   2
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   72
          Transparent     =   True
          Underline       =   False
-         Value           =   "#klocalTo"
          Visible         =   True
          Width           =   36
       End
-      Begin ComboBox Combo_End
+      Begin DesktopComboBox Combo_End
          AllowAutoComplete=   False
          AllowAutoDeactivate=   True
          AllowFocusRing  =   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -560,12 +532,10 @@ Begin Window EditEvent
          Visible         =   True
          Width           =   95
       End
-      Begin CheckBox Chk_AllDay
+      Begin DesktopCheckBox Chk_AllDay
          AllowAutoDeactivate=   True
          Bold            =   False
          Caption         =   "#klocalAllday"
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -594,15 +564,13 @@ Begin Window EditEvent
          Width           =   240
       End
    End
-   Begin Canvas Canvas3
+   Begin DesktopCanvas Canvas3
       AllowAutoDeactivate=   True
       AllowFocus      =   False
       AllowFocusRing  =   False
       AllowTabs       =   False
       Backdrop        =   0
-      DoubleBuffer    =   False
       Enabled         =   True
-      EraseBackground =   True
       Height          =   297
       Index           =   -2147483648
       InitialParent   =   ""
@@ -621,11 +589,9 @@ Begin Window EditEvent
       Transparent     =   True
       Visible         =   True
       Width           =   391
-      Begin Label Label7
+      Begin DesktopLabel lblRepeats
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -646,21 +612,19 @@ Begin Window EditEvent
          TabIndex        =   0
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "#klocalRepeats"
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   14
          Transparent     =   True
          Underline       =   False
-         Value           =   "#klocalRepeats"
          Visible         =   True
          Width           =   100
       End
-      Begin PopupMenu Popup_Repeat
+      Begin DesktopPopupMenu Popup_Repeat
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -688,11 +652,9 @@ Begin Window EditEvent
          Visible         =   True
          Width           =   135
       End
-      Begin Label lblRepeatInterval
+      Begin DesktopLabel lblRepeatInterval
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -713,21 +675,19 @@ Begin Window EditEvent
          TabIndex        =   2
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "#klocalRepeatEvery"
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   50
          Transparent     =   True
          Underline       =   False
-         Value           =   "#klocalRepeatEvery"
          Visible         =   True
          Width           =   100
       End
-      Begin PopupMenu Popup_Interval
+      Begin DesktopPopupMenu Popup_Interval
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -755,11 +715,9 @@ Begin Window EditEvent
          Visible         =   True
          Width           =   50
       End
-      Begin Label lblRepeatOn
+      Begin DesktopLabel lblRepeatOn
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -780,21 +738,19 @@ Begin Window EditEvent
          TabIndex        =   4
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "#kLocalRepeatOn"
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   86
          Transparent     =   True
          Underline       =   False
-         Value           =   "Repeat on:"
          Visible         =   True
          Width           =   100
       End
-      Begin Label Label11
+      Begin DesktopLabel lblStartsOn
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -815,21 +771,19 @@ Begin Window EditEvent
          TabIndex        =   13
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "#kLocalStartsOn"
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   119
          Transparent     =   True
          Underline       =   False
-         Value           =   "Starts on:"
          Visible         =   False
          Width           =   100
       End
-      Begin Label Label12
+      Begin DesktopLabel lblEnds
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -850,21 +804,19 @@ Begin Window EditEvent
          TabIndex        =   14
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "#klocalEnds"
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   152
          Transparent     =   True
          Underline       =   False
-         Value           =   "#klocalEnds"
          Visible         =   True
          Width           =   100
       End
-      Begin Label Label13
+      Begin DesktopLabel lblStartsOnSelection
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -885,17 +837,17 @@ Begin Window EditEvent
          TabIndex        =   15
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "..."
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   119
          Transparent     =   True
          Underline       =   False
-         Value           =   "..."
          Visible         =   False
          Width           =   259
       End
-      Begin RadioButton radioEnd
+      Begin DesktopRadioButton radioEnd
          AllowAutoDeactivate=   True
          Bold            =   False
          Caption         =   "#klocalNever"
@@ -925,7 +877,7 @@ Begin Window EditEvent
          Visible         =   True
          Width           =   100
       End
-      Begin RadioButton radioEnd
+      Begin DesktopRadioButton radioEnd
          AllowAutoDeactivate=   True
          Bold            =   False
          Caption         =   "#klocalAfter"
@@ -955,15 +907,13 @@ Begin Window EditEvent
          Visible         =   True
          Width           =   58
       End
-      Begin TextField txtNb
+      Begin DesktopTextField txtNb
          AllowAutoDeactivate=   True
          AllowFocusRing  =   True
          AllowSpellChecking=   False
          AllowTabs       =   False
          BackgroundColor =   &cFFFFFF00
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   False
          FontName        =   "System"
          FontSize        =   0.0
@@ -988,6 +938,7 @@ Begin Window EditEvent
          TabIndex        =   18
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "10"
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
@@ -995,15 +946,12 @@ Begin Window EditEvent
          Transparent     =   False
          Underline       =   False
          ValidationMask  =   "###"
-         Value           =   "10"
          Visible         =   True
          Width           =   44
       End
-      Begin Label Label14
+      Begin DesktopLabel lblOccurences
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -1024,17 +972,17 @@ Begin Window EditEvent
          TabIndex        =   19
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "#kLocalOccurences"
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   177
          Transparent     =   True
          Underline       =   False
-         Value           =   "occurences"
          Visible         =   True
          Width           =   100
       End
-      Begin RadioButton radioEnd
+      Begin DesktopRadioButton radioEnd
          AllowAutoDeactivate=   True
          Bold            =   False
          Caption         =   "#klocalOn"
@@ -1064,11 +1012,9 @@ Begin Window EditEvent
          Visible         =   True
          Width           =   58
       End
-      Begin Label Label15
+      Begin DesktopLabel lblSummary
          AllowAutoDeactivate=   True
          Bold            =   True
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -1089,21 +1035,19 @@ Begin Window EditEvent
          TabIndex        =   22
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "#klocalSummary"
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   232
          Transparent     =   True
          Underline       =   False
-         Value           =   "#klocalSummary"
          Visible         =   True
          Width           =   100
       End
-      Begin Label lblRepeatUnit
+      Begin DesktopLabel lblRepeatUnit
          AllowAutoDeactivate=   True
          Bold            =   False
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -1124,21 +1068,19 @@ Begin Window EditEvent
          TabIndex        =   16
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "#klocalDays"
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   50
          Transparent     =   True
          Underline       =   False
-         Value           =   "#klocalDays"
          Visible         =   True
          Width           =   73
       End
-      Begin Label lbl_Summary
+      Begin DesktopLabel lbl_Summary
          AllowAutoDeactivate=   True
          Bold            =   True
-         DataField       =   ""
-         DataSource      =   ""
          Enabled         =   True
          FontName        =   "System"
          FontSize        =   0.0
@@ -1159,17 +1101,17 @@ Begin Window EditEvent
          TabIndex        =   23
          TabPanelIndex   =   0
          TabStop         =   True
+         Text            =   "Summary:"
          TextAlignment   =   0
          TextColor       =   &c00000000
          Tooltip         =   ""
          Top             =   232
          Transparent     =   True
          Underline       =   False
-         Value           =   "Summary:"
          Visible         =   True
          Width           =   250
       End
-      BeginSegmented SegmentedControl SegDays
+      BeginDesktopSegmentedButton DesktopSegmentedButton sgbDays
          Enabled         =   True
          Height          =   24
          Index           =   -2147483648
@@ -1180,24 +1122,23 @@ Begin Window EditEvent
          LockLeft        =   True
          LockRight       =   False
          LockTop         =   True
-         MacControlStyle =   6
+         MacButtonStyle  =   0
          Scope           =   0
          Segments        =   "MO\n\nFalse\rTU\n\nFalse\rWE\n\nFalse\rTH\n\nFalse\rFR\n\nFalse\rSA\n\nFalse\rSU\n\nFalse"
-         SelectionType   =   1
-         TabIndex        =   16
+         SelectionStyle  =   0
+         TabIndex        =   24
          TabPanelIndex   =   0
-         TabStop         =   True
-         Top             =   82
+         TabStop         =   False
+         Tooltip         =   ""
+         Top             =   86
          Transparent     =   False
          Visible         =   True
-         Width           =   250
+         Width           =   226
       End
    End
-   Begin Label lblEndDate
+   Begin DesktopLabel lblEndDate
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   False
       FontName        =   "System"
       FontSize        =   0.0
@@ -1218,22 +1159,20 @@ Begin Window EditEvent
       TabIndex        =   17
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "Select Date"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   203
       Transparent     =   True
       Underline       =   False
-      Value           =   "Select Date"
       Visible         =   True
       Width           =   187
    End
-   Begin CheckBox Chk_Repeat
+   Begin DesktopCheckBox Chk_Repeat
       AllowAutoDeactivate=   True
       Bold            =   False
       Caption         =   "#klocalRepeat"
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -1262,11 +1201,11 @@ Begin Window EditEvent
       Width           =   232
    End
 End
-#tag EndWindow
+#tag EndDesktopWindow
 
 #tag WindowCode
 	#tag Event
-		Sub Close()
+		Sub Closing()
 		  If not OkToClose then
 		    
 		    Hide()
@@ -1279,22 +1218,29 @@ End
 	#tag EndEvent
 
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  
-		  Colors.Append &c444444
-		  Colors.Append &c5484ED
-		  Colors.Append &cA4BDFC
-		  Colors.Append &c46D6DB
-		  Colors.Append &c7AE7BF
-		  Colors.Append &c51B749
-		  Colors.Append &cFBD75B
-		  Colors.Append &cFFB878
-		  Colors.Append &cFF887C
-		  Colors.Append &cDBADFF
-		  Colors.Append &cE1E1E1
-		  'Colors.Append &c99C8E9
+		  Colors.Add &c444444
+		  Colors.Add &c5484ED
+		  Colors.Add &cA4BDFC
+		  Colors.Add &c46D6DB
+		  Colors.Add &c7AE7BF
+		  Colors.Add &c51B749
+		  Colors.Add &cFBD75B
+		  Colors.Add &cFFB878
+		  Colors.Add &cFF887C
+		  Colors.Add &cDBADFF
+		  Colors.Add &cE1E1E1
+		  'Colors.Add &c99C8E9
 		  
-		  Canvas1.Refresh
+		  cnvColor.Refresh
+		  
+		  
+		  #if TargetWindows
+		    Self.HasBackgroundColor = True
+		    Self.BackgroundColor = Color.White
+		  #endif
+		  
 		End Sub
 	#tag EndEvent
 
@@ -1305,59 +1251,59 @@ End
 		  
 		  Dim R As New CalendarRecurrence
 		  
-		  Dim Row As Integer = Popup_Repeat.ListIndex
+		  Dim Row As Integer = Popup_Repeat.SelectedRowIndex
 		  
 		  //Repeat
-		  If Popup_Repeat.RowTag(Row) = "Daily" then
+		  If Popup_Repeat.RowTagAt(Row) = "Daily" then
 		    R.RepeatType = R.TypeDaily
-		    'R.RepeatInterval = max(1, val(Popup_Interval.Text))
-		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.Text))
+		    'R.RepeatInterval = max(1, val(Popup_Interval.SelectedRowValue))
+		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.SelectedRowValue))
 		    
 		    
-		  elseif Popup_Repeat.RowTag(Row) = "Weekday" then
+		  elseif Popup_Repeat.RowTagAt(Row) = "Weekday" then
 		    R.RepeatType = R.TypeWeekDay
 		    R.RepeatInterval = R.Interval8Monday + R.Interval8Tuesday + _
 		    R.Interval8Wednesday + R.Interval8Thursday + R.Interval8Friday
 		    
-		  elseif Popup_Repeat.RowTag(Row) = "Weekly" then
+		  elseif Popup_Repeat.RowTagAt(Row) = "Weekly" then
 		    R.RepeatType = R.TypeWeekly
-		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.Text))
+		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.SelectedRowValue))
 		    
-		    If SegDays.Items(0).selected then
+		    If sgbDays.SegmentAt(0).selected then
 		      R.RepeatInterval = R.RepeatInterval + R.Interval8Monday
 		    End If
-		    If SegDays.Items(1).selected then
+		    If sgbDays.SegmentAt(1).selected then
 		      R.RepeatInterval = R.RepeatInterval + R.Interval8Tuesday
 		    End If
-		    If SegDays.Items(2).selected then
+		    If sgbDays.SegmentAt(2).selected then
 		      R.RepeatInterval = R.RepeatInterval + R.Interval8Wednesday
 		    End If
-		    If SegDays.Items(3).selected then
+		    If sgbDays.SegmentAt(3).selected then
 		      R.RepeatInterval = R.RepeatInterval + R.Interval8Thursday
 		    End If
-		    If SegDays.Items(4).selected then
+		    If sgbDays.SegmentAt(4).selected then
 		      R.RepeatInterval = R.RepeatInterval + R.Interval8Friday
 		    End If
-		    If SegDays.Items(5).selected then
+		    If sgbDays.SegmentAt(5).selected then
 		      R.RepeatInterval = R.RepeatInterval + R.Interval8Saturday
 		    End If
-		    If SegDays.Items(6).selected then
+		    If sgbDays.SegmentAt(6).selected then
 		      R.RepeatInterval = R.RepeatInterval + R.Interval8Sunday
 		    End If
 		    
-		  elseif Popup_Repeat.RowTag(Row) = "Monthly" then
+		  elseif Popup_Repeat.RowTagAt(Row) = "Monthly" then
 		    R.RepeatType = R.TypeMonthly
-		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.Text))
+		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.SelectedRowValue))
 		    
-		  elseif Popup_Repeat.RowTag(Row) = "Monthly Relative" then
+		  elseif Popup_Repeat.RowTagAt(Row) = "Monthly Relative" then
 		    R.RepeatType = R.TypeMonthlyRelative
-		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.Text))
+		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.SelectedRowValue))
 		    R.Repeat_Relative_Interval = GetRelativeDay(StartDate)
 		    R.RepeatInterval = StartDate.DayOfWeek
 		    
-		  elseif Popup_Repeat.RowTag(Row) = "Yearly" then
+		  elseif Popup_Repeat.RowTagAt(Row) = "Yearly" then
 		    R.RepeatType = R.TypeYearly
-		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.Text))
+		    R.Repeat_Recurrence_Factor = max(1, val(Popup_Interval.SelectedRowValue))
 		    
 		  End If
 		  
@@ -1371,8 +1317,9 @@ End
 		    R.EndAmount = max(1, val(txtNb.Text))
 		    
 		  Elseif radioEnd(2).Value and RecurEndDate <> Nil then
-		    R.EndDate = New Date
-		    R.EndDate.SQLDate = RecurEndDate.SQLDate
+		    'R.EndDate = New Date
+		    'R.EndDate.SQLDate = RecurEndDate.SQLDate
+		    R.EndDate = New DateTime(RecurEndDate)
 		  End If
 		  
 		  
@@ -1400,14 +1347,14 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub PopupItemByTag(Tag As String, Popup As PopupMenu)
+		Protected Sub PopupItemByTag(Tag As String, Popup As DesktopPopupMenu)
 		  
-		  If Popup.ListCount = 0 then Return
+		  If Popup.RowCount = 0 then Return
 		  Dim i As Integer
 		  
-		  For i = 0 to Popup.ListCount-1
-		    If Popup.RowTag(i) = Tag then
-		      Popup.ListIndex = i
+		  For i = 0 to Popup.RowCount-1
+		    If Popup.RowTagAt(i) = Tag then
+		      Popup.SelectedRowIndex = i
 		      Return
 		    End If
 		  Next
@@ -1415,14 +1362,14 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
-		Protected Sub PopupItemByText(Text As String, Popup As PopupMenu)
+		Protected Sub PopupItemByText(pText As String, Popup As DesktopPopupMenu)
 		  
-		  If Popup.ListCount = 0 then Return
+		  If Popup.RowCount = 0 then Return
 		  Dim i As Integer
 		  
-		  For i = 0 to Popup.ListCount-1
-		    If Popup.List(i) = Text then
-		      Popup.ListIndex = i
+		  For i = 0 to Popup.RowCount-1
+		    If Popup.RowValueAt(i) = pText then
+		      Popup.SelectedRowIndex = i
 		      Return
 		    End If
 		  Next
@@ -1449,31 +1396,31 @@ End
 		    Interval = R.RepeatInterval
 		    If Interval >= R.Interval8Saturday then
 		      Interval = Interval mod R.Interval8Saturday
-		      SegDays.Items(5).selected = True
+		      sgbDays.SegmentAt(5).selected = True
 		    End If
 		    If Interval >= R.Interval8Friday then
 		      Interval = Interval mod R.Interval8Friday
-		      SegDays.Items(4).selected = True
+		      sgbDays.SegmentAt(4).selected = True
 		    End If
 		    If Interval >= R.Interval8Thursday then
 		      Interval = Interval mod R.Interval8Thursday
-		      SegDays.Items(3).selected = True
+		      sgbDays.SegmentAt(3).selected = True
 		    End If
 		    If Interval >= R.Interval8Wednesday then
 		      Interval = Interval mod R.Interval8Wednesday
-		      SegDays.Items(2).selected = True
+		      sgbDays.SegmentAt(2).selected = True
 		    End If
 		    If Interval >= R.Interval8Tuesday then
 		      Interval = Interval mod R.Interval8Tuesday
-		      SegDays.Items(1).selected = True
+		      sgbDays.SegmentAt(1).selected = True
 		    End If
 		    If Interval >= R.Interval8Monday then
 		      Interval = Interval mod R.Interval8Monday
-		      SegDays.Items(0).selected = True
+		      sgbDays.SegmentAt(0).selected = True
 		    End If
 		    If Interval >= R.Interval8Sunday then
 		      Interval = Interval mod R.Interval8Sunday
-		      SegDays.Items(6).selected = True
+		      sgbDays.SegmentAt(6).selected = True
 		    End If
 		    
 		  Case R.TypeMonthly
@@ -1497,8 +1444,8 @@ End
 		    
 		  Elseif R.EndDate <> Nil then
 		    radioEnd(2).Value = True
-		    RecurEndDate = New Date(R.EndDate)
-		    lblEndDate.Text = RecurEndDate.LongDate
+		    RecurEndDate = New DateTime(R.EndDate)
+		    lblEndDate.Text = RecurEndDate.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None)
 		    
 		  Else
 		    radioEnd(0).Value = True
@@ -1519,12 +1466,12 @@ End
 		  
 		  
 		  If cEvent.StartDate.SQLDate = cEvent.EndDate.SQLDate then
-		    Label1.Text = cEvent.StartDate.LongDate
+		    lblDateSelection.Text = cEvent.StartDate.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None)
 		  else
-		    Label1.Text = cEvent.StartDate.AbbreviatedDate + " - " + cEvent.EndDate.AbbreviatedDate
+		    lblDateSelection.Text = cEvent.StartDate.ToString(DateTime.FormatStyles.Medium, DateTime.FormatStyles.None) + " - " + cEvent.EndDate.ToString(DateTime.FormatStyles.Medium, DateTime.FormatStyles.None)
 		    Canvas2.Enabled = False
 		  End If
-		  Label13.Text = cEvent.StartDate.LongDate
+		  lblStartsOnSelection.Text = cEvent.StartDate.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None)
 		  
 		  Chk_AllDay.Value = cEvent.DayEvent
 		  
@@ -1534,9 +1481,9 @@ End
 		  End If
 		  
 		  
-		  TextField1.Text = cEvent.Title
-		  TextField2.Text = cEvent.Location
-		  TextArea1.Text = cEvent.Description
+		  tfiTitle.Text = cEvent.Title
+		  tfiLocation.Text = cEvent.Location
+		  tarDescription.Text = cEvent.Description
 		  
 		  Title = "Edit Event"
 		  
@@ -1545,7 +1492,7 @@ End
 		  
 		  //Event color
 		  SelectColor = -1
-		  For i as Integer = 0 to UBound(Colors)
+		  For i as Integer = 0 to Colors.LastIndex
 		    If Colors(i) = cEvent.EventColor then
 		      SelectColor = i
 		      Exit for i
@@ -1553,7 +1500,7 @@ End
 		  Next
 		  If SelectColor = -1 then
 		    Colors.Append cEvent.EventColor
-		    SelectColor = UBound(Colors)
+		    SelectColor = Colors.LastIndex
 		  End If
 		  
 		  //Recurrence
@@ -1565,7 +1512,7 @@ End
 		  mOpen = True
 		  super.ShowModal
 		  OkToClose = True
-		  If Handle = 0 then
+		  If Handle = Nil then
 		    Close
 		    Return Nil
 		  else
@@ -1577,19 +1524,24 @@ End
 		    else
 		      
 		      if Chk_AllDay.Value = False then
-		        cEvent.StartDate.Hour = val(Combo_Start.Text.NthField(":", 1))
-		        cEvent.StartDate.Minute = val(Combo_Start.Text.NthField(":", 2))
-		        cEvent.EndDate.Hour = val(Combo_End.Text.NthField(":", 1))
-		        cEvent.EndDate.Minute = val(Combo_End.Text.NthField(":", 2))
+		        'cEvent.StartDate.Hour = val(Combo_Start.Text.NthField(":", 1))
+		        'cEvent.StartDate.Minute = val(Combo_Start.Text.NthField(":", 2))
+		        cEvent.StartDate = cEvent.StartDate - New DateInterval(0,0,0,cEvent.StartDate.Hour,cEvent.StartDate.Minute) + New DateInterval(0,0,0,val(Combo_Start.Text.NthField(":", 1)),val(Combo_Start.Text.NthField(":", 2)))
+		        
+		        'cEvent.EndDate.Hour = val(Combo_End.Text.NthField(":", 1))
+		        'cEvent.EndDate.Minute = val(Combo_End.Text.NthField(":", 2))
+		        cEvent.EndDate = cEvent.EndDate - New DateInterval(0,0,0,cEvent.EndDate.Hour,cEvent.EndDate.Minute) + New DateInterval(0,0,0,val(Combo_End.Text.NthField(":", 1)),val(Combo_End.Text.NthField(":", 2)))
+		        
+		        
 		      End If
 		      
-		      Dim text As String = TextField1.Text
-		      Dim location As String = TextField2.Text
-		      Dim Description As String = TextArea1.Text
+		      Dim lText As String = tfiTitle.Text
+		      Dim location As String = tfiLocation.Text
+		      Dim Description As String = tarDescription.Text
 		      
 		      cEvent.Location = location
 		      cEvent.Description = Description
-		      cEvent.Title = text
+		      cEvent.Title = lText
 		      cEvent.EventColor = Colors(SelectColor)
 		      
 		      If Chk_Repeat.value then
@@ -1604,7 +1556,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function ShowModal(StartDate As Date, EndDate As Date, Owner As CalendarView) As CalendarEvent
+		Function ShowModal(StartDate As DateTime, EndDate As DateTime, Owner As CalendarView) As CalendarEvent
 		  //This is used to create an event
 		  
 		  self.StartDate = StartDate
@@ -1615,8 +1567,8 @@ End
 		  ResizeWindow = True
 		  
 		  If StartDate.SQLDate = EndDate.SQLDate then
-		    Label1.Text = StartDate.LongDate
-		    Label13.Text = StartDate.LongDate
+		    lblDateSelection.Text = StartDate.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None)
+		    lblStartsOnSelection.Text = StartDate.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None)
 		    
 		    If StartDate.Hour <> 0 or EndDate.Hour <> 0 then
 		      Combo_Start.Text = Format(StartDate.Hour, "0#") + ":" + Format(StartDate.Minute, "0#")
@@ -1627,7 +1579,7 @@ End
 		      Combo_End.Text = "00:00"
 		    End If
 		  else
-		    Label1.Text = StartDate.AbbreviatedDate + " - " + EndDate.AbbreviatedDate
+		    lblDateSelection.Text = StartDate.ToString(DateTime.FormatStyles.Medium, DateTime.FormatStyles.None) + " - " + EndDate.ToString(DateTime.FormatStyles.Medium, DateTime.FormatStyles.None)
 		    Chk_AllDay.Value = true
 		    Chk_AllDay.Enabled = False
 		  End If
@@ -1640,48 +1592,54 @@ End
 		    Dim abc As Integer
 		    abc = (StartDate.DayOfWeek+6) mod 7
 		  #endif
-		  SegDays.Items((StartDate.DayOfWeek+6) mod 7).Selected = True
+		  sgbDays.SegmentAt((StartDate.DayOfWeek+6) mod 7).Selected = True
 		  
 		  
 		  mOpen = True
 		  super.ShowModal
 		  OkToClose = True
-		  If Handle = 0 or DeleteEvent then
+		  If Handle = Nil or DeleteEvent then
 		    Close
 		    Return Nil
 		  else
 		    
-		    Dim text As String = TextField1.Text
+		    Dim lText As String = tfiTitle.Text
 		    If StartDate = EndDate then
 		      
-		      If IsNumeric(Text.left(2)) and IsNumeric(Text.Mid(4, 2)) then
-		        StartDate.Hour = val(Text.left(2))
-		        StartDate.Minute = val(Text.Mid(4, 2))
-		        EndDate.SQLDateTime = StartDate.SQLDateTime
-		        EndDate.Hour = EndDate.Hour + 1
-		        Text = Text.mid(7)
+		      If IsNumeric(lText.left(2)) and IsNumeric(lText.Middle(4, 2)) then
+		        'StartDate.Hour = val(lText.left(2))
+		        'StartDate.Minute = val(lText.Middle(4, 2))
+		        StartDate = StartDate - New DateInterval(0,0,0,StartDate.Hour, StartDate.Minute) + New DateInterval(0,0,0,val(lText.left(2)),val(lText.Middle(4, 2)))
+		        'EndDate.SQLDateTime = StartDate.SQLDateTime
+		        'EndDate.Hour = EndDate.Hour + 1
+		        EndDate = StartDate - New DateInterval(0,0,0,StartDate.Hour, StartDate.Minute) + New DateInterval(0,0,0,1)
+		        lText = lText.Middle(7)
 		      End If
 		    End If
 		    
 		    If StartDate.SQLDate = EndDate.SQLDate and Chk_AllDay.Value then
-		      StartDate.Hour = 0
-		      StartDate.Minute = 0
-		      StartDate.Second = 0
-		      EndDate.TotalSeconds = StartDate.TotalSeconds
+		      'StartDate.Hour = 0
+		      'StartDate.Minute = 0
+		      'StartDate.Second = 0
+		      'EndDate.SecondsFrom1970 = StartDate.SecondsFrom1970
+		      StartDate = StartDate - New DateInterval(0,0,0,StartDate.Hour,StartDate.Minute,startdate.Second)
+		      EndDate = New DateTime(StartDate)
 		    elseif Chk_AllDay.Value = False then
-		      StartDate.Hour = val(Combo_Start.Text.NthField(":", 1))
-		      StartDate.Minute = val(Combo_Start.Text.NthField(":", 2))
-		      EndDate.Hour = val(Combo_End.Text.NthField(":", 1))
-		      EndDate.Minute = val(Combo_End.Text.NthField(":", 2))
+		      'StartDate.Hour = val(Combo_Start.Text.NthField(":", 1))
+		      'StartDate.Minute = val(Combo_Start.Text.NthField(":", 2))
+		      StartDate = StartDate - New DateInterval(0,0,0,StartDate.Hour, StartDate.Minute) + New DateInterval(0,0,0,val(Combo_Start.Text.NthField(":", 1)),val(Combo_Start.Text.NthField(":", 2)))
+		      'EndDate.Hour = val(Combo_End.Text.NthField(":", 1))
+		      'EndDate.Minute = val(Combo_End.Text.NthField(":", 2))
+		      EndDate = EndDate - New DateInterval(0,0,0,EndDate.Hour, EndDate.Minute) + New DateInterval(0,0,0,val(Combo_End.Text.NthField(":", 1)),val(Combo_End.Text.NthField(":", 2)))
 		    End If
 		    
 		    
-		    Dim location As String = TextField2.Text
-		    Dim Description As String = TextArea1.Text
+		    Dim location As String = tfiLocation.Text
+		    Dim Description As String = tarDescription.Text
 		    
 		    
 		    
-		    Dim C As New CalendarEvent(Text, StartDate, EndDate, Colors(SelectColor), location, Description)
+		    Dim C As New CalendarEvent(lText, StartDate, EndDate, Colors(SelectColor), location, Description)
 		    
 		    If Chk_Repeat.value then
 		      C.Recurrence = CreateRecurrence()
@@ -1695,89 +1653,89 @@ End
 
 	#tag Method, Flags = &h1
 		Protected Sub UpdateSummary()
-		  Dim text As String
+		  Dim lText As String
 		  
-		  Select case Popup_Repeat.RowTag(Popup_Repeat.ListIndex)
+		  Select case Popup_Repeat.RowTagAt(Popup_Repeat.SelectedRowIndex)
 		    
 		  Case "Daily"
 		    
-		    If Popup_Interval.Text = "1" then
+		    If Popup_Interval.SelectedRowValue = "1" then
 		      
-		      Text = "Daily"
+		      lText = "Daily"
 		      
 		    Else
 		      
-		      Text = "Every " + Popup_Interval.Text + " days"
+		      lText = "Every " + Popup_Interval.SelectedRowValue + " days"
 		    End If
 		    
 		  Case "Weekday"
 		    
-		    Text = "Weekly on weekdays"
+		    lText = "Weekly on weekdays"
 		    
 		  Case "Weekly"
 		    
 		    Dim FoundDay As Boolean
 		    
-		    If Popup_Interval.Text = "1" then
-		      text = "Weekly on "
+		    If Popup_Interval.SelectedRowValue = "1" then
+		      lText = "Weekly on "
 		      
 		    Else
-		      text = "Every " + Popup_Interval.Text + " weeks on "
+		      lText = "Every " + Popup_Interval.SelectedRowValue + " weeks on "
 		    End If
 		    
-		    If SegDays.Items(0).Selected and SegDays.Items(1).Selected and SegDays.Items(2).Selected and _
-		      SegDays.Items(3).Selected and SegDays.Items(4).Selected and SegDays.Items(5).Selected and _
-		      SegDays.Items(6).Selected then
-		      text = text + "all days"
+		    If sgbDays.SegmentAt(0).Selected and sgbDays.SegmentAt(1).Selected and sgbDays.SegmentAt(2).Selected and _
+		      sgbDays.SegmentAt(3).Selected and sgbDays.SegmentAt(4).Selected and sgbDays.SegmentAt(5).Selected and _
+		      sgbDays.SegmentAt(6).Selected then
+		      lText = lText + "all days"
 		      
-		    Elseif SegDays.Items(0).Selected and SegDays.Items(1).Selected and SegDays.Items(2).Selected and _
-		      SegDays.Items(3).Selected and SegDays.Items(4).Selected then
+		    Elseif sgbDays.SegmentAt(0).Selected and sgbDays.SegmentAt(1).Selected and sgbDays.SegmentAt(2).Selected and _
+		      sgbDays.SegmentAt(3).Selected and sgbDays.SegmentAt(4).Selected then
 		      
-		      text = text + "weekdays"
+		      lText = lText + "weekdays"
 		      
-		    elseif not SegDays.Items(0).Selected and not SegDays.Items(1).Selected and not SegDays.Items(2).Selected and _
-		      not SegDays.Items(3).Selected and not SegDays.Items(4).Selected and SegDays.Items(5).Selected and _
-		      SegDays.Items(6).Selected then
+		    elseif not sgbDays.SegmentAt(0).Selected and not sgbDays.SegmentAt(1).Selected and not sgbDays.SegmentAt(2).Selected and _
+		      not sgbDays.SegmentAt(3).Selected and not sgbDays.SegmentAt(4).Selected and sgbDays.SegmentAt(5).Selected and _
+		      sgbDays.SegmentAt(6).Selected then
 		      
-		      text = text + "week-end days"
+		      lText = lText + "week-end days"
 		      
 		    Else
 		      
-		      If SegDays.Items(0).Selected then
-		        text = text + CalendarView.DayNames(2) + ", "
+		      If sgbDays.SegmentAt(0).Selected then
+		        lText = lText + CalendarView.DayNames(2) + ", "
 		        FoundDay = True
 		      End If
-		      If SegDays.Items(1).Selected then
-		        text = text + CalendarView.DayNames(3) + ", "
+		      If sgbDays.SegmentAt(1).Selected then
+		        lText = lText + CalendarView.DayNames(3) + ", "
 		        FoundDay = True
 		      End If
-		      If SegDays.Items(2).Selected then
-		        text = text + CalendarView.DayNames(4) + ", "
+		      If sgbDays.SegmentAt(2).Selected then
+		        lText = lText + CalendarView.DayNames(4) + ", "
 		        FoundDay = True
 		      End If
-		      If SegDays.Items(3).Selected then
-		        text = text + CalendarView.DayNames(5) + ", "
+		      If sgbDays.SegmentAt(3).Selected then
+		        lText = lText + CalendarView.DayNames(5) + ", "
 		        FoundDay = True
 		      End If
-		      If SegDays.Items(4).Selected then
-		        text = text + CalendarView.DayNames(6) + ", "
+		      If sgbDays.SegmentAt(4).Selected then
+		        lText = lText + CalendarView.DayNames(6) + ", "
 		        FoundDay = True
 		      End If
-		      If SegDays.Items(5).Selected then
-		        text = text + CalendarView.DayNames(7) + ", "
+		      If sgbDays.SegmentAt(5).Selected then
+		        lText = lText + CalendarView.DayNames(7) + ", "
 		        FoundDay = True
 		      End If
-		      If SegDays.Items(6).Selected then
-		        text = text + CalendarView.DayNames(1) + ", "
+		      If sgbDays.SegmentAt(6).Selected then
+		        lText = lText + CalendarView.DayNames(1) + ", "
 		        FoundDay = True
 		      End If
 		      
 		      If not FoundDay then
-		        text = text + CalendarView.DayNames(StartDate.DayOfWeek)
+		        lText = lText + CalendarView.DayNames(StartDate.DayOfWeek)
 		      End If
 		      
-		      If text.Right(2) = ", " then
-		        text = text.Left(text.len - 2)
+		      If lText.Right(2) = ", " then
+		        lText = lText.Left(lText.Length - 2)
 		      End If
 		      
 		    End If
@@ -1786,61 +1744,61 @@ End
 		    
 		  Case "Monthly"
 		    
-		    If Popup_Interval.Text = "1" then
-		      text = "Monthly on "
+		    If Popup_Interval.SelectedRowValue = "1" then
+		      lText = "Monthly on "
 		      
 		    Else
-		      text = "Every " + Popup_Interval.Text + " months on "
+		      lText = "Every " + Popup_Interval.SelectedRowValue + " months on "
 		    End If
 		    
-		    text = text + "day " + str(StartDate.Day)
+		    lText = lText + "day " + str(StartDate.Day)
 		    
 		  Case "Monthly Relative"
 		    
-		    If Popup_Interval.Text = "1" then
-		      text = "Monthly on "
+		    If Popup_Interval.SelectedRowValue = "1" then
+		      lText = "Monthly on "
 		      
 		    Else
-		      text = "Every " + Popup_Interval.Text + " months on "
+		      lText = "Every " + Popup_Interval.SelectedRowValue + " months on "
 		    End If
 		    
 		    Select Case GetRelativeDay(StartDate)
 		    Case CalendarRecurrence.RelativeFirst
-		      text = text + "the first " + CalendarView.DayNames(StartDate.DayOfWeek)
+		      lText = lText + "the first " + CalendarView.DayNames(StartDate.DayOfWeek)
 		    Case CalendarRecurrence.RelativeSecond
-		      text = text + "the second " + CalendarView.DayNames(StartDate.DayOfWeek)
+		      lText = lText + "the second " + CalendarView.DayNames(StartDate.DayOfWeek)
 		    Case CalendarRecurrence.RelativeThird
-		      text = text + "the third " + CalendarView.DayNames(StartDate.DayOfWeek)
+		      lText = lText + "the third " + CalendarView.DayNames(StartDate.DayOfWeek)
 		    Case CalendarRecurrence.RelativeFourth
-		      text = text + "the fourth " + CalendarView.DayNames(StartDate.DayOfWeek)
+		      lText = lText + "the fourth " + CalendarView.DayNames(StartDate.DayOfWeek)
 		    Case CalendarRecurrence.RelativeLast
-		      text = text + "the last " + CalendarView.DayNames(StartDate.DayOfWeek)
+		      lText = lText + "the last " + CalendarView.DayNames(StartDate.DayOfWeek)
 		    End Select
 		    
 		    
 		  Case "Yearly"
 		    
-		    If Popup_Interval.Text = "1" then
-		      text = "Annually on "
+		    If Popup_Interval.SelectedRowValue = "1" then
+		      lText = "Annually on "
 		      
 		    Else
-		      text = "Every " + Popup_Interval.Text + " years on "
+		      lText = "Every " + Popup_Interval.SelectedRowValue + " years on "
 		    End If
 		    
-		    text = text + Trim(StartDate.LongDate.Replace(str(StartDate.Year), ""))
-		    If text.Right(1) = "," then
-		      text = text.Left(text.len - 1)
+		    lText = lText + Trim(StartDate.ToString(DateTime.FormatStyles.Short, DateTime.FormatStyles.Short).Replace(str(StartDate.Year), ""))
+		    If lText.Right(1) = "," then
+		      lText = lText.Left(lText.Length - 1)
 		    End If
 		    
 		    
 		  End Select
 		  
 		  if radioEnd(1).Value then
-		    lbl_Summary.Text = text + ", " + txtNb.Text + " times"
+		    lbl_Summary.Text = lText + ", " + txtNb.Text + " times"
 		  Elseif radioEnd(2).Value and RecurEndDate <> Nil Then
-		    lbl_Summary.Text = text + ", " + RecurEndDate.ShortDate
+		    lbl_Summary.Text = lText + ", " + RecurEndDate.ToString(DateTime.FormatStyles.Short, DateTime.FormatStyles.None)
 		  Else
-		    lbl_Summary.Text = text
+		    lbl_Summary.Text = lText
 		  End If
 		  
 		End Sub
@@ -1856,7 +1814,7 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		EndDate As Date
+		EndDate As DateTime
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1881,7 +1839,7 @@ End
 	#tag EndComputedProperty
 
 	#tag Property, Flags = &h0
-		RecurEndDate As Date
+		RecurEndDate As DateTime
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
@@ -1897,149 +1855,214 @@ End
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		StartDate As Date
+		StartDate As DateTime
 	#tag EndProperty
 
 
-	#tag Constant, Name = klocalAfter, Type = String, Dynamic = True, Default = \"After", Scope = Public
+	#tag Constant, Name = klocalAfter, Type = String, Dynamic = True, Default = \"After", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Apr\xC3\xA8s"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"After"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Nach"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalAllDay, Type = String, Dynamic = True, Default = \"All day", Scope = Public
+	#tag Constant, Name = klocalAllDay, Type = String, Dynamic = True, Default = \"All day", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Toute la journ\xC3\xA9e"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"All day"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Ganzt\xC3\xA4gig"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalCancel, Type = String, Dynamic = True, Default = \"Cancel", Scope = Public
+	#tag Constant, Name = klocalCancel, Type = String, Dynamic = True, Default = \"Cancel", Scope = Private
 		#Tag Instance, Platform = Any, Language = en, Definition  = \"Cancel"
 		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"Cancel"
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Annuler"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Abbrechen"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Cancel"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalDaily, Type = String, Dynamic = True, Default = \"Daily", Scope = Public
+	#tag Constant, Name = klocalDaily, Type = String, Dynamic = True, Default = \"Daily", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Quotidien"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Daily"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"T\xC3\xA4glich"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalDate, Type = String, Dynamic = True, Default = \"Date:", Scope = Public
+	#tag Constant, Name = klocalDate, Type = String, Dynamic = True, Default = \"Date:", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Date :"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Date :"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Datum"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalDays, Type = String, Dynamic = True, Default = \"days", Scope = Protected
+	#tag Constant, Name = klocalDays, Type = String, Dynamic = True, Default = \"days", Scope = Private
 		#Tag Instance, Platform = Any, Language = en, Definition  = \"days"
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"jours"
 		#Tag Instance, Platform = Any, Language = de, Definition  = \"Tage"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"days"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalDelete, Type = String, Dynamic = True, Default = \"Delete", Scope = Public
+	#tag Constant, Name = klocalDelete, Type = String, Dynamic = True, Default = \"Delete", Scope = Private
 		#Tag Instance, Platform = Any, Language = en, Definition  = \"Delete"
 		#Tag Instance, Platform = Any, Language = en-GB, Definition  = \"Delete"
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Supprimer"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"L\xC3\xB6schen"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalDescription, Type = String, Dynamic = True, Default = \"Description:", Scope = Protected
+	#tag Constant, Name = klocalDescription, Type = String, Dynamic = True, Default = \"Description:", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Description :"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Description"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Beschreibung"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalEnds, Type = String, Dynamic = True, Default = \"Ends:", Scope = Public
+	#tag Constant, Name = klocalEnds, Type = String, Dynamic = True, Default = \"Ends:", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Fin :"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Ends:"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Endet am:"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalLocation, Type = String, Dynamic = True, Default = \"Location:", Scope = Protected
+	#tag Constant, Name = klocalLocation, Type = String, Dynamic = True, Default = \"Location:", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Lieu :"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Location :"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Ort"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalMonthly, Type = String, Dynamic = True, Default = \"Monthly", Scope = Public
+	#tag Constant, Name = klocalMonthly, Type = String, Dynamic = True, Default = \"Monthly", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Mensuel"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Monthly"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Monatlich"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalMonthlyRelative, Type = String, Dynamic = True, Default = \"Monthly relative", Scope = Public
+	#tag Constant, Name = klocalMonthlyRelative, Type = String, Dynamic = True, Default = \"Monthly relative", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Mensuel (jour de la semaine)"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Monthly relative"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Monatlich (relativ)"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalMonths, Type = String, Dynamic = True, Default = \"months", Scope = Public
+	#tag Constant, Name = klocalMonths, Type = String, Dynamic = True, Default = \"months", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"months"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Months"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Monate"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalNever, Type = String, Dynamic = True, Default = \"Never", Scope = Public
+	#tag Constant, Name = klocalNever, Type = String, Dynamic = True, Default = \"Never", Scope = Private
 		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Never"
 		#Tag Instance, Platform = Any, Language = en, Definition  = \"Never"
-		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Never"
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Jamais"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Niemals"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalOn, Type = String, Dynamic = True, Default = \"On", Scope = Public
+	#tag Constant, Name = kLocalOccurences, Type = String, Dynamic = True, Default = \"Occurences", Scope = Private
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Occurences"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Wiederholungen"
+	#tag EndConstant
+
+	#tag Constant, Name = kLocalOK, Type = String, Dynamic = True, Default = \"OK", Scope = Private
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"OK"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"OK"
+	#tag EndConstant
+
+	#tag Constant, Name = klocalOn, Type = String, Dynamic = True, Default = \"On", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Le"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"On"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Am"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalRepeat, Type = String, Dynamic = True, Default = \"Repeat", Scope = Public
+	#tag Constant, Name = klocalRepeat, Type = String, Dynamic = True, Default = \"Repeat", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"R\xC3\xA9currence"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Repeat"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Wiederholen"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalRepeatEvery, Type = String, Dynamic = True, Default = \"Repeat every:", Scope = Public
+	#tag Constant, Name = klocalRepeatEvery, Type = String, Dynamic = True, Default = \"Repeat every:", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Fr\xC3\xA9quence :"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Repeat every :"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Wiederholen alle :"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalRepeaton, Type = String, Dynamic = True, Default = \"Repeat on:", Scope = Public
+	#tag Constant, Name = klocalRepeaton, Type = String, Dynamic = True, Default = \"Repeat on:", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"R\xC3\xA9p\xC3\xA9ter le :"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Repeat on :"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Wiederholen am"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalRepeats, Type = String, Dynamic = True, Default = \"Repeats:", Scope = Public
+	#tag Constant, Name = klocalRepeats, Type = String, Dynamic = True, Default = \"Repeats:", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"R\xC3\xA9currence :"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Repeats :"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Wiederholung"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalSummary, Type = String, Dynamic = True, Default = \"Summary:", Scope = Public
+	#tag Constant, Name = kLocalStartsOn, Type = String, Dynamic = True, Default = \"Starts on:", Scope = Private
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Starts on:"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Beginnt am:"
+	#tag EndConstant
+
+	#tag Constant, Name = klocalSummary, Type = String, Dynamic = True, Default = \"Summary:", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"R\xC3\xA9sum\xC3\xA9 :"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Summary"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Zusammenfassung"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalTitle, Type = String, Dynamic = True, Default = \"Title:", Scope = Protected
+	#tag Constant, Name = klocalTitle, Type = String, Dynamic = True, Default = \"Title:", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Titre :"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Title :"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Titel"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalTo, Type = String, Dynamic = True, Default = \"to", Scope = Public
+	#tag Constant, Name = klocalTo, Type = String, Dynamic = True, Default = \"to", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"\xC3\xA0"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"to"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"bis"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalWeekdays, Type = String, Dynamic = True, Default = \"Every weekday (Monday to Friday)", Scope = Public
+	#tag Constant, Name = klocalWeekdays, Type = String, Dynamic = True, Default = \"Every weekday (Monday to Friday)", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Jours de la semaine (lundi au vendredi)"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Every weekday (Monday to Friday)"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Werktags (Montag bis Freitag)"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalWeekly, Type = String, Dynamic = True, Default = \"Weekly", Scope = Public
+	#tag Constant, Name = klocalWeekly, Type = String, Dynamic = True, Default = \"Weekly", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Hebdomadaire"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Weekly"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"W\xC3\xB6chentlich"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalWeeks, Type = String, Dynamic = True, Default = \"weeks", Scope = Public
+	#tag Constant, Name = klocalWeeks, Type = String, Dynamic = True, Default = \"weeks", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"semaines"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"weeks"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Wochen"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalYearly, Type = String, Dynamic = True, Default = \"Yearly", Scope = Public
+	#tag Constant, Name = klocalYearly, Type = String, Dynamic = True, Default = \"Yearly", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"Annuel"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"Yearly"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"J\xC3\xA4hrlich"
 	#tag EndConstant
 
-	#tag Constant, Name = klocalYears, Type = String, Dynamic = True, Default = \"years", Scope = Public
+	#tag Constant, Name = klocalYears, Type = String, Dynamic = True, Default = \"years", Scope = Private
 		#Tag Instance, Platform = Any, Language = fr, Definition  = \"ann\xC3\xA9es"
+		#Tag Instance, Platform = Any, Language = Default, Definition  = \"years"
+		#Tag Instance, Platform = Any, Language = de, Definition  = \"Jahre"
 	#tag EndConstant
 
 
 #tag EndWindowCode
 
-#tag Events TextField1
+#tag Events tfiTitle
 	#tag Event
-		Function KeyDown(Key As String) As Boolean
+		Function KeyDown(key As String) As Boolean
 		  If key = EndOfLine or key = Chr(13) then
-		    PushButton1.Push
+		    btnOK.Press
 		    Return True
 		  End If
 		End Function
 	#tag EndEvent
 #tag EndEvents
-#tag Events PushButton1
+#tag Events btnOK
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  
 		  If Val(Combo_End.Text) > Val(Combo_Start.Text) or Chk_AllDay.Value then
 		    Hide
 		    Return
 		  elseif Val(Combo_End.Text) = Val(Combo_Start.Text) then
-		    If Val(Combo_End.Text.Mid(4)) > Val(Combo_Start.Text.Mid(4)) then
+		    If Val(Combo_End.Text.Middle(4)) > Val(Combo_Start.Text.Middle(4)) then
 		      Hide
 		      Return
 		    End If
@@ -2047,41 +2070,41 @@ End
 		  
 		  MsgBox("End Time cannot be smaller than start time")
 		  Combo_End.SetFocus
-		  Combo_End.SelStart = 0
-		  Combo_End.SelLength = Len(Combo_End.Text)
+		  Combo_End.SelectionStart = 0
+		  Combo_End.SelectionLength = Combo_End.Text.Length
 		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events Label1
+#tag Events lblDateSelection
 	#tag Event
-		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		Function MouseDown(x As Integer, y As Integer) As Boolean
 		  #Pragma Unused Y
 		  
 		  Dim w As New DatePickerWindow
-		  Dim d As Date
+		  Dim d As DateTime
 		  
 		  If StartDate.SQLDate = EndDate.SQLDate then
 		    
 		    d = w.showmodal(self.left + me.Left, self.top + me.top + me.Height, me, StartDate)
 		    
 		    If d <> Nil then
-		      StartDate.SQLDate = d.SQLDate
-		      EndDate.SQLDate = d.SQLDate
-		      Label1.Text = StartDate.LongDate
+		      StartDate = d
+		      EndDate = d
+		      lblDateSelection.Text = StartDate.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None)
 		    End If
 		    
 		  else
 		    
-		    Dim diff As Double = EndDate.TotalSeconds - StartDate.TotalSeconds
+		    Dim diff As Double = EndDate.SecondsFrom1970 - StartDate.SecondsFrom1970
 		    If X < me.Width\2 then
 		      
 		      d = w.showmodal(self.left + me.Left, self.top + me.top + me.Height, me,  StartDate)
 		      
 		      If d <> Nil then
-		        StartDate.SQLDate = d.SQLDate
-		        If StartDate.SQLDate > EndDate.SQLDate then
-		          EndDate.TotalSeconds = StartDate.TotalSeconds + diff
+		        StartDate = d
+		        If StartDate > EndDate then
+		          EndDate = StartDate + new DateInterval(0,0,0,0,0,diff)
 		        End If
 		      End If
 		      
@@ -2090,15 +2113,15 @@ End
 		      d = w.showmodal(self.left + me.Left, self.top + me.top + me.Height, me, EndDate)
 		      
 		      If d <> Nil then
-		        EndDate.SQLDate = d.SQLDate
-		        If StartDate.SQLDate > EndDate.SQLDate then
-		          StartDate.TotalSeconds = EndDate.TotalSeconds - diff
+		        EndDate = d
+		        If StartDate.SecondsFrom1970 > EndDate.SecondsFrom1970 then
+		          StartDate = EndDate - new DateInterval(0,0,0,0,0,diff)
 		        End If
 		      End If
 		      
 		    End If
 		    
-		    Label1.Text = StartDate.AbbreviatedDate + " - " + EndDate.AbbreviatedDate
+		    lblDateSelection.Text = StartDate.ToString(DateTime.FormatStyles.Short, DateTime.FormatStyles.None) + " - " + EndDate.ToString(DateTime.FormatStyles.Short, DateTime.FormatStyles.None)
 		    
 		  End If
 		  
@@ -2118,24 +2141,24 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events Canvas1
+#tag Events cnvColor
 	#tag Event
-		Sub Paint(g As Graphics, areas() As REALbasic.Rect)
+		Sub Paint(g As Graphics, areas() As Rect)
 		  #Pragma Unused areas
 		  
 		  Dim x, i As Integer
 		  
-		  For i = 0 to UBound(Colors)
+		  For i = 0 to Colors.LastIndex
 		    
-		    g.ForeColor = Colors(i)
+		    g.DrawingColor = Colors(i)
 		    
-		    g.FillRect(x, 0, me.Height,me.Height)
+		    g.FillRectangle(x, 0, me.Height,me.Height)
 		    
 		    If i = SelectColor then
-		      g.ForeColor = FrameColor
-		      g.DrawRect(x+1, 1, me.Height-2, me.Height-2)
-		      g.ForeColor = &cFFFFFF
-		      g.DrawRect(x+2, 2, me.Height-4, me.Height-4)
+		      g.DrawingColor = FrameColor
+		      g.DrawRectangle(x+1, 1, me.Height-2, me.Height-2)
+		      g.DrawingColor = &cFFFFFF
+		      g.DrawRectangle(x+2, 2, me.Height-4, me.Height-4)
 		    End If
 		    
 		    x = x + me.Height + 3
@@ -2143,7 +2166,7 @@ End
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		Function MouseDown(x As Integer, y As Integer) As Boolean
 		  #pragma Unused Y
 		  
 		  Dim xx As Integer
@@ -2156,7 +2179,7 @@ End
 		    End If
 		    xx = xx + 3 + me.Height
 		    
-		    If xx > (me.Height + 3) * UBound(Colors) then
+		    If xx > (me.Height + 3) * Colors.LastIndex then
 		      exit for i
 		    End If
 		  Next
@@ -2166,11 +2189,11 @@ End
 		End Function
 	#tag EndEvent
 #tag EndEvents
-#tag Events TextField2
+#tag Events tfiLocation
 	#tag Event
-		Function KeyDown(Key As String) As Boolean
+		Function KeyDown(key As String) As Boolean
 		  If key = EndOfLine or key = Chr(13) then
-		    PushButton1.Push
+		    btnOK.Press
 		    Return True
 		  End If
 		End Function
@@ -2178,7 +2201,7 @@ End
 #tag EndEvents
 #tag Events DeleteButton
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  DeleteEvent = True
 		  Hide()
 		End Sub
@@ -2186,7 +2209,7 @@ End
 #tag EndEvents
 #tag Events Combo_Start
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  For i as Integer = 0 to 47
 		    
 		    If i mod 2 = 0 then
@@ -2199,17 +2222,17 @@ End
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub LostFocus()
-		  If IsNumeric(me.Text.Left(2)) and IsNumeric(me.Text.Mid(4)) and me.Text.Mid(3, 1) = ":" then
+		Sub FocusLost()
+		  If IsNumeric(me.Text.Left(2)) and IsNumeric(me.Text.Middle(4)) and me.Text.Middle(3, 1) = ":" then
 		    //nothing
 		    
 		  else
 		    Dim hours As Integer
 		    Dim minutes As Integer
 		    
-		    If len(me.Text) = 4 and val(me.Text)<=2359 and val(me.Text.mid(3, 2))<60 then
+		    If len(me.Text) = 4 and val(me.Text)<=2359 and val(me.Text.Middle(3, 2))<60 then
 		      hours = val(me.Text.left(2))
-		      minutes = val(me.Text.mid(3,2))
+		      minutes = val(me.Text.Middle(3,2))
 		    else
 		      
 		      hours = min(23, val(me.Text))
@@ -2221,9 +2244,9 @@ End
 		  
 		  Dim LastText As String = Combo_End.Text
 		  
-		  Combo_End.DeleteAllRows
+		  Combo_End.RemoveAllRows
 		  Dim start As Integer
-		  If val(me.Text.Mid(4))>0 then
+		  If val(me.Text.Middle(4))>0 then
 		    start = val(me.Text)*2+2
 		  else
 		    start = val(me.Text)*2+1
@@ -2240,13 +2263,13 @@ End
 		  Combo_End.Text = LastText
 		  
 		  If Val(Combo_End.Text)<=Val(Combo_Start.Text) then
-		    Combo_End.ListIndex = 0
+		    Combo_End.SelectedRowIndex = 0
 		  End If
 		  
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Function KeyDown(Key As String) As Boolean
+		Function KeyDown(key As String) As Boolean
 		  
 		  If asc(key)<=58 and asc(key)>=(48) then
 		    //nothing
@@ -2261,9 +2284,9 @@ End
 		Sub TextChanged()
 		  Dim LastText As String = Combo_End.Text
 		  
-		  Combo_End.DeleteAllRows
+		  Combo_End.RemoveAllRows
 		  Dim start As Integer
-		  If val(me.Text.Mid(4))>0 then
+		  If val(me.Text.Middle(4))>0 then
 		    start = val(me.Text)*2+2
 		  else
 		    start = val(me.Text)*2+1
@@ -2280,17 +2303,17 @@ End
 		  Combo_End.Text = LastText
 		  
 		  If Val(Combo_End.Text)<=Val(Combo_Start.Text) then
-		    Combo_End.ListIndex = 0
+		    Combo_End.SelectedRowIndex = 0
 		  End If
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub Change()
+		Sub SelectionChanged(item As DesktopMenuItem)
 		  Dim LastText As String = Combo_End.Text
 		  
-		  Combo_End.DeleteAllRows
+		  Combo_End.RemoveAllRows
 		  Dim start As Integer
-		  If val(me.Text.Mid(4))>0 then
+		  If val(me.Text.Middle(4))>0 then
 		    start = val(me.Text)*2+2
 		  else
 		    start = val(me.Text)*2+1
@@ -2307,15 +2330,18 @@ End
 		  Combo_End.Text = LastText
 		  
 		  If Val(Combo_End.Text)<=Val(Combo_Start.Text) then
-		    Combo_End.ListIndex = 0
+		    Combo_End.SelectedRowIndex = 0
 		  End If
 		  
 		  
 		  if mOpen then
-		    StartDate.Hour = val(Combo_Start.Text.NthField(":", 1))
-		    StartDate.Minute = val(Combo_Start.Text.NthField(":", 2))
-		    EndDate.Hour = val(Combo_End.Text.NthField(":", 1))
-		    EndDate.Minute = val(Combo_End.Text.NthField(":", 2))
+		    Var lNewHour As Double = val(Combo_Start.Text.NthField(":", 1))
+		    Var lNewMin As Double = val(Combo_Start.Text.NthField(":", 2))
+		    StartDate = StartDate - new DateInterval(0,0,0,StartDate.Hour,StartDate.Minute) + new DateInterval(0,0,0,lNewHour,lNewMin)
+		    lNewHour = val(Combo_End.Text.NthField(":", 1))
+		    lNewMin = val(Combo_End.Text.NthField(":", 2))
+		    EndDate = EndDate - new DateInterval(0,0,0,EndDate.Hour,EndDate.Minute) + new DateInterval(0,0,0,lNewHour,lNewMin)
+		    
 		    If owner <> Nil then
 		      owner.Redisplay
 		    End If
@@ -2325,7 +2351,7 @@ End
 #tag EndEvents
 #tag Events Combo_End
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  For i as Integer = 0 to 47
 		    
 		    If i mod 2 = 0 then
@@ -2337,7 +2363,7 @@ End
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Function KeyDown(Key As String) As Boolean
+		Function KeyDown(key As String) As Boolean
 		  
 		  
 		  If asc(key)<=58 and asc(key)>=(48) then
@@ -2350,17 +2376,17 @@ End
 		End Function
 	#tag EndEvent
 	#tag Event
-		Sub LostFocus()
-		  If IsNumeric(me.Text.Left(2)) and IsNumeric(me.Text.Mid(4)) and me.Text.Mid(3, 1) = ":" then
+		Sub FocusLost()
+		  If IsNumeric(me.Text.Left(2)) and IsNumeric(me.Text.Middle(4)) and me.Text.Middle(3, 1) = ":" then
 		    //nothing
 		    
 		  else
 		    Dim hours As Integer
 		    Dim minutes As Integer
 		    
-		    If len(me.Text) = 4 and val(me.Text)<=2359 and val(me.Text.mid(3, 2))<60 then
+		    If len(me.Text) = 4 and val(me.Text)<=2359 and val(me.Text.Middle(3, 2))<60 then
 		      hours = val(me.Text.left(2))
-		      minutes = val(me.Text.mid(3,2))
+		      minutes = val(me.Text.Middle(3,2))
 		    else
 		      
 		      hours = min(23, val(me.Text))
@@ -2372,13 +2398,16 @@ End
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub Change()
+		Sub SelectionChanged(item As DesktopMenuItem)
 		  
 		  if mOpen then
-		    StartDate.Hour = val(Combo_Start.Text.NthField(":", 1))
-		    StartDate.Minute = val(Combo_Start.Text.NthField(":", 2))
-		    EndDate.Hour = val(Combo_End.Text.NthField(":", 1))
-		    EndDate.Minute = val(Combo_End.Text.NthField(":", 2))
+		    Var lNewHour As Double = val(Combo_Start.Text.NthField(":", 1))
+		    Var lNewMin As Double = val(Combo_Start.Text.NthField(":", 2))
+		    StartDate = StartDate - new DateInterval(0,0,0,StartDate.Hour,StartDate.Minute) + new DateInterval(0,0,0,lNewHour,lNewMin)
+		    lNewHour = val(Combo_End.Text.NthField(":", 1))
+		    lNewMin = val(Combo_End.Text.NthField(":", 2))
+		    EndDate = EndDate - new DateInterval(0,0,0,EndDate.Hour,EndDate.Minute) + new DateInterval(0,0,0,lNewHour,lNewMin)
+		    
 		    If owner <> Nil then
 		      owner.Redisplay
 		    End If
@@ -2388,7 +2417,7 @@ End
 #tag EndEvents
 #tag Events Chk_AllDay
 	#tag Event
-		Sub Action()
+		Sub ValueChanged()
 		  
 		  
 		  Combo_Start.Enabled = not me.Value
@@ -2399,7 +2428,7 @@ End
 #tag EndEvents
 #tag Events Popup_Repeat
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  
 		  
 		  //You are free to change this text
@@ -2414,31 +2443,31 @@ End
 		  me.AddRow klocalWeekdays
 		  me.AddRow klocalWeekly
 		  me.AddRow klocalMonthly
-		  me.AddRow "Monthly Relative"
+		  me.AddRow klocalMonthlyRelative
 		  me.AddRow klocalYearly
 		  
 		  
 		  //Do not change the text of the rowtags or you will need to change the code in CreateRecurrence and the Change event.
-		  me.RowTag(0) = "Daily"
-		  me.RowTag(1) = "Weekday"
-		  me.RowTag(2) = "Weekly"
-		  me.RowTag(3) = "Monthly"
-		  me.RowTag(4) = "Monthly Relative"
-		  me.RowTag(5) = "Yearly"
+		  me.RowTagAt(0) = "Daily"
+		  me.RowTagAt(1) = "Weekday"
+		  me.RowTagAt(2) = "Weekly"
+		  me.RowTagAt(3) = "Monthly"
+		  me.RowTagAt(4) = "Monthly Relative"
+		  me.RowTagAt(5) = "Yearly"
 		  
-		  me.ListIndex = 0
+		  me.SelectedRowIndex = 0
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub Change()
+		Sub SelectionChanged(item As DesktopMenuItem)
 		  Dim a As String
-		  a = me.RowTag(me.ListIndex)
-		  Select case me.RowTag(me.ListIndex)
+		  a = me.RowTagAt(me.SelectedRowIndex)
+		  Select case me.RowTagAt(me.SelectedRowIndex)
 		    
 		  Case "Daily"
 		    
 		    lblRepeatOn.Visible = False
-		    SegDays.Visible = False
+		    sgbDays.Visible = False
 		    
 		    lblRepeatInterval.Visible = True
 		    Popup_Interval.Visible = True
@@ -2449,7 +2478,7 @@ End
 		  Case "Weekday"
 		    
 		    lblRepeatOn.Visible = False
-		    SegDays.Visible = False
+		    sgbDays.Visible = False
 		    
 		    lblRepeatInterval.Visible = False
 		    Popup_Interval.Visible = False
@@ -2458,7 +2487,7 @@ End
 		  Case "Weekly"
 		    
 		    lblRepeatOn.Visible = True
-		    SegDays.Visible = True
+		    sgbDays.Visible = True
 		    
 		    lblRepeatInterval.Visible = True
 		    Popup_Interval.Visible = True
@@ -2469,7 +2498,7 @@ End
 		  Case "Monthly"
 		    
 		    lblRepeatOn.Visible = True
-		    SegDays.Visible = False
+		    sgbDays.Visible = False
 		    
 		    lblRepeatInterval.Visible = True
 		    Popup_Interval.Visible = True
@@ -2480,7 +2509,7 @@ End
 		  Case "Monthly Relative"
 		    
 		    lblRepeatOn.Visible = True
-		    SegDays.Visible = False
+		    sgbDays.Visible = False
 		    
 		    lblRepeatInterval.Visible = True
 		    Popup_Interval.Visible = True
@@ -2491,7 +2520,7 @@ End
 		  Case "Yearly"
 		    
 		    lblRepeatOn.Visible = False
-		    SegDays.Visible = False
+		    sgbDays.Visible = False
 		    
 		    lblRepeatInterval.Visible = True
 		    Popup_Interval.Visible = True
@@ -2510,23 +2539,23 @@ End
 #tag EndEvents
 #tag Events Popup_Interval
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  For i as Integer = 1 to 30
 		    me.AddRow str(i)
 		  Next
 		  
-		  me.ListIndex = 0
+		  me.SelectedRowIndex = 0
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub Change()
+		Sub SelectionChanged(item As DesktopMenuItem)
 		  UpdateSummary()
 		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events radioEnd
 	#tag Event
-		Sub Action(index as Integer)
+		Sub ValueChanged(index as Integer)
 		  #Pragma Unused index
 		  
 		  UpdateSummary()
@@ -2546,50 +2575,50 @@ End
 #tag EndEvents
 #tag Events txtNb
 	#tag Event
-		Sub TextChange()
+		Sub TextChanged()
 		  UpdateSummary()
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events SegDays
+#tag Events sgbDays
 	#tag Event
-		Sub Action(itemIndex as integer)
-		  #Pragma Unused itemIndex
-		  
-		  UpdateSummary()
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub Open()
+		Sub Opening()
 		  If CalendarView.DayNames(1) = "" then Return
 		  
 		  For i as Integer = 0 to 6
 		    
-		    me.Items(i).Title = Uppercase(CalendarView.DayNames((i+1) mod 7 + 1).Left(2))
+		    me.SegmentAt(i).Title = CalendarView.DayNames((i+1) mod 7 + 1).Left(2).Uppercase
 		    
 		  Next
 		  
 		  
 		End Sub
 	#tag EndEvent
+	#tag Event
+		Sub Pressed(segmentIndex As Integer)
+		  #Pragma Unused segmentIndex
+		  
+		  UpdateSummary()
+		End Sub
+	#tag EndEvent
 #tag EndEvents
 #tag Events lblEndDate
 	#tag Event
-		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		Function MouseDown(x As Integer, y As Integer) As Boolean
 		  #Pragma Unused X
 		  #Pragma Unused Y
 		  
 		  Dim w As New DatePickerWindow
-		  Dim d As Date
+		  Dim d As DateTime
 		  If RecurEndDate is Nil then
-		    RecurEndDate = New Date
+		    RecurEndDate = DateTime.Now
 		  End If
 		  
 		  d = w.showmodal(self.left + me.Left, self.top + me.top + me.Height, me, RecurEndDate)
 		  
 		  If d <> Nil then
 		    RecurEndDate = d
-		    me.Text = d.LongDate
+		    me.Text = d.ToString(DateTime.FormatStyles.Long, DateTime.FormatStyles.None)
 		    UpdateSummary()
 		  End If
 		  
@@ -2612,7 +2641,7 @@ End
 #tag EndEvents
 #tag Events Chk_Repeat
 	#tag Event
-		Sub Action()
+		Sub ValueChanged()
 		  'If me.Value then
 		  'self.Width = 787
 		  '
@@ -2623,9 +2652,9 @@ End
 		  
 		  
 		  if not me.value then
-		    self.animate new realbasic.rect(self.left+delta/2,self.top,self.width-delta,self.height),0.25, AKEasing.kLinearTween
+		    self.animate new Xojo.Rect(self.left+delta/2,self.top,self.width-delta,self.height),0.25, AKEasing.kLinearTween
 		  elseif ResizeWindow then
-		    self.animate new realbasic.rect(self.left-delta/2,self.top,self.width+delta,self.height),0.25,AKEasing.kLinearTween
+		    self.animate new Xojo.Rect(self.left-delta/2,self.top,self.width+delta,self.height),0.25,AKEasing.kLinearTween
 		  else
 		    self.Width = 787
 		  end
@@ -2634,7 +2663,7 @@ End
 		  
 		  'self.Left = Self.owner.TrueWindow.Left + (self.owner.TrueWindow.Width - self.Width)\2
 		  
-		  PushButton1.Left = self.Width-PushButton1.Width-20
+		  btnOK.Left = self.Width-btnOK.Width-20
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -2752,8 +2781,8 @@ End
 		Visible=true
 		Group="Background"
 		InitialValue="&hFFFFFF"
-		Type="Color"
-		EditorType="Color"
+		Type="ColorGroup"
+		EditorType="ColorGroup"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="Name"
@@ -2864,7 +2893,7 @@ End
 		Visible=true
 		Group="Appearance"
 		InitialValue=""
-		Type="MenuBar"
+		Type="DesktopMenuBar"
 		EditorType=""
 	#tag EndViewProperty
 	#tag ViewProperty

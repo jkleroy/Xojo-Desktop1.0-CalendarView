@@ -1,29 +1,27 @@
-#tag Window
-Begin Window DatePickerWindow
-   BackColor       =   &cFFFFFF00
+#tag DesktopWindow
+Begin DesktopWindow DatePickerWindow
    Backdrop        =   0
-   BalloonHelp     =   ""
-   CloseButton     =   False
+   BackgroundColor =   &cFFFFFF00
    Composite       =   False
-   Frame           =   2
+   DefaultLocation =   0
    FullScreen      =   False
-   FullScreenButton=   False
-   HasBackColor    =   False
+   HasBackgroundColor=   False
+   HasCloseButton  =   False
+   HasFullScreenButton=   False
+   HasMaximizeButton=   False
+   HasMinimizeButton=   False
    Height          =   165
    ImplicitInstance=   True
-   LiveResize      =   True
    MacProcID       =   1040
-   MaxHeight       =   32000
-   MaximizeButton  =   False
-   MaxWidth        =   32000
+   MaximumHeight   =   32000
+   MaximumWidth    =   32000
    MenuBar         =   0
    MenuBarVisible  =   True
-   MinHeight       =   64
-   MinimizeButton  =   False
-   MinWidth        =   64
-   Placement       =   0
+   MinimumHeight   =   64
+   MinimumWidth    =   64
    Resizeable      =   False
    Title           =   ""
+   Type            =   2
    Visible         =   True
    Width           =   207
    Begin Timer Timer1
@@ -34,7 +32,7 @@ Begin Window DatePickerWindow
       Period          =   100
       RunMode         =   0
       Scope           =   0
-      TabPanelIndex   =   "0"
+      TabPanelIndex   =   0
    End
    Begin CalendarView CalendarPicker
       AdaptWeeksPerMonth=   True
@@ -51,10 +49,8 @@ Begin Window DatePickerWindow
       DayStartHour    =   0.0
       DisableScroll   =   False
       DisplayWeeknumber=   False
-      DoubleBuffer    =   False
       DragEvents      =   False
       Enabled         =   True
-      EraseBackground =   False
       FilterEvents    =   False
       FirstDayOfWeek  =   ""
       ForceAM_PM      =   False
@@ -85,6 +81,7 @@ Begin Window DatePickerWindow
       Top             =   0
       Transparent     =   True
       TransparentBackground=   False
+      UseISOWeekNumber=   False
       ViewDays        =   5
       ViewType        =   0
       Visible         =   True
@@ -96,24 +93,24 @@ Begin Window DatePickerWindow
       YearMultipleEvents=   False
    End
 End
-#tag EndWindow
+#tag EndDesktopWindow
 
 #tag WindowCode
 	#tag Event
-		Sub Deactivate()
+		Sub Deactivated()
 		  hide()
 		End Sub
 	#tag EndEvent
 
 	#tag Event
-		Function MouseDown(X As Integer, Y As Integer) As Boolean
+		Function MouseDown(x As Integer, y As Integer) As Boolean
 		  #Pragma Unused x
 		  #Pragma Unused y
 		End Function
 	#tag EndEvent
 
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  #if TargetWin32
 		    Const WS_BORDER = &H800000
 		    ChangeWindowStyle( self, WS_BORDER, false )
@@ -121,12 +118,19 @@ End
 		    Const WS_CAPTION = &h00C00000
 		    ChangeWindowStyle( self, WS_CAPTION, false )
 		  #endif
+		  
+		  
+		  #if TargetWindows
+		    Self.HasBackgroundColor = True
+		    Self.BackgroundColor = Color.White
+		  #endif
+		  
 		End Sub
 	#tag EndEvent
 
 
 	#tag Method, Flags = &h21
-		Private Sub AddChildWindowOrderedAbove(wParent as Window, wChild as Window)
+		Private Sub AddChildWindowOrderedAbove(wParent as DesktopWindow, wChild as DesktopWindow)
 		  //# Adds a given window as a child window of the window.
 		  
 		  //@After the childWindow is added as a child of the window, it is maintained in relative position _
@@ -141,18 +145,18 @@ End
 		  // You'll still have to manually call the ChildWindow.Show method to 'activate' the ChildWindow.
 		  
 		  #if TargetCocoa then
-		    declare sub addChildWindow lib "Cocoa" selector "addChildWindow:ordered:" (WindowRef As Integer, ChildWindowRef as Integer, OrderingMode as Integer)
+		    declare sub addChildWindow lib "Cocoa" selector "addChildWindow:ordered:" (WindowRef As Ptr, ChildWindowRef as Ptr, OrderingMode as Integer)
 		    
 		    addChildWindow wParent.Handle, wChild.Handle, 1
 		  #else
-		    #pragma Unused wParent
+		    #Pragma Unused wParent
 		    #pragma Unused wChild
 		  #endif
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h21
-		Private Sub ChangeWindowStyle(w as Window, flag as Integer, set as Boolean)
+		Private Sub ChangeWindowStyle(w as DesktopWindow, flag as Integer, set as Boolean)
 		  #Pragma Unused w
 		  
 		  #if TargetWin32
@@ -167,14 +171,14 @@ End
 		    
 		    Const GWL_STYLE = -16
 		    
-		    Declare Function GetWindowLong Lib "user32" Alias "GetWindowLongA" (hwnd As Integer,  _
+		    Declare Function GetWindowLong Lib "user32" Alias "GetWindowLongA" (hwnd As Ptr,  _
 		    nIndex As Integer) As Integer
-		    Declare Function SetWindowLong Lib "user32" Alias "SetWindowLongA" (hwnd As Integer, _
+		    Declare Function SetWindowLong Lib "user32" Alias "SetWindowLongA" (hwnd As Ptr, _
 		    nIndex As Integer, dwNewLong As Integer) As Integer
-		    Declare Function SetWindowPos Lib "user32" (hwnd as Integer, hWndInstertAfter as Integer, _
+		    Declare Function SetWindowPos Lib "user32" (hwnd as Ptr, hWndInstertAfter as Integer, _
 		    x as Integer, y as Integer, cx as Integer, cy as Integer, flags as Integer) as Integer
 		    
-		    oldFlags = GetWindowLong(w.WinHWND, GWL_STYLE)
+		    oldFlags = GetWindowLong(w.Handle, GWL_STYLE)
 		    
 		    if not set then
 		      newFlags = BitwiseAnd( oldFlags, Bitwise.OnesComplement( flag ) )
@@ -183,8 +187,8 @@ End
 		    end
 		    
 		    
-		    styleFlags = SetWindowLong( w.WinHWND, GWL_STYLE, newFlags )
-		    styleFlags = SetWindowPos( w.WinHWND, 0, 0, 0, 0, 0, SWP_NOMOVE +_
+		    styleFlags = SetWindowLong( w.Handle, GWL_STYLE, newFlags )
+		    styleFlags = SetWindowPos( w.Handle, 0, 0, 0, 0, 0, SWP_NOMOVE +_
 		    SWP_NOSIZE + SWP_NOZORDER + SWP_FRAMECHANGED )
 		    
 		  #else
@@ -195,7 +199,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function show(left as integer, top as integer, owner As RectControl, SelectedDate As Date = Nil) As Date
+		Function show(left As integer, top As integer, owner As DesktopUIControl, SelectedDate As Date = Nil) As Date
 		  //get options
 		  If SelectedDate <> Nil then
 		    CalendarPicker.DisplayDate = SelectedDate
@@ -222,7 +226,7 @@ End
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function showmodal(left as integer, top as integer, owner As RectControl, SelectedDate As Date = Nil) As Date
+		Function showmodal(left As integer, top As integer, owner As DesktopUIControl, SelectedDate As Date = Nil) As Date
 		  //get options
 		  If SelectedDate <> Nil then
 		    CalendarPicker.DisplayDate = SelectedDate
@@ -276,20 +280,20 @@ End
 #tag EndEvents
 #tag Events CalendarPicker
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.ViewType = me.TypePicker
 		  me.MyStyle.MFirstDayOfMonthBold = False
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub DateSelected(D As Date)
+		Sub DateSelected(D As DateTime)
 		  SelectedDate = new Date(d)
 		  
 		  Hide()
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub LostFocus()
+		Sub FocusLost()
 		  Hide()
 		End Sub
 	#tag EndEvent
@@ -408,8 +412,8 @@ End
 		Visible=true
 		Group="Background"
 		InitialValue="&hFFFFFF"
-		Type="Color"
-		EditorType="Color"
+		Type="ColorGroup"
+		EditorType="ColorGroup"
 	#tag EndViewProperty
 	#tag ViewProperty
 		Name="ImplicitInstance"
@@ -528,7 +532,7 @@ End
 		Visible=true
 		Group="Appearance"
 		InitialValue=""
-		Type="MenuBar"
+		Type="DesktopMenuBar"
 		EditorType=""
 	#tag EndViewProperty
 #tag EndViewBehavior

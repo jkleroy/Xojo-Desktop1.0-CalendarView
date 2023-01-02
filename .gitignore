@@ -10,3 +10,4 @@ Debug*/Debug*\ Libs
 *.xojo_uistate
 *.obsolete*
 .DS_Store
+DebugCalendarView/vcruntime140.dll

@@ -4,7 +4,7 @@ Inherits AKTask
 	#tag Event
 		Sub Started()
 		  me.moriginalvalue = scrollbar(me.item).value
-		  me.moriginalmaximum = scrollbar(me.item).maximum
+		  me.moriginalmaximum = scrollbar(me.item).MaximumValue
 		End Sub
 	#tag EndEvent
 
@@ -13,7 +13,7 @@ Inherits AKTask
 		Sub Constructor(Target As Scrollbar)
 		  me.item = target
 		  me.value = target.value
-		  me.maximum = target.maximum
+		  me.maximum = target.MaximumValue
 		End Sub
 	#tag EndMethod
 
@@ -32,20 +32,20 @@ Inherits AKTask
 	#tag Method, Flags = &h0
 		Sub Perform(Final As Boolean = False)
 		  if final then
-		    scrollbar(me.item).maximum = self.maximum
-		    scrollbar(me.item).value = self.value
+		    scrollbar(me.item).MaximumValue = self.Maximum
+		    scrollbar(me.item).value = self.Value
 		  else
-		    dim start,delta,change as integer
+		    dim start,delta,change as Integer
 		    
-		    start = self.moriginalmaximum
+		    start = self.mOriginalMaximum
 		    delta = self.maximum - start
 		    change = AKEasing.GetEaseValue(me.easingmethod,me.runtime,start,delta,me.duration * 1000000)
-		    scrollbar(me.item).maximum = change
+		    scrollbar(me.item).MaximumValue = change
 		    
-		    start = self.moriginalvalue
+		    start = self.mOriginalValue
 		    delta = self.value - start
 		    change = AKEasing.GetEaseValue(me.easingmethod,me.runtime,start,delta,me.duration * 1000000)
-		    scrollbar(me.item).value = change
+		    DesktopScrollbar(me.item).value = change
 		  end
 		End Sub
 	#tag EndMethod
@@ -77,22 +77,6 @@ Inherits AKTask
 
 
 	#tag ViewBehavior
-		#tag ViewProperty
-			Name="ConflictResolutionAction"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="LastFrameTime"
-			Visible=false
-			Group="Behavior"
-			InitialValue="0"
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Duration"
 			Visible=false

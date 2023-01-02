@@ -2,7 +2,7 @@
 Protected Class CalendarEvent
 	#tag Method, Flags = &h0
 		Function Clone() As CalendarEvent
-		  Dim C As New CalendarEvent(Title, New Date(StartDate), New Date(EndDate), _
+		  Dim C As New CalendarEvent(Title, New DateTime(StartDate), New DateTime(EndDate), _
 		  EventColor, Location, Description, ID, Editable, Tag, Recurrence)
 		  
 		  If Recurrence <> Nil and RecurrenceParent is Nil then
@@ -21,17 +21,18 @@ Protected Class CalendarEvent
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(Title As String, StartDate As Date, EndDate As Date = Nil, EventColor As Color = &c4986E7, Location As String = "", Description As String = "", ID As String = "", Editable As Boolean = False, Tag As Variant = Nil, Recurrence As CalendarRecurrence = Nil)
+		Sub Constructor(Title As String, StartDate As DateTime, EndDate As DateTime = Nil, EventColor As Color = &c4986E7, Location As String = "", Description As String = "", ID As String = "", Editable As Boolean = False, Tag As Variant = Nil, Recurrence As CalendarRecurrence = Nil)
 		  self.Title = Title
-		  self.StartDate = New Date
-		  self.StartDate.TotalSeconds = StartDate.TotalSeconds
+		  self.StartDate = New DateTime(StartDate)
+		  //self.StartDate.SecondsFrom1970 = StartDate.SecondsFrom1970
 		  If EndDate <> Nil then
-		    self.EndDate = New Date
-		    self.EndDate.TotalSeconds = EndDate.TotalSeconds
+		    self.EndDate = New DateTime(EndDate)
+		    //self.EndDate.SecondsFrom1970 = EndDate.SecondsFrom1970
 		  else
-		    self.EndDate = New Date(StartDate)
+		    self.EndDate = New DateTime(StartDate)
 		    If StartDate.Hour <> 0 or StartDate.Minute <> 0 or StartDate.Second <> 0 then
-		      self.EndDate.Hour = self.EndDate.Hour + 1
+		      //self.EndDate.Hour = self.EndDate.Hour + 1
+		      Self.EndDate = Self.EndDate + New DateInterval(0,0,0,1)
 		    End If
 		  End If
 		  self.EventColor = EventColor
@@ -51,17 +52,17 @@ Protected Class CalendarEvent
 		  
 		  Dim Data() As String
 		  
-		  Data.Append "<td>"
+		  Data.Add "<td>"
 		  
-		  Data.Append "<div class=""ca-evp" + str(Index) + """ style=""color:" + FormatColor(EventColor) + """ " + _
+		  Data.Add "<div class=""ca-evp" + str(Index) + """ style=""color:" + FormatColor(EventColor) + """ " + _
 		  "onclick=""Xojo.triggerServerEvent('" + ControlID + "','EventClicked',[this.getAttribute['class']]); return false;"">"
-		  Data.Append "<span class=""te-t"">" + StartDate.ShortTime + "&nbsp;</span>"
-		  Data.Append "<span class=""te-s"">" + Title + "</span>"
-		  Data.Append "</div>"
+		  Data.Add "<span class=""te-t"">" + StartDate.ToString(DateTime.FormatStyles.None, DateTime.FormatStyles.Short) + "&nbsp;</span>"
+		  Data.Add "<span class=""te-s"">" + Title + "</span>"
+		  Data.Add "</div>"
 		  
-		  Data.Append "</td>"
+		  Data.Add "</td>"
 		  
-		  Return Join(Data, EndOfLine.UNIX)
+		  Return String.FromArray(Data,EndOfLine.UNIX)
 		End Function
 	#tag EndMethod
 
@@ -79,13 +80,13 @@ Protected Class CalendarEvent
 		  G = Hex(c.Green)
 		  B = Hex(c.Blue)
 		  
-		  If len(R) = 1 then
+		  If R.Length = 1 then
 		    R = "0" + R
 		  End If
-		  If len(G) = 1 then
+		  If G.Length = 1 then
 		    G = "0" + G
 		  End If
-		  If len(B) = 1 then
+		  If B.Length = 1 then
 		    B = "0" + B
 		  End If
 		  
@@ -143,17 +144,19 @@ Protected Class CalendarEvent
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub setDate(D As Date, setEndDate As Boolean = False)
+		Sub setDate(D As DateTime, setEndDate As Boolean = False)
 		  If setEndDate then
-		    EndDate.Year = D.Year
-		    EndDate.Month = D.Month
-		    EndDate.Day = D.Day
+		    'EndDate.Year = D.Year
+		    'EndDate.Month = D.Month
+		    'EndDate.Day = D.Day
+		    EndDate = New DateTime(D.Year, d.Month, d.Day)
 		    
 		  else
 		    
-		    StartDate.Year = D.Year
-		    StartDate.Month = D.Month
-		    StartDate.Day = D.Day
+		    'StartDate.Year = D.Year
+		    'StartDate.Month = D.Month
+		    'StartDate.Day = D.Day
+		    StartDate = New DateTime(D.Year, d.Month, d.Day)
 		    
 		  End If
 		End Sub
@@ -168,8 +171,10 @@ Protected Class CalendarEvent
 		  //me.SetLength(2*60*60)
 		  //</source>
 		  
-		  EndDate = New Date(StartDate)
-		  EndDate.TotalSeconds = EndDate.TotalSeconds + Value
+		  'EndDate = New Date(StartDate)
+		  'EndDate.SecondsFrom1970 = EndDate.SecondsFrom1970 + Value
+		  
+		  EndDate = StartDate + New DateInterval(0,0,0,0,0,Value)
 		End Sub
 	#tag EndMethod
 
@@ -262,16 +267,16 @@ Protected Class CalendarEvent
 		#tag Note
 			End date of the CalendarEvent.
 		#tag EndNote
-		EndDate As Date
+		EndDate As DateTime
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Note
-			Returns the EndDate.TotalSeconds.
+			Returns the EndDate.SecondsFrom1970.
 		#tag EndNote
 		#tag Getter
 			Get
-			  return EndDate.TotalSeconds
+			  return EndDate.SecondsFrom1970
 			End Get
 		#tag EndGetter
 		EndSeconds As Double
@@ -316,11 +321,11 @@ Protected Class CalendarEvent
 			Get
 			  If StartDate is Nil then Return -1
 			  If EndDate is Nil then
-			    EndDate = New Date
-			    EndDate.TotalSeconds = StartDate.TotalSeconds
+			    EndDate = New DateTime(StartDate)
+			    'EndDate.SecondsFrom1970 = StartDate.SecondsFrom1970
 			  End If
 			  
-			  return EndDate.TotalSeconds - StartDate.TotalSeconds
+			  return EndDate.SecondsFrom1970 - StartDate.SecondsFrom1970
 			End Get
 		#tag EndGetter
 		Length As Double
@@ -358,16 +363,16 @@ Protected Class CalendarEvent
 		#tag Note
 			StartDate of the CalendarEvent.
 		#tag EndNote
-		StartDate As Date
+		StartDate As DateTime
 	#tag EndProperty
 
 	#tag ComputedProperty, Flags = &h0
 		#tag Note
-			Returns the StartDate.TotalSeconds
+			Returns the StartDate.SecondsFrom1970
 		#tag EndNote
 		#tag Getter
 			Get
-			  return StartDate.TotalSeconds
+			  return StartDate.SecondsFrom1970
 			End Get
 		#tag EndGetter
 		StartSeconds As Double

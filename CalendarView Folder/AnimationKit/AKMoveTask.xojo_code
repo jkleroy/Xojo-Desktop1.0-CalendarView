@@ -9,14 +9,14 @@ Inherits AKTask
 
 
 	#tag Method, Flags = &h0
-		Sub Constructor(TheItem As RectControl)
+		Sub Constructor(TheItem As DesktopUIControl)
 		  me.item = theitem
 		  me.newrect = theitem.contentrect
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(TheItem As RectControl, TheNewRect As REALbasic.Rect, TheDuration As Double, EasingMethod As Integer = 0)
+		Sub Constructor(TheItem As DesktopUIControl, TheNewRect As Xojo.Rect, TheDuration As Double, EasingMethod As Integer = 0)
 		  me.item = theitem
 		  me.newrect = thenewrect
 		  me.duration = theduration
@@ -25,14 +25,14 @@ Inherits AKTask
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(TheItem As Window)
+		Sub Constructor(TheItem As DesktopWindow)
 		  me.item = theitem
-		  me.newrect = theitem.contentrect
+		  me.NewRect = TheItem.contentrect
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub Constructor(TheItem As Window, TheNewRect As REALbasic.Rect, TheDuration As Double, EasingMethod As Integer = 0)
+		Sub Constructor(TheItem As DesktopWindow, TheNewRect As Xojo.Rect, TheDuration As Double, EasingMethod As Integer = 0)
 		  me.item = theitem
 		  me.newrect = thenewrect
 		  me.duration = theduration
@@ -41,10 +41,10 @@ Inherits AKTask
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function Delta() As REALbasic.Rect
-		  dim r,delta as REALbasic.Rect
+		Function Delta() As Xojo.Rect
+		  dim r,delta as Xojo.Rect
 		  r = me.originalrect
-		  delta = new realbasic.rect
+		  delta = new Xojo.Rect
 		  delta.top = newrect.top - r.top
 		  delta.left = newrect.left - r.left
 		  delta.width = newrect.width - r.width
@@ -54,13 +54,13 @@ Inherits AKTask
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function GetCurrentRect() As REALbasic.Rect
-		  if item isa rectcontrol then
-		    return rectcontrol(item).contentrect
-		  elseif item isa window then
-		    return window(item.objectvalue).contentrect
+		Function GetCurrentRect() As Xojo.Rect
+		  if item isa DesktopUIControl then
+		    return DesktopUIControl(item).contentrect
+		  elseif item isa DesktopWindow then
+		    return DesktopWindow(item.objectvalue).contentrect
 		  else
-		    // Somehow, item has become something that is not a Window or RectControl
+		    // Somehow, item has become something that is not a Window or DesktopUIControl
 		    break
 		  end
 		End Function
@@ -73,7 +73,7 @@ Inherits AKTask
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Function OriginalRect() As REALbasic.Rect
+		Function OriginalRect() As Xojo.Rect
 		  return me.pstartrect
 		End Function
 	#tag EndMethod
@@ -83,16 +83,16 @@ Inherits AKTask
 		  if final then
 		    me.setrectnow me.newrect
 		  else
-		    dim start,delta,change as REALbasic.Rect
+		    dim start,delta,change as Xojo.Rect
 		    start = me.originalrect
 		    delta = me.delta
 		    
 		    // new code
-		    change = new realbasic.rect
+		    change = new Xojo.Rect
 		    change.top = floor(AKEasing.GetEaseValue(me.easingmethod,me.runtime,start.top,delta.top,me.duration * 1000000))
 		    change.left = floor(AKEasing.GetEaseValue(me.easingmethod,me.runtime,start.left,delta.left,me.duration * 1000000))
-		    change.width = ceil(AKEasing.GetEaseValue(me.easingmethod,me.runtime,start.width,delta.width,me.duration * 1000000))
-		    change.height = ceil(AKEasing.GetEaseValue(me.easingmethod,me.runtime,start.height,delta.height,me.duration * 1000000))
+		    change.width = Ceiling(AKEasing.GetEaseValue(me.easingmethod,me.runtime,start.width,delta.width,me.duration * 1000000))
+		    change.height = Ceiling(AKEasing.GetEaseValue(me.easingmethod,me.runtime,start.height,delta.height,me.duration * 1000000))
 		    
 		    me.setrectnow change
 		  end
@@ -100,13 +100,13 @@ Inherits AKTask
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub SetRectNow(NewRect As REALbasic.Rect)
-		  if item isa rectcontrol then
-		    rectcontrol(item).contentrect = newrect
+		Sub SetRectNow(NewRect As Xojo.Rect)
+		  if item isa DesktopUIControl then
+		    DesktopUIControl(item).contentrect = newrect
 		  elseif item isa window then
-		    window(item.objectvalue).contentrect = newrect
+		    DesktopWindow(item.objectvalue).contentrect = newrect
 		  else
-		    // Somehow, item has become something that is not a Window or RectControl
+		    // Somehow, item has become something that is not a Window or DesktopUIControl
 		    break
 		  end
 		End Sub
@@ -122,31 +122,15 @@ Inherits AKTask
 	#tag EndProperty
 
 	#tag Property, Flags = &h0
-		NewRect As REALbasic.Rect
+		NewRect As Xojo.Rect
 	#tag EndProperty
 
 	#tag Property, Flags = &h21
-		Private pStartRect As REALbasic.Rect
+		Private pStartRect As Xojo.Rect
 	#tag EndProperty
 
 
 	#tag ViewBehavior
-		#tag ViewProperty
-			Name="ConflictResolutionAction"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="LastFrameTime"
-			Visible=false
-			Group="Behavior"
-			InitialValue="0"
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Duration"
 			Visible=false

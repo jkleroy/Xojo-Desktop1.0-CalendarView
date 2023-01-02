@@ -1,29 +1,27 @@
-#tag Window
-Begin Window MainWindow
-   BackColor       =   &cFFFFFF00
+#tag DesktopWindow
+Begin DesktopWindow MainWindow
    Backdrop        =   0
-   BalloonHelp     =   ""
-   CloseButton     =   True
+   BackgroundColor =   &cFFFFFF00
    Composite       =   False
-   Frame           =   0
+   DefaultLocation =   0
    FullScreen      =   False
-   FullScreenButton=   True
-   HasBackColor    =   False
+   HasBackgroundColor=   False
+   HasCloseButton  =   True
+   HasFullScreenButton=   True
+   HasMaximizeButton=   True
+   HasMinimizeButton=   True
    Height          =   661
    ImplicitInstance=   True
-   LiveResize      =   True
    MacProcID       =   0
-   MaxHeight       =   32000
-   MaximizeButton  =   True
-   MaxWidth        =   32000
+   MaximumHeight   =   32000
+   MaximumWidth    =   32000
    MenuBar         =   2025867263
    MenuBarVisible  =   True
-   MinHeight       =   64
-   MinimizeButton  =   True
-   MinWidth        =   64
-   Placement       =   0
+   MinimumHeight   =   64
+   MinimumWidth    =   64
    Resizeable      =   True
    Title           =   "CalendarView Demo"
+   Type            =   0
    Visible         =   True
    Width           =   1035
    Begin CalendarView CalendarView1
@@ -41,7 +39,6 @@ Begin Window MainWindow
       DayStartHour    =   8.0
       DisableScroll   =   False
       DisplayWeeknumber=   False
-      DoubleBuffer    =   False
       DragEvents      =   False
       Enabled         =   True
       FilterEvents    =   False
@@ -74,6 +71,7 @@ Begin Window MainWindow
       Top             =   108
       Transparent     =   True
       TransparentBackground=   False
+      UseISOWeekNumber=   False
       ViewDays        =   5
       ViewType        =   2
       Visible         =   True
@@ -84,7 +82,7 @@ Begin Window MainWindow
       YearMonthsAmount=   0
       YearMultipleEvents=   False
    End
-   Begin PushButton PushButton1
+   Begin DesktopButton PushButton1
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
@@ -116,7 +114,7 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   83
    End
-   Begin PushButton PushButton2
+   Begin DesktopButton PushButton2
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
@@ -148,7 +146,7 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   83
    End
-   Begin PushButton PushButton3
+   Begin DesktopButton PushButton3
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
@@ -180,7 +178,7 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   83
    End
-   Begin PushButton PushButton4
+   Begin DesktopButton PushButton4
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
@@ -212,7 +210,7 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   33
    End
-   Begin PushButton PushButton5
+   Begin DesktopButton PushButton5
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
@@ -244,7 +242,7 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   33
    End
-   Begin PushButton PushButton6
+   Begin DesktopButton PushButton6
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
@@ -276,7 +274,7 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   68
    End
-   Begin Listbox Listbox1
+   Begin DesktopListBox Listbox1
       AllowAutoDeactivate=   True
       AllowAutoHideScrollbars=   True
       AllowExpandableRows=   False
@@ -287,16 +285,13 @@ Begin Window MainWindow
       Bold            =   False
       ColumnCount     =   1
       ColumnWidths    =   ""
-      DataField       =   ""
-      DataSource      =   ""
       DefaultRowHeight=   -1
       DropIndicatorVisible=   False
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
       FontUnit        =   0
-      GridLinesHorizontalStyle=   0
-      GridLinesVerticalStyle=   0
+      GridLineStyle   =   0
       HasBorder       =   True
       HasHeader       =   False
       HasHorizontalScrollbar=   False
@@ -328,11 +323,9 @@ Begin Window MainWindow
       _ScrollOffset   =   0
       _ScrollWidth    =   -1
    End
-   Begin PopupMenu PopupMenu1
+   Begin DesktopPopupMenu PopupMenu1
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -360,11 +353,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   124
    End
-   Begin Label Label1
+   Begin DesktopLabel Label1
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -385,22 +376,20 @@ Begin Window MainWindow
       TabIndex        =   9
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "FirstDayOfWeek:"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   501
       Transparent     =   False
       Underline       =   False
-      Value           =   "FirstDayOfWeek:"
       Visible         =   True
       Width           =   111
    End
-   Begin CheckBox Chk_AdaptWeeks
+   Begin DesktopCheckBox Chk_AdaptWeeks
       AllowAutoDeactivate=   True
       Bold            =   False
       Caption         =   "AdaptWeeksPerMonth"
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -428,12 +417,10 @@ Begin Window MainWindow
       VisualState     =   0
       Width           =   201
    End
-   Begin CheckBox CheckBox2
+   Begin DesktopCheckBox CheckBox2
       AllowAutoDeactivate=   True
       Bold            =   False
       Caption         =   "Border"
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -461,7 +448,7 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   105
    End
-   Begin PushButton PushButton7
+   Begin DesktopButton PushButton7
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
@@ -493,11 +480,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   90
    End
-   Begin PopupMenu PopupStyle
+   Begin DesktopPopupMenu PopupStyle
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -525,11 +510,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   118
    End
-   Begin Label Label2
+   Begin DesktopLabel Label2
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -550,17 +533,17 @@ Begin Window MainWindow
       TabIndex        =   15
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "Style:"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   499
       Transparent     =   False
       Underline       =   False
-      Value           =   "Style:"
       Visible         =   True
       Width           =   53
    End
-   Begin PushButton PushButton8
+   Begin DesktopButton PushButton8
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
@@ -592,12 +575,10 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   80
    End
-   Begin CheckBox Chk_DragEvents
+   Begin DesktopCheckBox Chk_DragEvents
       AllowAutoDeactivate=   True
       Bold            =   False
       Caption         =   "DragEvents"
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -625,15 +606,13 @@ Begin Window MainWindow
       VisualState     =   0
       Width           =   124
    End
-   Begin TextField TextField1
+   Begin DesktopTextField TextField1
       AllowAutoDeactivate=   True
       AllowFocusRing  =   True
       AllowSpellChecking=   False
       AllowTabs       =   False
       BackgroundColor =   &cFFFFFF00
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -668,11 +647,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   58
    End
-   Begin Label Label3
+   Begin DesktopLabel Label3
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -693,17 +670,17 @@ Begin Window MainWindow
       TabIndex        =   19
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "minHourHeight:"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   "For Week view only"
       Top             =   580
       Transparent     =   True
       Underline       =   False
-      Value           =   "minHourHeight:"
       Visible         =   True
       Width           =   115
    End
-   Begin PushButton PushButton9
+   Begin DesktopButton PushButton9
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
@@ -735,7 +712,7 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   90
    End
-   Begin PushButton PushButton10
+   Begin DesktopButton PushButton10
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
@@ -767,11 +744,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   80
    End
-   Begin Label Label4
+   Begin DesktopLabel Label4
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -792,13 +767,13 @@ Begin Window MainWindow
       TabIndex        =   22
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "Colors:"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   48
       Transparent     =   False
       Underline       =   False
-      Value           =   "Colors:"
       Visible         =   True
       Width           =   100
    End
@@ -809,7 +784,6 @@ Begin Window MainWindow
       AllowTabs       =   False
       Backdrop        =   0
       Checkbox        =   False
-      DoubleBuffer    =   False
       Enabled         =   True
       Height          =   20
       Index           =   -2147483648
@@ -832,11 +806,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   20
    End
-   Begin Label Label5
+   Begin DesktopLabel Label5
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -857,13 +829,13 @@ Begin Window MainWindow
       TabIndex        =   24
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "Border"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   76
       Transparent     =   False
       Underline       =   False
-      Value           =   "Border"
       Visible         =   True
       Width           =   48
    End
@@ -874,7 +846,6 @@ Begin Window MainWindow
       AllowTabs       =   False
       Backdrop        =   0
       Checkbox        =   False
-      DoubleBuffer    =   False
       Enabled         =   True
       Height          =   20
       Index           =   -2147483648
@@ -897,11 +868,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   20
    End
-   Begin Label Label6
+   Begin DesktopLabel Label6
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -922,13 +891,13 @@ Begin Window MainWindow
       TabIndex        =   26
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "DayName"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   76
       Transparent     =   False
       Underline       =   False
-      Value           =   "DayName"
       Visible         =   True
       Width           =   57
    End
@@ -939,7 +908,6 @@ Begin Window MainWindow
       AllowTabs       =   False
       Backdrop        =   0
       Checkbox        =   False
-      DoubleBuffer    =   False
       Enabled         =   True
       Height          =   20
       Index           =   -2147483648
@@ -962,11 +930,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   20
    End
-   Begin Label Label7
+   Begin DesktopLabel Label7
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -987,13 +953,13 @@ Begin Window MainWindow
       TabIndex        =   28
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "DayNumberActive"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   99
       Transparent     =   False
       Underline       =   False
-      Value           =   "DayNumberActive"
       Visible         =   True
       Width           =   127
    End
@@ -1004,7 +970,6 @@ Begin Window MainWindow
       AllowTabs       =   False
       Backdrop        =   0
       Checkbox        =   False
-      DoubleBuffer    =   False
       Enabled         =   True
       Height          =   20
       Index           =   -2147483648
@@ -1027,11 +992,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   20
    End
-   Begin Label Label8
+   Begin DesktopLabel Label8
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -1052,13 +1015,13 @@ Begin Window MainWindow
       TabIndex        =   30
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "DayNumber"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   122
       Transparent     =   False
       Underline       =   False
-      Value           =   "DayNumber"
       Visible         =   True
       Width           =   100
    End
@@ -1069,7 +1032,6 @@ Begin Window MainWindow
       AllowTabs       =   False
       Backdrop        =   0
       Checkbox        =   False
-      DoubleBuffer    =   False
       Enabled         =   True
       Height          =   20
       Index           =   -2147483648
@@ -1092,11 +1054,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   20
    End
-   Begin Label Label9
+   Begin DesktopLabel Label9
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -1117,13 +1077,13 @@ Begin Window MainWindow
       TabIndex        =   32
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "Header"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   144
       Transparent     =   False
       Underline       =   False
-      Value           =   "Header"
       Visible         =   True
       Width           =   48
    End
@@ -1134,7 +1094,6 @@ Begin Window MainWindow
       AllowTabs       =   False
       Backdrop        =   0
       Checkbox        =   False
-      DoubleBuffer    =   False
       Enabled         =   True
       Height          =   20
       Index           =   -2147483648
@@ -1157,11 +1116,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   20
    End
-   Begin Label Label10
+   Begin DesktopLabel Label10
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -1182,13 +1139,13 @@ Begin Window MainWindow
       TabIndex        =   34
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "Line"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   144
       Transparent     =   False
       Underline       =   False
-      Value           =   "Line"
       Visible         =   True
       Width           =   48
    End
@@ -1199,7 +1156,6 @@ Begin Window MainWindow
       AllowTabs       =   False
       Backdrop        =   0
       Checkbox        =   False
-      DoubleBuffer    =   False
       Enabled         =   True
       Height          =   20
       Index           =   -2147483648
@@ -1222,11 +1178,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   20
    End
-   Begin Label Label11
+   Begin DesktopLabel Label11
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -1247,13 +1201,13 @@ Begin Window MainWindow
       TabIndex        =   36
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "Selected"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   167
       Transparent     =   False
       Underline       =   False
-      Value           =   "Selected"
       Visible         =   True
       Width           =   56
    End
@@ -1264,7 +1218,6 @@ Begin Window MainWindow
       AllowTabs       =   False
       Backdrop        =   0
       Checkbox        =   False
-      DoubleBuffer    =   False
       Enabled         =   True
       Height          =   20
       Index           =   -2147483648
@@ -1287,11 +1240,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   20
    End
-   Begin Label Label12
+   Begin DesktopLabel Label12
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -1312,13 +1263,13 @@ Begin Window MainWindow
       TabIndex        =   38
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "Title"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   191
       Transparent     =   False
       Underline       =   False
-      Value           =   "Title"
       Visible         =   True
       Width           =   56
    End
@@ -1329,7 +1280,6 @@ Begin Window MainWindow
       AllowTabs       =   False
       Backdrop        =   0
       Checkbox        =   False
-      DoubleBuffer    =   False
       Enabled         =   True
       Height          =   20
       Index           =   -2147483648
@@ -1352,11 +1302,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   20
    End
-   Begin Label Label13
+   Begin DesktopLabel Label13
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -1377,13 +1325,13 @@ Begin Window MainWindow
       TabIndex        =   40
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "Weekday"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   214
       Transparent     =   False
       Underline       =   False
-      Value           =   "Weekday"
       Visible         =   True
       Width           =   100
    End
@@ -1394,7 +1342,6 @@ Begin Window MainWindow
       AllowTabs       =   False
       Backdrop        =   0
       Checkbox        =   False
-      DoubleBuffer    =   False
       Enabled         =   True
       Height          =   20
       Index           =   -2147483648
@@ -1417,11 +1364,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   20
    End
-   Begin Label Label14
+   Begin DesktopLabel Label14
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -1442,13 +1387,13 @@ Begin Window MainWindow
       TabIndex        =   42
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "Weekend"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   236
       Transparent     =   False
       Underline       =   False
-      Value           =   "Weekend"
       Visible         =   True
       Width           =   100
    End
@@ -1459,7 +1404,6 @@ Begin Window MainWindow
       AllowTabs       =   False
       Backdrop        =   0
       Checkbox        =   False
-      DoubleBuffer    =   False
       Enabled         =   True
       Height          =   20
       Index           =   -2147483648
@@ -1482,11 +1426,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   20
    End
-   Begin Label Label15
+   Begin DesktopLabel Label15
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -1507,13 +1449,13 @@ Begin Window MainWindow
       TabIndex        =   44
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "DefaultColor"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   258
       Transparent     =   False
       Underline       =   False
-      Value           =   "DefaultColor"
       Visible         =   True
       Width           =   100
    End
@@ -1524,7 +1466,6 @@ Begin Window MainWindow
       AllowTabs       =   False
       Backdrop        =   0
       Checkbox        =   False
-      DoubleBuffer    =   False
       Enabled         =   True
       Height          =   20
       Index           =   -2147483648
@@ -1547,11 +1488,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   20
    End
-   Begin Label Label16
+   Begin DesktopLabel Label16
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -1572,13 +1511,13 @@ Begin Window MainWindow
       TabIndex        =   46
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "Today"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   191
       Transparent     =   False
       Underline       =   False
-      Value           =   "Today"
       Visible         =   True
       Width           =   56
    End
@@ -1589,7 +1528,6 @@ Begin Window MainWindow
       AllowTabs       =   False
       Backdrop        =   0
       Checkbox        =   False
-      DoubleBuffer    =   False
       Enabled         =   True
       Height          =   20
       Index           =   -2147483648
@@ -1612,11 +1550,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   20
    End
-   Begin Label Label17
+   Begin DesktopLabel Label17
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -1637,22 +1573,20 @@ Begin Window MainWindow
       TabIndex        =   48
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "YearBackground"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   280
       Transparent     =   False
       Underline       =   False
-      Value           =   "YearBackground"
       Visible         =   True
       Width           =   127
    End
-   Begin CheckBox Chk_ColorWeekend
+   Begin DesktopCheckBox Chk_ColorWeekend
       AllowAutoDeactivate=   True
       Bold            =   False
       Caption         =   "ColorWeekend"
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -1680,15 +1614,13 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   136
    End
-   Begin TextField TextField2
+   Begin DesktopTextField TextField2
       AllowAutoDeactivate=   True
       AllowFocusRing  =   True
       AllowSpellChecking=   False
       AllowTabs       =   False
       BackgroundColor =   &cFFFFFF00
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -1723,11 +1655,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   58
    End
-   Begin Label Label18
+   Begin DesktopLabel Label18
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -1748,25 +1678,23 @@ Begin Window MainWindow
       TabIndex        =   51
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "minVerticalGap:"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   "For year view only"
       Top             =   604
       Transparent     =   True
       Underline       =   False
-      Value           =   "minVerticalGap:"
       Visible         =   True
       Width           =   115
    End
-   Begin TextField TextField3
+   Begin DesktopTextField TextField3
       AllowAutoDeactivate=   True
       AllowFocusRing  =   True
       AllowSpellChecking=   False
       AllowTabs       =   False
       BackgroundColor =   &cFFFFFF00
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -1801,11 +1729,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   58
    End
-   Begin Label Label19
+   Begin DesktopLabel Label19
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -1826,22 +1752,20 @@ Begin Window MainWindow
       TabIndex        =   53
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "minHorizontalGap:"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   "For year view only"
       Top             =   627
       Transparent     =   True
       Underline       =   False
-      Value           =   "minHorizontalGap:"
       Visible         =   True
       Width           =   136
    End
-   Begin CheckBox Chk_HeatMap
+   Begin DesktopCheckBox Chk_HeatMap
       AllowAutoDeactivate=   True
       Bold            =   False
       Caption         =   "YearHeatMap"
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -1869,12 +1793,10 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   145
    End
-   Begin CheckBox Chk_WeekNumber
+   Begin DesktopCheckBox Chk_WeekNumber
       AllowAutoDeactivate=   True
       Bold            =   False
       Caption         =   "DisplayWeekNumber"
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -1902,12 +1824,10 @@ Begin Window MainWindow
       VisualState     =   0
       Width           =   201
    End
-   Begin CheckBox Chk_CreateWithDrag
+   Begin DesktopCheckBox Chk_CreateWithDrag
       AllowAutoDeactivate=   True
       Bold            =   False
       Caption         =   "CreateWithDrag"
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -1935,7 +1855,7 @@ Begin Window MainWindow
       VisualState     =   0
       Width           =   147
    End
-   Begin PushButton ExportDBButton
+   Begin DesktopButton ExportDBButton
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
@@ -1967,7 +1887,7 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   143
    End
-   Begin PushButton ImportDBButton
+   Begin DesktopButton ImportDBButton
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
@@ -1999,7 +1919,7 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   143
    End
-   Begin PushButton EmptyDBButton
+   Begin DesktopButton EmptyDBButton
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
@@ -2031,12 +1951,10 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   143
    End
-   Begin CheckBox Chk_DragEvents1
+   Begin DesktopCheckBox Chk_DragEvents1
       AllowAutoDeactivate=   True
       Bold            =   False
       Caption         =   "ForceAM_PM"
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -2064,15 +1982,13 @@ Begin Window MainWindow
       VisualState     =   0
       Width           =   145
    End
-   Begin TextField TextField4
+   Begin DesktopTextField TextField4
       AllowAutoDeactivate=   True
       AllowFocusRing  =   True
       AllowSpellChecking=   False
       AllowTabs       =   False
       BackgroundColor =   &cFFFFFF00
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -2107,11 +2023,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   58
    End
-   Begin Label Label20
+   Begin DesktopLabel Label20
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -2132,25 +2046,23 @@ Begin Window MainWindow
       TabIndex        =   63
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "DayEndHour:"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   "For year view only"
       Top             =   627
       Transparent     =   True
       Underline       =   False
-      Value           =   "DayEndHour:"
       Visible         =   True
       Width           =   115
    End
-   Begin TextField TextField5
+   Begin DesktopTextField TextField5
       AllowAutoDeactivate=   True
       AllowFocusRing  =   True
       AllowSpellChecking=   False
       AllowTabs       =   False
       BackgroundColor =   &cFFFFFF00
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -2185,11 +2097,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   58
    End
-   Begin Label Label21
+   Begin DesktopLabel Label21
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -2210,13 +2120,13 @@ Begin Window MainWindow
       TabIndex        =   65
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "DayStartHour:"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   "For year view only"
       Top             =   604
       Transparent     =   True
       Underline       =   False
-      Value           =   "DayStartHour:"
       Visible         =   True
       Width           =   115
    End
@@ -2235,7 +2145,6 @@ Begin Window MainWindow
       DayStartHour    =   0.0
       DisableScroll   =   False
       DisplayWeeknumber=   False
-      DoubleBuffer    =   False
       DragEvents      =   False
       Enabled         =   True
       FilterEvents    =   False
@@ -2268,6 +2177,7 @@ Begin Window MainWindow
       Top             =   496
       Transparent     =   True
       TransparentBackground=   False
+      UseISOWeekNumber=   False
       ViewDays        =   5
       ViewType        =   0
       Visible         =   True
@@ -2278,12 +2188,10 @@ Begin Window MainWindow
       YearMonthsAmount=   0
       YearMultipleEvents=   False
    End
-   Begin CheckBox Chk_Animate
+   Begin DesktopCheckBox Chk_Animate
       AllowAutoDeactivate=   True
       Bold            =   False
       Caption         =   "Animate"
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -2311,11 +2219,9 @@ Begin Window MainWindow
       VisualState     =   0
       Width           =   124
    End
-   Begin Label Label22
+   Begin DesktopLabel Label22
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -2336,13 +2242,13 @@ Begin Window MainWindow
       TabIndex        =   68
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "Time"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   167
       Transparent     =   False
       Underline       =   False
-      Value           =   "Time"
       Visible         =   True
       Width           =   56
    End
@@ -2353,7 +2259,6 @@ Begin Window MainWindow
       AllowTabs       =   False
       Backdrop        =   0
       Checkbox        =   False
-      DoubleBuffer    =   False
       Enabled         =   True
       Height          =   20
       Index           =   -2147483648
@@ -2376,7 +2281,7 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   20
    End
-   Begin PushButton PushButton11
+   Begin DesktopButton PushButton11
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
@@ -2408,12 +2313,10 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   83
    End
-   Begin CheckBox Chk_Scroll
+   Begin DesktopCheckBox Chk_Scroll
       AllowAutoDeactivate=   True
       Bold            =   False
       Caption         =   "Disable Scroll"
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -2441,7 +2344,7 @@ Begin Window MainWindow
       VisualState     =   0
       Width           =   124
    End
-   Begin PushButton PushButton12
+   Begin DesktopButton PushButton12
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
@@ -2473,7 +2376,7 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   143
    End
-   Begin PushButton PushButton13
+   Begin DesktopButton PushButton13
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
@@ -2505,12 +2408,10 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   143
    End
-   Begin CheckBox Chk_HeatMap1
+   Begin DesktopCheckBox Chk_HeatMap1
       AllowAutoDeactivate=   True
       Bold            =   False
       Caption         =   "YearMultipleEvents"
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -2538,15 +2439,13 @@ Begin Window MainWindow
       VisualState     =   0
       Width           =   145
    End
-   Begin TextField txtSearch
+   Begin DesktopTextField txtSearch
       AllowAutoDeactivate=   True
       AllowFocusRing  =   True
       AllowSpellChecking=   False
       AllowTabs       =   False
       BackgroundColor =   &cFFFFFF00
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -2581,7 +2480,7 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   152
    End
-   Begin PushButton pbSearch
+   Begin DesktopButton pbSearch
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
@@ -2613,11 +2512,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   80
    End
-   Begin Label Label23
+   Begin DesktopLabel Label23
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -2638,22 +2535,20 @@ Begin Window MainWindow
       TabIndex        =   78
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "Type the name of an event:"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   47
       Transparent     =   False
       Underline       =   False
-      Value           =   "Type the name of an event:"
       Visible         =   True
       Width           =   197
    End
-   Begin CheckBox Chk_Filter
+   Begin DesktopCheckBox Chk_Filter
       AllowAutoDeactivate=   True
       Bold            =   False
       Caption         =   "Filter"
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   0.0
@@ -3011,11 +2906,9 @@ Begin Window MainWindow
       Visible         =   True
       Width           =   20
    End
-   Begin Label Label25
+   Begin DesktopLabel Label25
       AllowAutoDeactivate=   True
       Bold            =   False
-      DataField       =   ""
-      DataSource      =   ""
       Enabled         =   True
       FontName        =   "System"
       FontSize        =   12.0
@@ -3036,17 +2929,17 @@ Begin Window MainWindow
       TabIndex        =   92
       TabPanelIndex   =   0
       TabStop         =   True
+      Text            =   "Untitled"
       TextAlignment   =   0
       TextColor       =   &c00000000
       Tooltip         =   ""
       Top             =   411
       Transparent     =   False
       Underline       =   False
-      Value           =   "Untitled"
       Visible         =   True
       Width           =   172
    End
-   Begin PushButton PushButton14
+   Begin DesktopButton PushButton14
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
@@ -3102,17 +2995,17 @@ Begin Window MainWindow
       Width           =   104
    End
 End
-#tag EndWindow
+#tag EndDesktopWindow
 
 #tag WindowCode
 	#tag Event
-		Sub Close()
+		Sub Closing()
 		  Quit(0)
 		End Sub
 	#tag EndEvent
 
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  mOpen = True
 		End Sub
 	#tag EndEvent
@@ -3166,21 +3059,21 @@ End
 
 #tag Events CalendarView1
 	#tag Event
-		Sub NewEvent(StartDate As Date, EndDate As Date)
+		Sub NewEvent(StartDate As DateTime, EndDate As DateTime)
 		  //This code apart from the Listbox line, must be copy pasted in your app.
 		  
 		  Dim cEvent As CalendarEvent = EditEvent.ShowModal(StartDate, EndDate, me)
 		  
 		  If cEvent <> Nil then
-		    Listbox1.InsertRow(0, "NewEvent(" + cEvent.Title + " - " + cEvent.StartDate.SQLDate + ")" )
+		    Listbox1.AddRowAt(0, "NewEvent(" + cEvent.Title + " - " + cEvent.StartDate.SQLDate + ")" )
 		    me.AddEvent(cEvent)
 		    me.Refresh(False)
 		  End If
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub ViewChange(StartDate As Date, EndDate As Date)
-		  Listbox1.InsertRow(0, "ViewChange(" + StartDate.SQLDate + " - " + EndDate.SQLDate + ")" )
+		Sub ViewChange(StartDate As DateTime, EndDate As DateTime)
+		  Listbox1.AddRowAt(0, "ViewChange(" + StartDate.SQLDate + " - " + EndDate.SQLDate + ")" )
 		  
 		  If me.ViewType = me.TypeYear then
 		    'me.YearMonthsAmount = 3
@@ -3216,12 +3109,12 @@ End
 	#tag Event
 		Sub DragEvent(cEvent As CalendarEvent)
 		  If not System.MouseDown then
-		    Listbox1.InsertRow(0, "DragEvent(" + cEvent.Title + " - " + cEvent.StartDate.SQLDateTime + ")" )
+		    Listbox1.AddRowAt(0, "DragEvent(" + cEvent.Title + " - " + cEvent.StartDate.SQLDateTime + ")" )
 		  End If
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Function ConstructContextualMenu(base As MenuItem, x As Integer, y As Integer, cEvent As CalendarEvent) As Boolean
+		Function ConstructContextualMenu(base As DesktopMenuItem, x As Integer, y As Integer, cEvent As CalendarEvent) As Boolean
 		  If cEvent <> Nil then
 		    //Do something here as an event was right-clicked.
 		    
@@ -3239,55 +3132,10 @@ End
 		      End If
 		      
 		      mn.Tag = D
-		      base.Append mn
+		      base.AddMenu mn
 		    End If
 		  End If
 		End Function
-	#tag EndEvent
-	#tag Event
-		Function ContextualMenuAction(hitItem as MenuItem) As Boolean
-		  If hitItem.Text = "new event" then
-		    
-		    Dim cEvent As new CalendarEvent
-		    
-		    cEvent = EditEvent.ShowModal(New Date(hitItem.Tag.DateValue), New Date(hitItem.Tag.DateValue), me)
-		    
-		    
-		    If cEvent <> nil then
-		      me.AddEvent(cEvent)
-		    End If
-		  End If
-		  
-		End Function
-	#tag EndEvent
-	#tag Event
-		Sub Open()
-		  me.MyStyle.MFirstDayOfMonthBold = False
-		  'Me.TextFont = "Wingdings"
-		  
-		  me.WeekHeaderTextFormat = "" 'l d, F"
-		  
-		  me.FirstDayOfWeek = 1
-		  
-		  me.ViewType = me.TypeWeek
-		  
-		  me.HighlightLockedEvents = True
-		  
-		  'me.DayEventsHeight = -1
-		  
-		  'me.LockDayEventsHeight = True
-		  
-		  
-		  CalendarView1.Animate = True
-		  CalendarView1.FirstDayOfWeek = 2
-		  CalendarView1.ViewType = CalendarView1.TypeMonth
-		  
-		  #if TargetMacOS
-		    me.TransparentBackground = True
-		  #endif
-		  
-		  'me.DisplayDate= New Date(1997, 01, 01)
-		End Sub
 	#tag EndEvent
 	#tag Event
 		Function ShowHelptag(Str As String, cEvent As CalendarEvent) As Boolean
@@ -3302,8 +3150,8 @@ End
 		    txt = ""
 		  End If
 		  
-		  If me.HelpTag <> txt then
-		    me.HelpTag = txt
+		  If me.Tooltip <> txt then
+		    me.Tooltip = txt
 		  End If
 		  
 		  Return True
@@ -3382,26 +3230,71 @@ End
 		End Function
 	#tag EndEvent
 	#tag Event
-		Function ShowMoreEvents(D As Date) As Boolean
+		Function ShowMoreEvents(D As DateTime) As Boolean
 		  D = D
 		End Function
 	#tag EndEvent
 	#tag Event
 		Sub EventClicked(cEvent As CalendarEvent)
 		  If not System.MouseDown then
-		    Listbox1.InsertRow(0, "EventClicked(" + cEvent.Title + " - " + cEvent.StartDate.SQLDateTime + ")" )
+		    Listbox1.AddRowAt(0, "EventClicked(" + cEvent.Title + " - " + cEvent.StartDate.SQLDateTime + ")" )
 		  End If
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub DateSelected(D As Date)
+		Sub DateSelected(D As DateTime)
 		  D = D
 		End Sub
+	#tag EndEvent
+	#tag Event
+		Sub Opening()
+		  me.MyStyle.MFirstDayOfMonthBold = False
+		  'Me.TextFont = "Wingdings"
+		  
+		  me.WeekHeaderTextFormat = "" 'l d, F"
+		  
+		  me.FirstDayOfWeek = 1
+		  
+		  me.ViewType = me.TypeWeek
+		  
+		  me.HighlightLockedEvents = True
+		  
+		  'me.DayEventsHeight = -1
+		  
+		  'me.LockDayEventsHeight = True
+		  
+		  
+		  CalendarView1.Animate = True
+		  CalendarView1.FirstDayOfWeek = 2
+		  CalendarView1.ViewType = CalendarView1.TypeMonth
+		  
+		  #if TargetMacOS
+		    me.TransparentBackground = True
+		  #endif
+		  
+		  'me.DisplayDate= New Date(1997, 01, 01)
+		End Sub
+	#tag EndEvent
+	#tag Event
+		Function ContextualMenuItemSelected(selectedItem As DesktopMenuItem) As Boolean
+		  If selectedItem.Text = "new event" then
+		    
+		    Dim cEvent As new CalendarEvent
+		    
+		    cEvent = EditEvent.ShowModal(New Date(selectedItem.Tag.DateValue), New Date(selectedItem.Tag.DateValue), me)
+		    
+		    
+		    If cEvent <> nil then
+		      me.AddEvent(cEvent)
+		    End If
+		  End If
+		  
+		End Function
 	#tag EndEvent
 #tag EndEvents
 #tag Events PushButton1
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  CalendarView1.ViewType = CalendarView.TypeMonth
 		  Chk_AdaptWeeks.Enabled = True
 		  Chk_HeatMap.Enabled = False
@@ -3410,7 +3303,7 @@ End
 #tag EndEvents
 #tag Events PushButton2
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  Dim D As new Date
 		  CalendarView1.ScrollPosition = D.Hour
 		  CalendarView1.ViewType = CalendarView.TypeWeek
@@ -3422,7 +3315,7 @@ End
 #tag EndEvents
 #tag Events PushButton3
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  Dim D As new Date
 		  CalendarView1.ScrollPosition = D.Hour
 		  
@@ -3436,7 +3329,7 @@ End
 #tag EndEvents
 #tag Events PushButton4
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  CalendarView1.Scroll(1)
 		  'CalendarView2.DisplayDate.Month = CalendarView2.DisplayDate.Month+1
 		  'CalendarView2.Redisplay
@@ -3452,14 +3345,14 @@ End
 #tag EndEvents
 #tag Events PushButton5
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  CalendarView1.Scroll(-1)
 		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events PushButton6
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  CalendarView1.DisplayDate = New Date
 		  CalendarView1.Refresh(False)
 		  
@@ -3469,29 +3362,29 @@ End
 #tag EndEvents
 #tag Events PopupMenu1
 	#tag Event
-		Sub Change()
-		  CalendarView1.FirstDayOfWeek = me.ListIndex + 1
-		  CalendarView2.FirstDayOfWeek = me.ListIndex + 1
+		Sub SelectionChanged(item As DesktopMenuItem)
+		  CalendarView1.FirstDayOfWeek = me.SelectedRowIndex + 1
+		  CalendarView2.FirstDayOfWeek = me.SelectedRowIndex + 1
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  For i as integer = 1 to 7
 		    me.AddRow TitleCase(CalendarView1.DayNames(i))
 		  Next
 		  
-		  me.ListIndex = CalendarView1.FirstDayOfWeek -1
+		  me.SelectedRowIndex = CalendarView1.FirstDayOfWeek -1
 		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events Chk_AdaptWeeks
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.Value = CalendarView1.AdaptWeeksPerMonth
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub Action()
+		Sub ValueChanged()
 		  CalendarView1.AdaptWeeksPerMonth = me.Value
 		  CalendarView2.AdaptWeeksPerMonth = me.Value
 		End Sub
@@ -3499,12 +3392,12 @@ End
 #tag EndEvents
 #tag Events CheckBox2
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.Value = CalendarView1.Border
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub Action()
+		Sub ValueChanged()
 		  CalendarView1.Border = me.Value
 		  CalendarView1.Redisplay
 		End Sub
@@ -3512,7 +3405,7 @@ End
 #tag EndEvents
 #tag Events PushButton7
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  //Imports iCalendar Data from the Clipboard
 		  
 		  'Dim mp As new MethodProfiler(CurrentMethodName)
@@ -3541,10 +3434,10 @@ End
 #tag EndEvents
 #tag Events PopupStyle
 	#tag Event
-		Sub Change()
-		  CalendarView1.SetStyle(me.ListIndex)
-		  CalendarView2.SetStyle(me.ListIndex)
-		  'CalendarView3.SetStyle(me.ListIndex)
+		Sub SelectionChanged(item As DesktopMenuItem)
+		  CalendarView1.SetStyle(me.SelectedRowIndex)
+		  CalendarView2.SetStyle(me.SelectedRowIndex)
+		  'CalendarView3.SetStyle(me.SelectedRowIndex)
 		  
 		  'CalendarView3.MyStyle.PTextSize = 10
 		  
@@ -3556,7 +3449,7 @@ End
 #tag EndEvents
 #tag Events PushButton8
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  Dim D As new Date
 		  D.Hour = 15
 		  d.Minute = 0
@@ -3581,31 +3474,31 @@ End
 #tag EndEvents
 #tag Events Chk_DragEvents
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.Value = CalendarView1.DragEvents
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub Action()
+		Sub ValueChanged()
 		  CalendarView1.DragEvents = me.Value
 		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events TextField1
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.Text = str(CalendarView1.minHourHeight)
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub TextChange()
+		Sub TextChanged()
 		  CalendarView1.minHourHeight = val(me.Text)
 		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events PushButton9
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  Dim c As new Clipboard
 		  c.Text = CalendarView1.ExportICS
 		  c.Close
@@ -3614,7 +3507,7 @@ End
 #tag EndEvents
 #tag Events PushButton10
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  CalendarView1.ViewType = CalendarView.TypeYear
 		  
 		  Chk_AdaptWeeks.Enabled = False
@@ -3624,7 +3517,7 @@ End
 #tag EndEvents
 #tag Events ColorPickBorder
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.SetColor CalendarView1.MyColors.Border
 		End Sub
 	#tag EndEvent
@@ -3637,7 +3530,7 @@ End
 #tag EndEvents
 #tag Events ColorPickDayName
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.SetColor CalendarView1.MyColors.DayName
 		End Sub
 	#tag EndEvent
@@ -3650,7 +3543,7 @@ End
 #tag EndEvents
 #tag Events ColorPickDayNumActive
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.SetColor CalendarView1.MyColors.DayNumberActive
 		End Sub
 	#tag EndEvent
@@ -3663,7 +3556,7 @@ End
 #tag EndEvents
 #tag Events ColorPickDayNum
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.SetColor CalendarView1.MyColors.DayNumber
 		End Sub
 	#tag EndEvent
@@ -3676,7 +3569,7 @@ End
 #tag EndEvents
 #tag Events ColorPickHeader
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.SetColor CalendarView1.MyColors.Header
 		End Sub
 	#tag EndEvent
@@ -3689,7 +3582,7 @@ End
 #tag EndEvents
 #tag Events ColorPickLine
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.SetColor CalendarView1.MyColors.Line
 		End Sub
 	#tag EndEvent
@@ -3702,7 +3595,7 @@ End
 #tag EndEvents
 #tag Events ColorPickSelected
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.SetColor CalendarView1.MyColors.Selected
 		End Sub
 	#tag EndEvent
@@ -3715,7 +3608,7 @@ End
 #tag EndEvents
 #tag Events ColorPickTitle
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.SetColor CalendarView1.MyColors.Title
 		End Sub
 	#tag EndEvent
@@ -3728,7 +3621,7 @@ End
 #tag EndEvents
 #tag Events ColorPickWeekday
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.SetColor CalendarView1.MyColors.WeekDay
 		End Sub
 	#tag EndEvent
@@ -3741,7 +3634,7 @@ End
 #tag EndEvents
 #tag Events ColorPickWeekend
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.SetColor CalendarView1.MyColors.Weekend
 		End Sub
 	#tag EndEvent
@@ -3754,7 +3647,7 @@ End
 #tag EndEvents
 #tag Events ColorPickDefault
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.SetColor CalendarView1.MyColors.WDefaultColor
 		End Sub
 	#tag EndEvent
@@ -3767,7 +3660,7 @@ End
 #tag EndEvents
 #tag Events ColorPickToday
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.SetColor CalendarView1.MyColors.Today
 		End Sub
 	#tag EndEvent
@@ -3780,7 +3673,7 @@ End
 #tag EndEvents
 #tag Events ColorPickYearBackground
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.SetColor CalendarView1.MyColors.YBackground
 		End Sub
 	#tag EndEvent
@@ -3793,12 +3686,12 @@ End
 #tag EndEvents
 #tag Events Chk_ColorWeekend
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.Value = CalendarView1.ColorWeekend
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub Action()
+		Sub ValueChanged()
 		  CalendarView1.ColorWeekend = me.Value
 		  CalendarView1.Redisplay()
 		End Sub
@@ -3806,12 +3699,12 @@ End
 #tag EndEvents
 #tag Events TextField2
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.Text = str(CalendarView1.minVGap)
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub TextChange()
+		Sub TextChanged()
 		  CalendarView1.minVGap = val(me.Text)
 		  CalendarView1.Redisplay()
 		End Sub
@@ -3819,12 +3712,12 @@ End
 #tag EndEvents
 #tag Events TextField3
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.Text = str(CalendarView1.minHGap)
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub TextChange()
+		Sub TextChanged()
 		  CalendarView1.minHGap = val(me.Text)
 		  CalendarView1.Redisplay()
 		End Sub
@@ -3832,12 +3725,12 @@ End
 #tag EndEvents
 #tag Events Chk_HeatMap
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.Value = CalendarView1.YearHeatMap
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub Action()
+		Sub ValueChanged()
 		  CalendarView1.YearHeatMap = me.Value
 		  CalendarView1.Redisplay()
 		End Sub
@@ -3845,12 +3738,12 @@ End
 #tag EndEvents
 #tag Events Chk_WeekNumber
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.Value = CalendarView1.DisplayWeeknumber
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub Action()
+		Sub ValueChanged()
 		  CalendarView1.DisplayWeeknumber = me.Value
 		  CalendarView1.Redisplay
 		End Sub
@@ -3858,19 +3751,19 @@ End
 #tag EndEvents
 #tag Events Chk_CreateWithDrag
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.Value = CalendarView1.CreateWithDrag
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub Action()
+		Sub ValueChanged()
 		  CalendarView1.CreateWithDrag = me.Value
 		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events ExportDBButton
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  //Exporting events to the database
 		  //Only database parameter and table name are mandatory.
 		  //All other string parameters are optional. They represent the Field name of each event in the database
@@ -3890,19 +3783,19 @@ End
 #tag EndEvents
 #tag Events ImportDBButton
 	#tag Event
-		Sub Action()
-		  Dim RS As RecordSet
+		Sub Pressed()
+		  Dim RS As RowSet
 		  
 		  //First we make a RecordSet containing all records from the database
 		  If EventDB <> Nil and EventDB.Connect then
 		    MsgBox("Loading database")
-		    RS = EventDB.SQLSelect("SELECT * From Events Where 1")
+		    RS = EventDB.SelectSQL("SELECT * From Events Where 1")
 		    
 		    If RS is Nil then
 		      Return
 		    End If
 		    
-		    If RS.RecordCount = 0 then
+		    If RS.RowCount = 0 then
 		      MsgBox("No Records found")
 		      Return
 		    End If
@@ -3927,7 +3820,7 @@ End
 #tag EndEvents
 #tag Events EmptyDBButton
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  //Deletes all entries from the Database
 		  EventDB.SQLExecute("Delete From Events WHERE 1")
 		  EventDB.Commit
@@ -3936,12 +3829,12 @@ End
 #tag EndEvents
 #tag Events Chk_DragEvents1
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.Value = CalendarView1.ForceAM_PM
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub Action()
+		Sub ValueChanged()
 		  CalendarView1.ForceAM_PM = me.Value
 		  If CalendarView1.StyleType = CalendarView.StyleOutlook2013 then
 		    Dim D As New Date
@@ -3959,12 +3852,12 @@ End
 #tag EndEvents
 #tag Events TextField4
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.Text = str(CalendarView1.DayEndHour)
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub TextChange()
+		Sub TextChanged()
 		  CalendarView1.DayEndHour = val(me.Text)
 		  CalendarView1.Redisplay()
 		End Sub
@@ -3972,12 +3865,12 @@ End
 #tag EndEvents
 #tag Events TextField5
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.Text = str(CalendarView1.DayStartHour)
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub TextChange()
+		Sub TextChanged()
 		  CalendarView1.DayStartHour = val(me.Text)
 		  CalendarView1.Redisplay()
 		End Sub
@@ -3985,14 +3878,7 @@ End
 #tag EndEvents
 #tag Events CalendarView2
 	#tag Event
-		Sub Open()
-		  me.ViewType = me.TypePicker
-		  me.MyStyle.MFirstDayOfMonthBold = False
-		  me.DisableScroll = True
-		End Sub
-	#tag EndEvent
-	#tag Event
-		Sub DateSelected(D As Date)
+		Sub DateSelected(D As DateTime)
 		  CalendarView1.DisplayDate = New Date(D)
 		  
 		  If CalendarView1.ViewType = CalendarView1.TypeYear then
@@ -4003,15 +3889,22 @@ End
 		  
 		End Sub
 	#tag EndEvent
+	#tag Event
+		Sub Opening()
+		  me.ViewType = me.TypePicker
+		  me.MyStyle.MFirstDayOfMonthBold = False
+		  me.DisableScroll = True
+		End Sub
+	#tag EndEvent
 #tag EndEvents
 #tag Events Chk_Animate
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.Value = CalendarView1.Animate
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub Action()
+		Sub ValueChanged()
 		  CalendarView1.Animate = me.Value
 		  
 		  If mOpen then
@@ -4025,7 +3918,7 @@ End
 #tag EndEvents
 #tag Events ColorPickTitle1
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.SetColor CalendarView1.MyColors.Time
 		End Sub
 	#tag EndEvent
@@ -4038,7 +3931,7 @@ End
 #tag EndEvents
 #tag Events PushButton11
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  Dim D As new Date
 		  CalendarView1.ScrollPosition = D.Hour
 		  
@@ -4052,12 +3945,12 @@ End
 #tag EndEvents
 #tag Events Chk_Scroll
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.Value = CalendarView1.DisableScroll
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub Action()
+		Sub ValueChanged()
 		  CalendarView1.DisableScroll = me.Value
 		  
 		  
@@ -4066,27 +3959,27 @@ End
 #tag EndEvents
 #tag Events PushButton12
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  CalendarView1.PrintSimple
 		End Sub
 	#tag EndEvent
 #tag EndEvents
 #tag Events PushButton13
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  Dim g as Graphics
 		  
 		  Dim p as PrinterSetup
 		  
 		  p=New PrinterSetup
 		  
-		  If p.PageSetupDialog(self) then
+		  If p.ShowPageSetupDialog(self) then
 		    
 		    //The greater the value, the smaller the text will be when printed.
 		    p.maxHorizontalResolution=120
 		    p.maxVerticalResolution=120
 		    
-		    g=OpenPrinterDialog(p, self)
+		    g = p.ShowPrinterDialog(self)
 		    
 		    If g <> Nil then
 		      
@@ -4124,12 +4017,12 @@ End
 #tag EndEvents
 #tag Events Chk_HeatMap1
 	#tag Event
-		Sub Open()
+		Sub Opening()
 		  me.Value = CalendarView1.YearHeatMap
 		End Sub
 	#tag EndEvent
 	#tag Event
-		Sub Action()
+		Sub ValueChanged()
 		  CalendarView1.YearMultipleEvents = me.Value
 		  CalendarView1.Redisplay()
 		End Sub
@@ -4137,10 +4030,10 @@ End
 #tag EndEvents
 #tag Events txtSearch
 	#tag Event
-		Function KeyDown(Key As String) As Boolean
+		Function KeyDown(key As String) As Boolean
 		  If key = EndOfLine.Windows or Key = EndOfLine.UNIX or Key = EndOfLine.Macintosh or Key = chr(13) then
 		    
-		    pbSearch.Push
+		    pbSearch.Press
 		    
 		  End If
 		End Function
@@ -4148,7 +4041,7 @@ End
 #tag EndEvents
 #tag Events pbSearch
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  
 		  
 		  Dim Result As CalendarEvent
@@ -4170,7 +4063,7 @@ End
 #tag EndEvents
 #tag Events Chk_Filter
 	#tag Event
-		Sub Action()
+		Sub ValueChanged()
 		  CalendarView1.FilterEvents = me.Value
 		  CalendarView1.Redisplay()
 		End Sub
@@ -4178,7 +4071,7 @@ End
 #tag EndEvents
 #tag Events ColorFilter
 	#tag Event
-		Sub Open(index as Integer)
+		Sub Opening(index as Integer)
 		  me.Checkbox = True
 		  
 		  Dim Colors() As Color
@@ -4210,7 +4103,7 @@ End
 #tag EndEvents
 #tag Events PushButton14
 	#tag Event
-		Sub Action()
+		Sub Pressed()
 		  Dim data As String = TestData
 		  
 		  Dim d As new date

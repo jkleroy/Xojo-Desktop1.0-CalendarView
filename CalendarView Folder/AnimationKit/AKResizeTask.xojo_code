@@ -3,9 +3,9 @@ Protected Class AKResizeTask
 Inherits AKTask
 	#tag Event
 		Sub Started()
-		  if me.item isa rectcontrol then
-		    me.moriginalwidth = rectcontrol(me.item).width
-		    me.moriginalheight = rectcontrol(me.item).height
+		  if me.item isa DesktopUIControl then
+		    me.moriginalwidth = DesktopUIControl(me.item).width
+		    me.moriginalheight = DesktopUIControl(me.item).height
 		  else
 		    me.moriginalwidth = window(me.item.objectvalue).width
 		    me.moriginalheight = window(me.item.objectvalue).height
@@ -15,7 +15,7 @@ Inherits AKTask
 
 
 	#tag Method, Flags = &h1000
-		Sub Constructor(TheItem As RectControl)
+		Sub Constructor(TheItem As DesktopUIControl)
 		  me.item = theitem
 		  me.width = theitem.width
 		  me.height = theitem.height
@@ -51,9 +51,9 @@ Inherits AKTask
 	#tag Method, Flags = &h0
 		Sub Perform(Final As Boolean = False)
 		  if final then
-		    if me.item isa rectcontrol then
-		      rectcontrol(me.item).width = me.width
-		      rectcontrol(me.item).height = me.height
+		    if me.item isa DesktopUIControl then
+		      DesktopUIControl(me.item).width = me.width
+		      DesktopUIControl(me.item).height = me.height
 		    else
 		      window(me.item.objectvalue).width = me.width
 		      window(me.item.objectvalue).height = me.height
@@ -69,9 +69,9 @@ Inherits AKTask
 		    delta = me.height - start
 		    newheight = AKEasing.GetEaseValue(me.easingmethod,me.runtime,start,delta,me.duration * 1000000)
 		    
-		    if me.item isa rectcontrol then
-		      rectcontrol(me.item).width = newwidth
-		      rectcontrol(me.item).height = newheight
+		    if me.item isa DesktopUIControl then
+		      DesktopUIControl(me.item).width = newwidth
+		      DesktopUIControl(me.item).height = newheight
 		    else
 		      window(me.item.objectvalue).width = newwidth
 		      window(me.item.objectvalue).height = newheight
@@ -107,22 +107,6 @@ Inherits AKTask
 
 
 	#tag ViewBehavior
-		#tag ViewProperty
-			Name="ConflictResolutionAction"
-			Visible=false
-			Group="Behavior"
-			InitialValue=""
-			Type="Integer"
-			EditorType=""
-		#tag EndViewProperty
-		#tag ViewProperty
-			Name="LastFrameTime"
-			Visible=false
-			Group="Behavior"
-			InitialValue="0"
-			Type="Double"
-			EditorType=""
-		#tag EndViewProperty
 		#tag ViewProperty
 			Name="Duration"
 			Visible=false
